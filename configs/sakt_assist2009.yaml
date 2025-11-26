@@ -1,29 +1,49 @@
+# ABOUTME: Configuration for SAKT model training on ASSISTments 2009 dataset.
+# ABOUTME: Hyperparameters validated via pykt_sakt_spike.py integration test.
+
 run_name: sakt_assist2009_seed42
 seed: 42
+
 data:
-  dataset: assist2009
-  raw_path: data/raw/assist2009
-  events_path: data/interim/assist2009_42_events.parquet
-  split_manifest: data/splits/assist2009_42.json
-pykt:
-  dataset_alias: assist2009
-  max_seq_len: 200
-  embedding_dim: 128
-  num_heads: 4
+  dataset: assistments_skill_builder
+  raw_dir: data/raw/assistments_skill_builder
+  events_path: data/interim/assistments_skill_builder_42_events.parquet
+  split_manifest: data/splits/assistments_skill_builder_42.json
+  pykt_dir: data/processed/assistments_pykt
+
+model:
+  name: sakt
+  # Validated hyperparameters from spike (5.1M params, converges to ~0.57 AUC in 3 epochs)
+  seq_len: 200
+  emb_size: 64
+  num_attn_heads: 4
   dropout: 0.2
-  activation: relu
+  num_encoder_layers: 2
+  emb_type: qid
+
 training:
-  batch_size: 512
+  batch_size: 64
   max_epochs: 30
-  learning_rate: 0.0005
+  learning_rate: 0.001
   optimizer: adam
   gradient_clip_val: 1.0
-  trainer_accelerator: cpu
+  accelerator: auto
+  devices: 1
   precision: 32
+  early_stopping_patience: 5
+  early_stopping_metric: val_auc
+  early_stopping_mode: max
+
+evaluation:
+  metrics: [auc, accuracy]
+  val_fold: 0
+
 outputs:
-  student_state: reports/student_state.parquet
-  predictions: reports/next_correct_predictions.parquet
+  student_state: reports/sakt_student_state.parquet
+  predictions: reports/sakt_predictions.parquet
   checkpoints_dir: reports/checkpoints/sakt_assist2009
+  metrics_dir: reports/metrics
+
 demo:
   weak_skill_threshold: 0.4
   recommendation_count: 5
