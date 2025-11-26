@@ -231,14 +231,12 @@ def run_spike():
     # Initialize SAKT model
     print("\n🧠 Initializing SAKT model...")
     try:
+        # SAKT model hyperparameters (num_c comes from data_config, not model_config)
         model_config = {
-            "num_q": data_config["num_q"],
-            "num_c": data_config["num_c"],
             "seq_len": 200,
             "emb_size": 64,
             "num_attn_heads": 4,
             "dropout": 0.2,
-            # emb_type is passed separately to init_model, don't include here
         }
         
         model = init_model(
