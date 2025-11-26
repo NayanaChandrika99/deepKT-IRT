@@ -238,7 +238,7 @@ def run_spike():
             "emb_size": 64,
             "num_attn_heads": 4,
             "dropout": 0.2,
-            "emb_type": "qid",
+            # emb_type is passed separately to init_model, don't include here
         }
         
         model = init_model(
