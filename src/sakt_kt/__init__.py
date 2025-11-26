@@ -1,12 +1,13 @@
 # ABOUTME: Groups pyKT-based training utilities for the SAKT engine.
 # ABOUTME: Re-exports dataset adapters, trainer, and export helpers.
 
-from .datasets import load_assistments_sequences
-from .train import train_sakt
-from .export import export_student_state
+from .adapters import canonical_to_pykt_csv, build_data_config
+from .datasets import PyKTDataset, prepare_dataloaders, build_shifted_query
 
 __all__ = [
-    "load_assistments_sequences",
-    "train_sakt",
-    "export_student_state",
+    "canonical_to_pykt_csv",
+    "build_data_config",
+    "PyKTDataset",
+    "prepare_dataloaders",
+    "build_shifted_query",
 ]
