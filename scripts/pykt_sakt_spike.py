@@ -54,8 +54,9 @@ def convert_to_pykt_format(events_df: pd.DataFrame, output_dir: Path, max_seq_le
     
     unique_skills = sorted(unique_skills)
     
-    item_to_idx = {item: idx for idx, item in enumerate(unique_items)}
-    skill_to_idx = {skill: idx for idx, skill in enumerate(unique_skills)}
+    # pyKT expects 1-indexed IDs with 0 reserved for padding
+    item_to_idx = {item: idx + 1 for idx, item in enumerate(unique_items)}
+    skill_to_idx = {skill: idx + 1 for idx, skill in enumerate(unique_skills)}
     
     print(f"  Vocabulary: {len(unique_items)} questions, {len(unique_skills)} concepts")
     
@@ -71,33 +72,34 @@ def convert_to_pykt_format(events_df: pd.DataFrame, output_dir: Path, max_seq_le
         responses = []
         
         for _, row in group.iterrows():
-            item_idx = item_to_idx.get(row["item_id"], 0)
+            # IDs are 1-indexed, default to 1 if not found (should not happen)
+            item_idx = item_to_idx.get(row["item_id"], 1)
             
             # Get first skill or use item_id as fallback concept
             skill_list = row["skill_ids"]
             if isinstance(skill_list, list) and len(skill_list) > 0:
                 first_skill = skill_list[0]
                 if first_skill:
-                    skill_idx = skill_to_idx.get(first_skill, 0)
+                    skill_idx = skill_to_idx.get(first_skill, 1)
                 else:
                     # Fallback to item_id as concept if skill is empty
-                    skill_idx = skill_to_idx.get(row["item_id"], 0)
+                    skill_idx = skill_to_idx.get(row["item_id"], 1)
             elif isinstance(skill_list, str) and skill_list:
-                skill_idx = skill_to_idx.get(skill_list, 0)
+                skill_idx = skill_to_idx.get(skill_list, 1)
             else:
                 # Fallback to item_id as concept
-                skill_idx = skill_to_idx.get(row["item_id"], 0)
+                skill_idx = skill_to_idx.get(row["item_id"], 1)
             
             questions.append(str(item_idx))
             concepts.append(str(skill_idx))
             responses.append(str(int(row["correct"])))
         
-        # Pad to max_seq_len
+        # Pad to max_seq_len (use 0 for padding, as IDs are 1-indexed)
         pad_len = max_seq_len - len(questions)
         if pad_len > 0:
-            questions.extend(["-1"] * pad_len)
-            concepts.extend(["-1"] * pad_len)
-            responses.extend(["-1"] * pad_len)
+            questions.extend(["0"] * pad_len)
+            concepts.extend(["0"] * pad_len)
+            responses.extend(["0"] * pad_len)
         
         rows.append({
             "uid": user_id,
@@ -117,11 +119,11 @@ def convert_to_pykt_format(events_df: pd.DataFrame, output_dir: Path, max_seq_le
     print(f"  Saved {len(df_pykt)} user sequences to {csv_path}")
     
     # Build data config
-    # Ensure at least 1 concept (use items if no skills)
+    # Add +1 to account for padding index 0 (IDs are 1-indexed)
     num_concepts = max(len(unique_skills), 1)
     data_config = {
-        "num_q": len(unique_items),
-        "num_c": num_concepts,
+        "num_q": len(unique_items) + 1,  # +1 for padding index 0
+        "num_c": num_concepts + 1,        # +1 for padding index 0
         "max_concepts": 1,
         "input_type": ["questions", "concepts"],
         "emb_path": "",  # Empty string if not using pre-trained embeddings
@@ -205,7 +207,8 @@ def run_spike():
                 responses = [int(x) for x in row["responses"].split(",")]
                 
                 # Create mask (1 for valid, 0 for padding)
-                mask = [1 if r != -1 else 0 for r in responses]
+                # Questions are 1-indexed, so 0 means padding
+                mask = [1 if q != 0 else 0 for q in questions]
                 
                 return {
                     "qseqs": torch.tensor(questions, dtype=torch.long),
