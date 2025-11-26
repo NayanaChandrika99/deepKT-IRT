@@ -336,6 +336,13 @@ def run_spike():
         model = model.to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
         criterion = nn.BCELoss()
+
+        def build_shifted_questions(qseqs: torch.Tensor) -> torch.Tensor:
+            """Shift question sequences right by one with 0 padding."""
+            qry = qseqs.clone()
+            qry[:, 1:] = qseqs[:, :-1]
+            qry[:, 0] = 0
+            return qry
         
         for epoch in range(3):
             # Training
@@ -343,16 +350,16 @@ def run_spike():
             train_losses = []
             for batch in train_loader:
                 qseqs = batch["qseqs"].to(device)
-                cseqs = batch["cseqs"].to(device)
                 rseqs = batch["rseqs"].to(device)
                 masks = batch["masks"].to(device)
+                qryseqs = build_shifted_questions(qseqs)
                 
                 # SAKT forward pass
                 optimizer.zero_grad()
                 
                 # Create input for model
                 # SAKT expects: (q, c, r) sequences
-                y_pred = model(qseqs, cseqs, rseqs)
+                y_pred = model(qseqs, rseqs, qryseqs)
                 
                 # Mask out padding
                 valid_mask = masks[:, 1:].float()  # Skip first position
@@ -381,11 +388,11 @@ def run_spike():
             with torch.no_grad():
                 for batch in val_loader:
                     qseqs = batch["qseqs"].to(device)
-                    cseqs = batch["cseqs"].to(device)
                     rseqs = batch["rseqs"].to(device)
                     masks = batch["masks"].to(device)
-                    
-                    y_pred = model(qseqs, cseqs, rseqs)
+                    qryseqs = build_shifted_questions(qseqs)
+
+                    y_pred = model(qseqs, rseqs, qryseqs)
                     
                     valid_mask = masks[:, 1:].float()
                     y_true = rseqs[:, 1:].float()
