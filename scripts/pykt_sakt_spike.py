@@ -184,6 +184,25 @@ def run_spike():
         # Read our converted data
         df = pd.read_csv(csv_path)
         
+        # Validate data bounds from raw CSV
+        print("\n   🔍 Validating data bounds from CSV...")
+        all_q = []
+        all_c = []
+        all_r = []
+        for _, row in df.head(100).iterrows():  # Check first 100 users
+            all_q.extend([int(x) for x in row["questions"].split(",")])
+            all_c.extend([int(x) for x in row["concepts"].split(",")])
+            all_r.extend([int(x) for x in row["responses"].split(",")])
+        print(f"      q range: [{min(all_q)}, {max(all_q)}]")
+        print(f"      c range: [{min(all_c)}, {max(all_c)}]")
+        print(f"      r range: [{min(all_r)}, {max(all_r)}]")
+        print(f"      num_c from config: {data_config['num_c']}")
+        print(f"      Max valid q index: {data_config['num_c'] - 1}")
+        if max(all_q) >= data_config['num_c']:
+            print(f"      ⚠️  ERROR: max q {max(all_q)} >= num_c {data_config['num_c']}")
+        if max(all_c) >= data_config['num_c']:
+            print(f"      ⚠️  ERROR: max c {max(all_c)} >= num_c {data_config['num_c']}")
+        
         # pyKT's init_dataset4train expects data in a specific format
         # Let's use a simpler approach - direct DataLoader creation
         from torch.utils.data import Dataset, DataLoader
