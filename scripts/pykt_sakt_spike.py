@@ -134,6 +134,27 @@ def convert_to_pykt_format(events_df: pd.DataFrame, output_dir: Path, max_seq_le
         json.dump(data_config, f, indent=2)
     print(f"  Saved data config to {config_path}")
     
+    # Validate data bounds immediately
+    print(f"\n  🔍 Data config: num_q={data_config['num_q']}, num_c={data_config['num_c']}", flush=True)
+    
+    # Check actual max values in the saved CSV
+    df_check = pd.read_csv(csv_path)
+    max_q_in_csv = 0
+    max_c_in_csv = 0
+    for _, row in df_check.iterrows():
+        qs = [int(x) for x in row["questions"].split(",")]
+        cs = [int(x) for x in row["concepts"].split(",")]
+        max_q_in_csv = max(max_q_in_csv, max(qs))
+        max_c_in_csv = max(max_c_in_csv, max(cs))
+    
+    print(f"  📊 Actual max indices in CSV: max_q={max_q_in_csv}, max_c={max_c_in_csv}", flush=True)
+    print(f"  📊 Valid indices: q=[0, {data_config['num_c']-1}], c=[0, {data_config['num_c']-1}]", flush=True)
+    
+    if max_q_in_csv >= data_config['num_c']:
+        print(f"  ⚠️  ERROR: max_q {max_q_in_csv} >= num_c {data_config['num_c']} - will cause embedding error!", flush=True)
+    if max_c_in_csv >= data_config['num_c']:
+        print(f"  ⚠️  ERROR: max_c {max_c_in_csv} >= num_c {data_config['num_c']} - will cause embedding error!", flush=True)
+    
     return csv_path, data_config
 
 
@@ -267,7 +288,12 @@ def run_spike():
             data_config=data_config,
             emb_type="qid"
         )
-        print(f"   ✅ SAKT model initialized: {sum(p.numel() for p in model.parameters())} parameters")
+        print(f"   ✅ SAKT model initialized: {sum(p.numel() for p in model.parameters())} parameters", flush=True)
+        
+        # Print actual embedding sizes
+        print(f"   📊 Model num_c: {model.num_c}", flush=True)
+        print(f"   📊 exercise_emb size: {model.exercise_emb.num_embeddings}", flush=True)
+        print(f"   📊 interaction_emb size: {model.interaction_emb.num_embeddings}", flush=True)
         
     except Exception as e:
         print(f"   ❌ Failed to initialize model: {e}")
