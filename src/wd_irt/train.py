@@ -12,6 +12,7 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 from torch.utils.data import DataLoader
 
 from .datasets import EdmClickstreamDataset, EdmDatasetPaths, collate_wdirt_batch
+from .export import export_item_health
 from .features import FeatureConfig
 from .model import WideDeepConfig, WideDeepIrtModule
 
@@ -21,6 +22,16 @@ app = typer.Typer(help="Train the Wide & Deep IRT engine.")
 @app.command()
 def train(config: Path = typer.Option(..., "--config", help="Path to wd_irt config YAML.")) -> None:
     train_model(config)
+
+
+@app.command()
+def export(
+    checkpoint: Path = typer.Option(..., "--checkpoint", help="Path to model checkpoint (.ckpt file)."),
+    config: Path = typer.Option(..., "--config", help="Path to wd_irt config YAML."),
+    output_dir: Path = typer.Option(Path("reports"), "--output-dir", help="Directory to write exports."),
+) -> None:
+    """Export item parameters and health artifacts from a trained model."""
+    export_item_health(checkpoint, config, output_dir)
 
 
 def train_model(config_path: Path) -> None:
