@@ -41,9 +41,17 @@ def convert_to_pykt_format(events_df: pd.DataFrame, output_dir: Path, max_seq_le
     unique_skills = set()
     for skill_list in events_df["skill_ids"]:
         if isinstance(skill_list, list):
-            unique_skills.update(skill_list)
-        elif isinstance(skill_list, str):
+            unique_skills.update([s for s in skill_list if s])  # Filter out empty strings
+        elif isinstance(skill_list, str) and skill_list:
             unique_skills.add(skill_list)
+        # If no skill, use item_id as fallback concept
+        # This ensures we have concepts even if skill_ids are missing
+    
+    # If no skills found, use items as concepts (fallback)
+    if len(unique_skills) == 0:
+        print("  Warning: No skills found, using item_id as concept")
+        unique_skills = unique_items.copy()
+    
     unique_skills = sorted(unique_skills)
     
     item_to_idx = {item: idx for idx, item in enumerate(unique_items)}
@@ -65,14 +73,20 @@ def convert_to_pykt_format(events_df: pd.DataFrame, output_dir: Path, max_seq_le
         for _, row in group.iterrows():
             item_idx = item_to_idx.get(row["item_id"], 0)
             
-            # Get first skill or default to 0
+            # Get first skill or use item_id as fallback concept
             skill_list = row["skill_ids"]
             if isinstance(skill_list, list) and len(skill_list) > 0:
-                skill_idx = skill_to_idx.get(skill_list[0], 0)
-            elif isinstance(skill_list, str):
+                first_skill = skill_list[0]
+                if first_skill:
+                    skill_idx = skill_to_idx.get(first_skill, 0)
+                else:
+                    # Fallback to item_id as concept if skill is empty
+                    skill_idx = skill_to_idx.get(row["item_id"], 0)
+            elif isinstance(skill_list, str) and skill_list:
                 skill_idx = skill_to_idx.get(skill_list, 0)
             else:
-                skill_idx = 0
+                # Fallback to item_id as concept
+                skill_idx = skill_to_idx.get(row["item_id"], 0)
             
             questions.append(str(item_idx))
             concepts.append(str(skill_idx))
@@ -103,11 +117,14 @@ def convert_to_pykt_format(events_df: pd.DataFrame, output_dir: Path, max_seq_le
     print(f"  Saved {len(df_pykt)} user sequences to {csv_path}")
     
     # Build data config
+    # Ensure at least 1 concept (use items if no skills)
+    num_concepts = max(len(unique_skills), 1)
     data_config = {
         "num_q": len(unique_items),
-        "num_c": len(unique_skills),
+        "num_c": num_concepts,
         "max_concepts": 1,
         "input_type": ["questions", "concepts"],
+        "emb_path": "",  # Empty string if not using pre-trained embeddings
     }
     
     config_path = output_dir / "data_config.json"
