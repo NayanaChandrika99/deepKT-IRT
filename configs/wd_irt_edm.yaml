@@ -21,13 +21,11 @@ data:
     - response_latency
     - curriculum_context
 model:
-  module: src.wd_irt.model:WideDeepIrtModule
   wide_units: 256
   deep_units: [512, 256, 128]
   embedding_dim: 128
   dropout: 0.2
   activation: relu
-  optimizer: adamw
   learning_rate: 0.0005
   weight_decay: 0.01
   ability_regularizer: 0.001
