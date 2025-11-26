@@ -256,10 +256,32 @@ def run_spike():
         traceback.print_exc()
         return False
     
+    # Validate data bounds before training
+    print("\n🔍 Validating data bounds...")
+    import torch
+    max_q, max_c, max_r = 0, 0, 0
+    for batch in train_loader:
+        max_q = max(max_q, batch["qseqs"].max().item())
+        max_c = max(max_c, batch["cseqs"].max().item())
+        max_r = max(max_r, batch["rseqs"].max().item())
+    print(f"   Data ranges: q=[0,{max_q}], c=[0,{max_c}], r=[0,{max_r}]")
+    print(f"   Model expects: num_c={data_config['num_c']}, num_q={data_config['num_q']}")
+    print(f"   exercise_emb size: {data_config['num_c']}")
+    print(f"   interaction_emb size: {2 * data_config['num_c']}")
+    
+    # Check if indices are in bounds
+    if max_q >= data_config['num_c']:
+        print(f"   ⚠️  WARNING: max question index {max_q} >= num_c {data_config['num_c']}")
+    if max_c >= data_config['num_c']:
+        print(f"   ⚠️  WARNING: max concept index {max_c} >= num_c {data_config['num_c']}")
+    # interaction index = q + num_c * r, max would be max_q + num_c * 1
+    max_interaction_idx = max_q + data_config['num_c'] * max_r
+    if max_interaction_idx >= 2 * data_config['num_c']:
+        print(f"   ⚠️  WARNING: max interaction index {max_interaction_idx} >= 2*num_c {2 * data_config['num_c']}")
+    
     # Quick training test
     print("\n⚡ Running 3 training epochs...")
     try:
-        import torch
         import torch.nn as nn
         from sklearn.metrics import roc_auc_score
         
