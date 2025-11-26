@@ -71,9 +71,9 @@ class WideDeepIrtModule(pl.LightningModule):
     def forward(self, batch: Dict[str, torch.Tensor]):
         """Return predicted probabilities and abilities."""
 
-        ability = self._deep_component(batch).squeeze(-1)
-        probs = self._wide_component(batch, ability).unsqueeze(-1)
-        return probs, ability.unsqueeze(-1)
+        ability = self._deep_component(batch)
+        probs = self._wide_component(batch, ability)
+        return probs, ability
 
     def training_step(self, batch, batch_idx):
         inputs, labels, _ = batch
@@ -138,10 +138,10 @@ class WideDeepIrtModule(pl.LightningModule):
 
     def _wide_component(self, inputs: Dict[str, torch.Tensor], ability: torch.Tensor) -> torch.Tensor:
         item_idx = inputs["future_item"].long().view(-1)
-        beta = self.item_beta[item_idx]
-        guess = torch.sigmoid(self.item_guess[item_idx])
-        logits = ability - beta.unsqueeze(-1)
+        beta = self.item_beta[item_idx].unsqueeze(-1)
+        guess = torch.sigmoid(self.item_guess[item_idx]).unsqueeze(-1)
+        logits = ability - beta
         base_prob = torch.sigmoid(logits)
-        prob = (1 - guess.unsqueeze(-1)) * base_prob + guess.unsqueeze(-1)
+        prob = (1 - guess) * base_prob + guess
         is_mc = inputs["future_item_is_mc"].unsqueeze(-1)
         return torch.where(is_mc > 0.5, prob, base_prob)
