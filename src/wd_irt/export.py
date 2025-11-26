@@ -3,7 +3,7 @@
 
 import json
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict
 
 import pandas as pd
 import pytorch_lightning as pl
@@ -18,7 +18,6 @@ def export_item_health(
     model_checkpoint: Path,
     config_path: Path,
     output_dir: Path,
-    problem_details_path: Optional[Path] = None,
 ) -> None:
     """
     Export item parameters, drift scores, and behavior slices from a trained model.
@@ -27,7 +26,6 @@ def export_item_health(
         model_checkpoint: Path to the trained model checkpoint (.ckpt file)
         config_path: Path to the training config YAML
         output_dir: Directory to write output artifacts
-        problem_details_path: Optional path to problem_details.csv for topic mapping
     """
     import yaml
 
@@ -79,8 +77,8 @@ def export_item_health(
 
     # Load problem details for topic/skill mapping if available
     topic_map: Dict[str, str] = {}
-    if problem_details_path and problem_details_path.exists():
-        problem_df = pd.read_csv(problem_details_path, usecols=["problem_id", "problem_skill_code"])
+    if paths.problem_details.exists():
+        problem_df = pd.read_csv(paths.problem_details, usecols=["problem_id", "problem_skill_code"])
         for _, row in problem_df.iterrows():
             skill_code = str(row["problem_skill_code"]) if pd.notna(row["problem_skill_code"]) else "unknown"
             topic_map[row["problem_id"]] = skill_code.split(",")[0] if "," in skill_code else skill_code
