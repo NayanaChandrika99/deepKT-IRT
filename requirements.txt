@@ -1,0 +1,10 @@
+pandas==2.3.3
+pyarrow==22.0.0
+typer==0.20.0
+rich==14.2.0
+pytorch-lightning==2.4.0
+pykt-toolkit==0.0.37
+hydra-core==1.3.2
+torch==2.3.0
+torchvision==0.18.1
+torchaudio==2.3.1

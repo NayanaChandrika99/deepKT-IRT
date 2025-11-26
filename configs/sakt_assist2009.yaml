@@ -1,0 +1,29 @@
+run_name: sakt_assist2009_seed42
+seed: 42
+data:
+  dataset: assist2009
+  raw_path: data/raw/assist2009
+  events_path: data/interim/assist2009_42_events.parquet
+  split_manifest: data/splits/assist2009_42.json
+pykt:
+  dataset_alias: assist2009
+  max_seq_len: 200
+  embedding_dim: 128
+  num_heads: 4
+  dropout: 0.2
+  activation: relu
+training:
+  batch_size: 512
+  max_epochs: 30
+  learning_rate: 0.0005
+  optimizer: adam
+  gradient_clip_val: 1.0
+  trainer_accelerator: cpu
+  precision: 32
+outputs:
+  student_state: reports/student_state.parquet
+  predictions: reports/next_correct_predictions.parquet
+  checkpoints_dir: reports/checkpoints/sakt_assist2009
+demo:
+  weak_skill_threshold: 0.4
+  recommendation_count: 5

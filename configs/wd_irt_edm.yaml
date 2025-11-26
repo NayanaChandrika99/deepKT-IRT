@@ -1,0 +1,56 @@
+run_name: wd_irt_edm_seed42
+seed: 42
+data:
+  dataset: edm_cup_2023
+  events_path: data/interim/edm_cup_2023_42_events.parquet
+  split_manifest: data/splits/edm_cup_2023_42.json
+  unit_test_scores: data/raw/edm_cup_2023/training_unit_test_scores.csv
+  assignment_details: data/raw/edm_cup_2023/assignment_details.csv
+  assignment_relationships: data/raw/edm_cup_2023/assignment_relationships.csv
+  problem_details: data/raw/edm_cup_2023/problem_details.csv
+  feature_config:
+    seq_len: 200
+    latency_bins: 10
+    bert_dim: 32
+  max_train_samples:
+  max_val_samples:
+  max_test_samples:
+  features:
+    - click_sequence_stats
+    - help_request_counts
+    - response_latency
+    - curriculum_context
+model:
+  module: src.wd_irt.model:WideDeepIrtModule
+  wide_units: 256
+  deep_units: [512, 256, 128]
+  embedding_dim: 128
+  dropout: 0.2
+  activation: relu
+  optimizer: adamw
+  learning_rate: 0.0005
+  weight_decay: 0.01
+  ability_regularizer: 0.001
+training:
+  batch_size: 2048
+  max_epochs: 20
+  precision: bf16-mixed
+  gradient_clip_val: 1.0
+  early_stopping_patience: 3
+trainer:
+  batch_size: 256
+  num_workers: 4
+  max_epochs: 5
+  accelerator: auto
+  devices: 1
+  precision: 32
+  log_every_n_steps: 50
+evaluation:
+  metrics: [auc, average_precision, calibration_ece]
+  behavior_windows: [weekly, monthly]
+outputs:
+  item_params: reports/item_params.parquet
+  item_drift: reports/item_drift.parquet
+  behavior_slices: reports/behavior_slices.md
+  checkpoints_dir: reports/checkpoints/wd_irt_edm
+  metrics_dir: reports/metrics
