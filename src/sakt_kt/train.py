@@ -26,6 +26,17 @@ def train(
     train_sakt(config)
 
 
+@app.command()
+def export(
+    checkpoint: Path = typer.Option(..., "--checkpoint", help="Path to model checkpoint (.pt file)."),
+    config: Path = typer.Option(..., "--config", help="Path to sakt config YAML."),
+    output_dir: Path = typer.Option(Path("reports"), "--output-dir", help="Directory to write exports."),
+) -> None:
+    """Export student mastery and predictions from a trained model."""
+    from .export import export_student_mastery
+    export_student_mastery(checkpoint, config, output_dir)
+
+
 def train_sakt(config_path: Path) -> Dict[str, float]:
     """
     Train SAKT model from config YAML.

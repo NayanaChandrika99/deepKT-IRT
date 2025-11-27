@@ -4,6 +4,7 @@
 from .adapters import canonical_to_pykt_csv, build_data_config
 from .datasets import PyKTDataset, prepare_dataloaders, build_shifted_query
 from .train import train_sakt
+from .export import export_student_mastery
 
 __all__ = [
     "canonical_to_pykt_csv",
@@ -12,4 +13,5 @@ __all__ = [
     "prepare_dataloaders",
     "build_shifted_query",
     "train_sakt",
+    "export_student_mastery",
 ]
