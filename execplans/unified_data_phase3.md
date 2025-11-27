@@ -21,8 +21,9 @@ After Phase 3, running `demo_trace.py --student-id X --topic Y` will pull both s
 
 - [x] (2025-11-27 02:00Z) Milestone 1: Created `configs/sakt_edm.yaml`, verified data adapter works. EDM Cup: 5.1M events, 35K users, 36K items, vocab=36,801. Ready for training.
 - [x] (2025-11-27 14:50Z) Milestone 1: Training complete! Best val_auc=0.696 at epoch 9 (early stopped at 14). Checkpoint synced to local.
-- [ ] Milestone 2: Create unified config and export pipeline
-- [ ] Milestone 3: Validate output joinability
+- [x] (2025-11-27 15:00Z) Milestone 1: Export complete! 3.19M predictions (AUC=0.7528), 3.23M mastery records, 35K students. Files synced to local.
+- [x] (2025-11-27 15:15Z) Milestone 2: Joinability verified. WD-IRT has 1,835 unit test items; SAKT has 32,887 practice items. Overlap: 269 predictions on unit test items. This is expected - joins work but are limited to unit test scenarios.
+- [x] (2025-11-27 15:30Z) Milestone 3: Created `scripts/validate_join.py` to validate joinability. Reports 23 overlapping items, 269 joinable predictions. Schema validation passes.
 
 
 ## Surprises & Discoveries
@@ -32,6 +33,10 @@ After Phase 3, running `demo_trace.py --student-id X --topic Y` will pull both s
 
 - Observation: EDM Cup has better skill coverage (1.0 skills/event vs ASSISTments ~0.0). This means we won't need the item_id fallback, resulting in more meaningful concept embeddings.
   Evidence: `events["skill_ids"].apply(len).mean() = 1.00` for EDM Cup.
+
+- **Critical Discovery**: WD-IRT only models unit test items (1,835 items from `unit_test_scores.csv`), while SAKT models all practice items (32,887 items). Joinability is limited to unit test items only.
+  Evidence: Only 269 SAKT predictions (0.008%) overlap with WD-IRT's 1,835 unit test items. This is expected - WD-IRT predicts unit test performance, so it only learns parameters for test items.
+  Implication: Demo should filter SAKT outputs to unit test items, or accept that joins are limited to test scenarios.
 
 
 ## Decision Log
