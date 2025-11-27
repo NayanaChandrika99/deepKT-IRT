@@ -240,15 +240,53 @@ Based on comprehensive research of 2024-2025 literature, competitor analysis, an
 
 ---
 
+## Data Availability Assessment
+
+**Current Data Available:**
+- ✅ Clickstream: `latency_ms`, `help_requested`, `action_sequence_id`, `correct`
+- ✅ SAKT predictions: mastery scores, item_ids, skill_ids
+- ✅ Item metadata: `topic`, `difficulty`, `discrimination`, `guessing`
+- ✅ BERT embeddings: `problem_text_bert_pca` (pre-computed, not raw text)
+- ❌ Item text/stem: Not available (would need from UWorld's database)
+- ❌ Full action logs: Only response-level data (not all clickstream actions)
+
+**Feasibility by Enhancement:**
+
+| Enhancement | Feasible? | Data Available | Notes |
+|-------------|----------|----------------|-------|
+| Explainable KT | ✅ Yes | SAKT attention weights | Need to modify export |
+| Gaming Detection | ✅ Yes (Basic) | latency, help flags | Full detection needs action logs |
+| LLM Item Analysis | ❌ No | Missing item text | Need raw problem content |
+| RL Recommendations | ✅ Yes | Mastery + item params | Can build with current data |
+| Fairness Detection | ✅ Yes | Demographics + responses | Need demographic data |
+| Cognitive Load | ⚠️ Partial | latency, help | Full needs more signals |
+
 ## Recommended Implementation Order
 
-### Phase 5A: Quick Wins (4-6 weeks)
-1. **Explainable Knowledge Tracing** - High impact, medium effort
-2. **Gaming Detection** - High impact, medium effort (leverages existing clickstream)
+### Phase 5A: Realistic Quick Wins (3-4 weeks)
+**What we can actually build with current data:**
+
+1. **Explainable Knowledge Tracing** ✅
+   - Extract SAKT attention weights from trained model
+   - Show "Why mastery is X" explanations
+   - Highlight key past interactions that drive predictions
+   - **Data:** SAKT model + predictions (have it)
+
+2. **Basic Gaming Detection** ✅
+   - Rapid response detection (< 5s latency)
+   - Help-before-attempt flagging
+   - Suspicious pattern identification
+   - **Data:** latency_ms, help_requested, correct (have it)
+   - **Note:** Full gaming detection needs action logs (future)
 
 ### Phase 5B: Major Enhancements (8-12 weeks)
-3. **Reinforcement Learning Recommendations** - Very high impact, high effort
-4. **LLM-Enhanced Item Analysis** - High impact, medium effort
+3. **Reinforcement Learning Recommendations** ✅
+   - Multi-Armed Bandits for item selection
+   - **Data:** Mastery scores + item params (have it)
+
+4. **LLM-Enhanced Item Analysis** ❌ **SKIP**
+   - **Blocked:** Need raw item text (not available)
+   - **Future:** Can add when UWorld provides item content
 
 ### Phase 5C: Advanced Features (12+ weeks)
 5. **Fairness & Bias Detection** - High impact, medium-high effort
@@ -269,15 +307,25 @@ Based on comprehensive research of 2024-2025 literature, competitor analysis, an
 - ✅ Skill-level recommendations
 - ✅ Item health monitoring
 
-**Enhanced Demo (Phase 5A):**
+**Realistic Enhanced Demo (Phase 5A - Current Data):**
 - ✅ **+ Explainable predictions** ("Here's why your mastery is 0.45")
-- ✅ **+ Gaming detection** ("This student is gaming the system")
-- ✅ **+ LLM item analysis** ("This item may be too difficult")
+  - Shows which past interactions SAKT focuses on
+  - Highlights key skills driving the prediction
+- ✅ **+ Basic gaming detection** ("This student shows rapid guessing patterns")
+  - Flags rapid responses (< 5s)
+  - Identifies help-before-attempt behavior
+  - Note: Full gaming detection requires action logs (future)
+
+**Future Enhancements (Require Additional Data):**
+- ⏳ **LLM item analysis** (need item text from UWorld)
+- ⏳ **Full gaming detection** (need complete action logs)
+- ⏳ **Fairness detection** (need demographic data)
 
 **This positions the system as:**
-- More advanced than competitors (explainability, gaming detection)
+- More advanced than competitors (explainability, basic gaming detection)
 - Research-backed (latest 2024-2025 papers)
 - Production-ready (proven at scale)
+- **Realistic** (only promises what we can deliver with current data)
 
 ---
 
@@ -289,6 +337,63 @@ Based on comprehensive research of 2024-2025 literature, competitor analysis, an
 4. Ren, C. et al. (2025). "Deep knowledge tracing and cognitive load estimation". Nature Scientific Reports.
 5. Xu, Z. et al. (2025). "Fairness Evaluation with Item Response Theory". RMIT University.
 6. Levin, N. et al. (2022). "Evaluating Gaming Detector Model Robustness Over Time". EDM 2022.
+
+---
+
+## Realistic Phase 5A Implementation Plan
+
+### What We Can Build NOW (3-4 weeks)
+
+**1. Explainable Knowledge Tracing**
+- **Implementation:**
+  - Modify `src/sakt_kt/export.py` to extract attention weights from SAKT model
+  - Create `src/common/explainability.py` to generate explanations
+  - Update `demo_trace.py` to show "Why mastery is X"
+- **Output Example:**
+  ```
+  Student ABC123 mastery on 7.RP.A.1: 0.45
+  
+  Key factors:
+  - Struggled with questions Q1, Q2, Q3 (attention: 0.23, 0.19, 0.15)
+  - Last 5 interactions show declining performance
+  - Recommended: Review foundational skills 6.RP.A.1, 6.RP.A.2
+  ```
+- **Effort:** 2-3 weeks
+- **Data:** ✅ Have everything needed
+
+**2. Basic Gaming Detection**
+- **Implementation:**
+  - Create `src/common/gaming_detection.py`
+  - Detect rapid responses (< 5s latency)
+  - Flag help-before-attempt patterns
+  - Identify suspicious sequences (many rapid wrong answers)
+- **Output Example:**
+  ```
+  Gaming Alert for Student XYZ789:
+  - 23 rapid responses (< 5s) out of 50 total
+  - 8 help requests before attempting answer
+  - Pattern suggests gaming behavior
+  - Recommendation: Review with student
+  ```
+- **Effort:** 1-2 weeks
+- **Data:** ✅ Have latency_ms, help_requested, correct
+
+### What We CAN'T Build (Need More Data)
+
+**LLM Item Analysis** ❌
+- **Blocked:** Need raw item text/stem
+- **Current:** Only have BERT embeddings (pre-computed)
+- **Future:** Can add when UWorld provides item content database
+
+**Full Gaming Detection** ⚠️
+- **Current:** Basic detection (rapid responses, help flags)
+- **Full Detection:** Needs complete action logs (all clicks, not just responses)
+- **Future:** Can enhance when action-level clickstream available
+
+**Fairness Detection** ⚠️
+- **Blocked:** Need demographic data (gender, ethnicity, etc.)
+- **Current:** Can't detect DIF without demographic groups
+- **Future:** Can add when UWorld provides anonymized demographics
 
 ---
 
