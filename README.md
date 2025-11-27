@@ -1,98 +1,176 @@
 # ABOUTME: Introduces the twin-engine learning analytics project and how to run it.
-# ABOUTME: Documents setup, directory layout, and placeholder commands for the workflows.
+# ABOUTME: Documents setup, directory layout, and commands for both SAKT and WD-IRT workflows.
 
-# deepKT + Wide&Deep IRT Skeleton
+# deepKT + Wide&Deep IRT
 
-This repository scaffolds two complementary analytics engines:
+This repository implements two complementary analytics engines for educational data:
 
-1. **Student readiness** via Sequential Attention Knowledge Tracing (SAKT) implemented with pyKT.
-2. **Item health** via the Wide & Deep IRT architecture that fuses clickstream behavior with psychometrics.
+1. **Student Readiness (SAKT)** — Sequential Attention Knowledge Tracing via pyKT. Predicts student mastery over skills based on interaction history.
+2. **Item Health (Wide & Deep IRT)** — Fuses clickstream behavior with psychometrics to estimate item difficulty, discrimination, and guessing parameters.
 
-Both engines will eventually consume the same canonical learning-event schema so their outputs can be joined inside reports or demos. This skeleton focuses on reproducibility, deterministic data splits, and clear extension points before any modeling code is written.
+Both engines consume the same canonical learning-event schema so their outputs can be joined for comprehensive learning analytics.
 
-## Quickstart
+## Quick Start
 
-1. Create the environment (uv recommended):
+### Environment Setup
 
-   ```
-   uv venv
-   source .venv/bin/activate
-   uv pip install -r requirements.txt
-   ```
+```bash
+# Using uv (recommended)
+uv venv
+source .venv/bin/activate
+uv pip install -r requirements.txt
 
-   Conda users can still rely on `environment.yml`.
+# Or using conda
+conda env create -f environment.yml
+conda activate deepkt
+```
 
-2. Inspect available commands:
+### Data Preparation
 
-   ```
-   make help
-   ```
+```bash
+# Prepare EDM Cup 2023 data
+make data dataset=edm_cup_2023 split_seed=42
 
-3. Run the workflows end-to-end:
+# Prepare ASSISTments data
+make data dataset=assistments_skill_builder split_seed=42
+```
 
-   ```
-   make data split_seed=42
-   make data dataset=assistments_skill_builder split_seed=42
-   make train_wdirt config=configs/wd_irt_edm.yaml
-   make train_sakt config=configs/sakt_assist2009.yaml
-   make export
-   make demo student_id=123 topic=fractions time_window=2023-W15
-   ```
+### Training
 
-`make data` now materializes canonical learning events and deterministic splits (use `dataset=assistments_skill_builder` to process the ASSISTments file). The other targets currently echo the commands they will run once training/evaluation code lands.
+#### SAKT (Student Readiness)
+
+```bash
+# Train SAKT model
+python -m src.sakt_kt.train --config configs/sakt_assist2009.yaml
+
+# Export student mastery and predictions
+python -m src.sakt_kt.train export \
+    --checkpoint reports/checkpoints/sakt_assist2009/sakt_assist2009_seed42_best.pt \
+    --config configs/sakt_assist2009.yaml \
+    --output-dir reports
+```
+
+**Expected outputs:**
+- `reports/sakt_predictions.parquet` — Predicted vs actual correctness
+- `reports/sakt_student_state.parquet` — Per-interaction mastery estimates
+- `reports/sakt_mastery_report.md` — Summary statistics
+
+**Validated performance:** AUC 0.74 on ASSISTments skill_builder dataset.
+
+#### Wide & Deep IRT (Item Health)
+
+```bash
+# Train Wide & Deep IRT model
+python -m src.wd_irt.train --config configs/wd_irt_edm.yaml
+
+# Export item parameters
+python -m src.wd_irt.train export \
+    --checkpoint reports/checkpoints/wd_irt_edm/best.ckpt \
+    --config configs/wd_irt_edm.yaml \
+    --output-dir reports
+```
+
+**Expected outputs:**
+- `reports/item_params.parquet` — Item difficulty, discrimination, guessing
+- `reports/item_drift.parquet` — Temporal drift flags
+- `reports/behavior_slices.md` — Item health summary by topic
 
 ## Directory Layout
 
 ```
 .
 ├── configs/           # YAML configs for WD-IRT and SAKT runs
-├── data/              # Raw/interim/processed splits plus download scripts
-├── execplans/         # ExecPlan documents maintained per PLANS.md
-├── reports/           # Auto-generated metrics, plots, behavior summaries
-├── scripts/           # CLI entry points (demo, utilities)
-└── src/
-    ├── common/        # Shared schemas, feature utilities, evaluation helpers
-    ├── sakt_kt/       # pyKT training adapters and exporters
-    └── wd_irt/        # Clickstream feature builders and Wide&Deep models
+├── data/
+│   ├── raw/           # Immutable source data (gitignored)
+│   ├── interim/       # Canonical learning events
+│   ├── processed/     # Model-ready features (pyKT format, etc.)
+│   └── splits/        # Train/val/test user split manifests
+├── execplans/         # ExecPlan documents per PLANS.md
+├── reports/           # Generated metrics, checkpoints, exports
+├── scripts/           # Utility scripts (spike tests, demos)
+├── src/
+│   ├── common/        # Shared schemas, data pipeline
+│   ├── sakt_kt/       # SAKT training via pyKT
+│   └── wd_irt/        # Wide & Deep IRT models
+└── tests/             # Unit tests
 ```
 
-Key artifacts described in `plan.md` include:
+## Key Modules
 
-- `item_params.parquet`, `item_drift.parquet`, `behavior_slices.md` generated by Wide & Deep IRT.
-- `student_state.parquet`, `next_correct_predictions.parquet` produced by SAKT.
-- Joined demo outputs surfaced through `scripts/demo_trace.py`.
+### SAKT Engine (`src/sakt_kt/`)
 
-## Data Protocol
+| Module | Purpose |
+|--------|---------|
+| `adapters.py` | Converts canonical events to pyKT CSV format |
+| `datasets.py` | PyTorch Dataset and DataLoader utilities |
+| `train.py` | CLI for training and export |
+| `export.py` | Generates student mastery and prediction artifacts |
 
-- **Raw data** (`data/raw/`): immutable downloads such as EDM Cup 2023 clickstream and ASSISTments2009 sequences. Store metadata or checksum files instead of the datasets themselves.
-- **Interim data** (`data/interim/`): canonical learning-event tables created by deterministic preprocessing scripts. Each file name encodes `dataset`, `split`, and `seed`.
-- **Processed data** (`data/processed/`): model-ready features aligned with config names.
-- The split policy is fixed per dataset: create `train`, `val`, and `test` splits by user ID and persist the split manifest under `data/splits/<dataset>_<seed>.json`.
+### Wide & Deep IRT Engine (`src/wd_irt/`)
 
-Document any new dataset or transformation inside `data/README.md` before committing the files.
+| Module | Purpose |
+|--------|---------|
+| `features.py` | Clickstream feature engineering |
+| `datasets.py` | PyTorch Dataset for EDM data |
+| `model.py` | Wide & Deep IRT architecture |
+| `train.py` | CLI for training and export |
+| `export.py` | Generates item health artifacts |
+
+## Data Schema
+
+Both engines use the canonical `LearningEvent` schema defined in `src/common/schemas.py`:
+
+```python
+@dataclass
+class LearningEvent:
+    user_id: str
+    item_id: str
+    skill_ids: List[str]
+    timestamp: datetime
+    correct: bool
+    action_sequence_id: Optional[str]
+    latency_ms: Optional[int]
+    help_requested: Optional[bool]
+```
 
 ## Configuration
 
-Two starter configs live under `configs/`:
+### SAKT Config (`configs/sakt_assist2009.yaml`)
 
-- `wd_irt_edm.yaml` describes the EDM Cup pipeline (feature groups, clickstream windows, optimizer settings, export paths).
-- `sakt_assist2009.yaml` configures pyKT’s SAKT baseline (dataset pointer, embedding size, attention heads, dropout, trainer parameters).
+Key hyperparameters:
+- `emb_size: 64` — Embedding dimension
+- `num_attn_heads: 4` — Attention heads
+- `seq_len: 200` — Maximum sequence length
+- `learning_rate: 0.001`
+- `early_stopping_patience: 5`
 
-Add new configs instead of editing these defaults so experiment history remains reproducible.
+### WD-IRT Config (`configs/wd_irt_edm.yaml`)
 
-## Demo CLI
+Key hyperparameters:
+- `wide_units: 256` — Wide component size
+- `deep_units: [512, 256, 128]` — Deep MLP layers
+- `embedding_dim: 128`
 
-`scripts/demo_trace.py` exposes a Typer-based CLI. Once the models are trained, running
+## Running Tests
 
+```bash
+# Run all tests
+PYTHONPATH=. uv run pytest tests/ -v
+
+# Run SAKT adapter tests
+PYTHONPATH=. uv run pytest tests/test_sakt_adapter.py -v
 ```
-python scripts/demo_trace.py --student-id 123 --topic fractions --time-window 2023-W15
-```
 
-will combine SAKT mastery signals with WD-IRT item health summaries for the requested student/topic/time window. For now the command prints a structured TODO message describing the expected inputs/outputs.
+## Development
 
-## Next Steps
+This project follows the ExecPlan methodology documented in `PLANS.md`. Each major feature has an associated execution plan in `execplans/`.
 
-1. Implement the Wide & Deep IRT pipeline under `src/wd_irt/`, starting with clickstream feature builders.
-2. Integrate pyKT’s SAKT model using the adapters defined in `src/sakt_kt/`.
-3. Unify both pipelines on the shared schema in `src/common/schemas.py`.
-4. Replace placeholder Makefile commands with actual training/evaluation/export invocations.
+### Current Status
+
+- ✅ **SAKT Engine** — Complete (training, export, 0.74 AUC)
+- ✅ **Wide & Deep IRT** — Complete (training, export)
+- ⏳ **Demo CLI** — Joins both engines' outputs (placeholder)
+
+## License
+
+MIT

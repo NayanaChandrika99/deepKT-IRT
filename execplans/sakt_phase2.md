@@ -16,7 +16,7 @@ The user can run training with a single command and obtain two key artifacts: (1
 - [x] (2025-11-27 00:00Z) Milestone 2: Implemented dataset adapter — 17 unit tests passing. Created adapters.py and datasets.py.
 - [x] (2025-11-27 00:30Z) Milestone 3: Implemented training CLI with train_sakt(), early stopping, checkpointing, metrics logging. Trained on Lightning AI — best val_auc=0.6038 at epoch 8, early stopped at epoch 13.
 - [x] (2025-11-27 01:00Z) Milestone 4: Implemented export_student_mastery() producing sakt_predictions.parquet, sakt_student_state.parquet, and sakt_mastery_report.md. Verified on Lightning AI: 257K predictions (AUC=0.7373), 261K mastery records for 4,217 students.
-- [ ] Milestone 5: End-to-end validation and documentation
+- [x] (2025-11-27 01:30Z) Milestone 5: Added E2E tests (tests/test_sakt_e2e.py), updated README with SAKT documentation. All 22 tests pass.
 
 
 ## Surprises & Discoveries
@@ -58,6 +58,38 @@ Milestone 1 successfully validated pyKT integration. Key learnings:
 - Training converges within 3 epochs to ~0.57 AUC (expected baseline for this data)
 - Data format conversion is straightforward but requires careful attention to 1-indexing
 - The spike code in `scripts/pykt_sakt_spike.py` can serve as reference for production adapter
+
+### Phase 2 Final Retrospective (2025-11-27)
+
+Phase 2 is complete. The SAKT engine is fully functional and integrated.
+
+**Deliverables:**
+- `src/sakt_kt/adapters.py`: Converts canonical events to pyKT format (17 unit tests)
+- `src/sakt_kt/datasets.py`: PyTorch Dataset and DataLoader utilities
+- `src/sakt_kt/train.py`: Training CLI with early stopping, checkpointing
+- `src/sakt_kt/export.py`: Generates predictions and mastery artifacts
+- `tests/test_sakt_e2e.py`: End-to-end pipeline validation (22 total tests passing)
+
+**Performance:**
+- Training: 0.60 val_auc at epoch 8 (early stopped at 13)
+- Export: 0.74 prediction AUC on full dataset
+- Scale: 257K predictions, 261K mastery records, 4,217 students
+
+**Key Technical Decisions:**
+1. Use pyKT's SAKT directly rather than custom implementation
+2. 1-indexed IDs with 0 reserved for padding (pyKT requirement)
+3. Fall back to item_id as concept when skill_ids missing
+4. Shifted query sequence built in our code, not pyKT
+
+**What Went Well:**
+- Spike-first approach caught pyKT API quirks early
+- Systematic debugging of CUDA embedding errors
+- Clean separation between adapter (data) and train (logic)
+
+**Future Improvements:**
+- Support for skill-level concepts when data has good skill annotations
+- Attention weight visualization for interpretability
+- Incremental training for streaming data
 
 
 ## Context and Orientation
