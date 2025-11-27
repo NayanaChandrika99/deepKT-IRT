@@ -15,7 +15,7 @@ The user can run training with a single command and obtain two key artifacts: (1
 - [x] (2025-11-26 23:00Z) Milestone 1: pyKT integration spike — verified pyKT's SAKT model works with ASSISTments data. Achieved 0.573 AUC in 3 epochs.
 - [x] (2025-11-27 00:00Z) Milestone 2: Implemented dataset adapter — 17 unit tests passing. Created adapters.py and datasets.py.
 - [x] (2025-11-27 00:30Z) Milestone 3: Implemented training CLI with train_sakt(), early stopping, checkpointing, metrics logging. Trained on Lightning AI — best val_auc=0.6038 at epoch 8, early stopped at epoch 13.
-- [x] (2025-11-27 01:00Z) Milestone 4: Implemented export_student_mastery() producing sakt_predictions.parquet, sakt_student_state.parquet, and sakt_mastery_report.md
+- [x] (2025-11-27 01:00Z) Milestone 4: Implemented export_student_mastery() producing sakt_predictions.parquet, sakt_student_state.parquet, and sakt_mastery_report.md. Verified on Lightning AI: 257K predictions (AUC=0.7373), 261K mastery records for 4,217 students.
 - [ ] Milestone 5: End-to-end validation and documentation
 
 
