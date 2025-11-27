@@ -19,14 +19,18 @@ After Phase 3, running `demo_trace.py --student-id X --topic Y` will pull both s
 
 ## Progress
 
-- [ ] Milestone 1: Verify SAKT trains on EDM Cup canonical events
+- [x] (2025-11-27 02:00Z) Milestone 1: Created `configs/sakt_edm.yaml`, verified data adapter works. EDM Cup: 5.1M events, 35K users, 36K items, vocab=36,801. Ready for training.
 - [ ] Milestone 2: Create unified config and export pipeline
 - [ ] Milestone 3: Validate output joinability
 
 
 ## Surprises & Discoveries
 
-(To be updated as work proceeds)
+- Observation: EDM Cup has larger vocabulary than ASSISTments (36,801 vs 26,689 items). This will increase model size but shouldn't affect training convergence.
+  Evidence: Data prep output shows `num_q=36801, num_c=36801` for EDM Cup.
+
+- Observation: EDM Cup has better skill coverage (1.0 skills/event vs ASSISTments ~0.0). This means we won't need the item_id fallback, resulting in more meaningful concept embeddings.
+  Evidence: `events["skill_ids"].apply(len).mean() = 1.00` for EDM Cup.
 
 
 ## Decision Log
