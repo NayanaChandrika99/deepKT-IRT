@@ -14,7 +14,7 @@ The user can run training with a single command and obtain two key artifacts: (1
 
 - [x] (2025-11-26 23:00Z) Milestone 1: pyKT integration spike — verified pyKT's SAKT model works with ASSISTments data. Achieved 0.573 AUC in 3 epochs.
 - [x] (2025-11-27 00:00Z) Milestone 2: Implemented dataset adapter — 17 unit tests passing. Created adapters.py and datasets.py.
-- [ ] Milestone 3: Wire training CLI (`src/sakt_kt/train.py`) to pyKT's training loop
+- [x] (2025-11-27 00:30Z) Milestone 3: Implemented training CLI with train_sakt(), early stopping, checkpointing, metrics logging.
 - [ ] Milestone 4: Implement export functionality for student mastery and predictions
 - [ ] Milestone 5: End-to-end validation and documentation
 
