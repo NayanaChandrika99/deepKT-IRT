@@ -1,0 +1,50 @@
+# ABOUTME: Configuration for SAKT model training on EDM Cup 2023 dataset.
+# ABOUTME: Enables SAKT to run on same data as Wide & Deep IRT for unified outputs.
+
+run_name: sakt_edm_seed42
+seed: 42
+
+data:
+  dataset: edm_cup_2023
+  raw_dir: data/raw/edm_cup_2023
+  events_path: data/interim/edm_cup_2023_42_events.parquet
+  split_manifest: data/splits/edm_cup_2023_42.json
+  pykt_dir: data/processed/edm_pykt
+
+model:
+  name: sakt
+  # Same hyperparameters as ASSISTments (validated baseline)
+  seq_len: 200
+  emb_size: 64
+  num_attn_heads: 4
+  dropout: 0.2
+  num_encoder_layers: 2
+  emb_type: qid
+
+training:
+  batch_size: 64
+  max_epochs: 30
+  learning_rate: 0.001
+  optimizer: adam
+  gradient_clip_val: 1.0
+  accelerator: auto
+  devices: 1
+  precision: 32
+  early_stopping_patience: 5
+  early_stopping_metric: val_auc
+  early_stopping_mode: max
+
+evaluation:
+  metrics: [auc, accuracy]
+  val_fold: 0
+
+outputs:
+  student_state: reports/sakt_edm_student_state.parquet
+  predictions: reports/sakt_edm_predictions.parquet
+  checkpoints_dir: reports/checkpoints/sakt_edm
+  metrics_dir: reports/metrics
+
+demo:
+  weak_skill_threshold: 0.4
+  recommendation_count: 5
+
