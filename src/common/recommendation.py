@@ -1,12 +1,20 @@
 # ABOUTME: Generates item recommendations by combining mastery and item health.
-# ABOUTME: Filters items by skill/topic, drift status, and difficulty fit.
+# ABOUTME: Supports rule-based and RL (LinUCB bandit) recommendation modes.
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 import pandas as pd
+
+from .bandit import (
+    LinUCBBandit,
+    BanditRecommendation,
+    build_student_context,
+    items_to_arms,
+    generate_rl_reason,
+)
 
 
 @dataclass
@@ -27,7 +35,7 @@ def recommend_items(
     exclude_high_drift: bool = True,
 ) -> List[ItemRecommendation]:
     """
-    Recommend items for a student on a given skill/topic.
+    Recommend items for a student on a given skill/topic (rule-based).
     """
 
     mastery_row = skill_mastery[
@@ -56,3 +64,60 @@ def recommend_items(
             )
         )
     return recs
+
+
+def recommend_items_rl(
+    user_id: str,
+    target_skill: str,
+    item_params: pd.DataFrame,
+    events_df: pd.DataFrame,
+    bandit: LinUCBBandit,
+    max_items: int = 5,
+    exclude_high_drift: bool = True,
+) -> List[BanditRecommendation]:
+    """
+    Recommend items using LinUCB contextual bandit.
+
+    Args:
+        user_id: Student identifier
+        target_skill: Skill/topic to recommend for
+        item_params: DataFrame with item_id, topic, difficulty columns
+        events_df: Student events for building context
+        bandit: Trained LinUCB bandit instance
+        max_items: Maximum recommendations to return
+        exclude_high_drift: Whether to exclude items with drift_flag=True
+
+    Returns:
+        List of BanditRecommendation sorted by UCB score
+    """
+    student = build_student_context(user_id, events_df, target_skill=target_skill)
+
+    candidates = item_params[item_params["topic"] == target_skill].copy()
+    if exclude_high_drift and "drift_flag" in candidates.columns:
+        candidates = candidates[~candidates["drift_flag"].fillna(False)]
+
+    items = items_to_arms(candidates)
+    if not items:
+        return []
+
+    recommendations = []
+    for item in items:
+        expected, uncertainty = bandit.predict(student, item)
+        ucb = expected + uncertainty
+        is_exploration = uncertainty > expected * 0.5
+
+        reason = generate_rl_reason(student, item, expected, uncertainty, is_exploration)
+
+        recommendations.append(
+            BanditRecommendation(
+                item=item,
+                expected_reward=expected,
+                uncertainty=uncertainty,
+                ucb_score=ucb,
+                reason=reason,
+                is_exploration=is_exploration,
+            )
+        )
+
+    recommendations.sort(key=lambda r: r.ucb_score, reverse=True)
+    return recommendations[:max_items]

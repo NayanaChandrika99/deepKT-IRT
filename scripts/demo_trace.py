@@ -1,17 +1,19 @@
 # ABOUTME: Provides a CLI that narrates learning traces by joining mastery and item health data.
-# ABOUTME: Describes which artifacts will be consumed so contributors can keep interfaces stable.
+# ABOUTME: Supports rule-based and RL (LinUCB bandit) recommendation modes.
 
 from pathlib import Path
 
 import pandas as pd
 import typer
 from rich.console import Console
+from rich.panel import Panel
 from rich.table import Table
 
+from src.common.bandit import LinUCBBandit
 from src.common.explainability import generate_explanation, format_explanation
 from src.common.gaming_detection import analyze_student, generate_gaming_report
 from src.common.mastery_aggregation import aggregate_skill_mastery
-from src.common.recommendation import recommend_items
+from src.common.recommendation import recommend_items, recommend_items_rl
 
 console = Console()
 app = typer.Typer(help="Join student mastery (SAKT) with item health (Wide & Deep IRT).")
@@ -31,11 +33,13 @@ def trace(
     reports_dir: Path = typer.Option(_default_reports_dir(), "--reports-dir", help="Directory containing model outputs."),
     events_path: Path = typer.Option(Path("data/interim/edm_cup_2023_42_events.parquet"), "--events-path", help="Canonical events parquet for skill_ids."),
     recommendation_count: int = typer.Option(5, "--recommendation-count", help="Number of items to surface."),
+    use_rl: bool = typer.Option(False, "--use-rl", help="Use RL (LinUCB bandit) instead of rule-based recommendations."),
 ) -> None:
     """
     Emits a structured preview showing how outputs from both models will be interpreted once available.
     """
-    console.rule("[bold blue]DeepKT + Wide&Deep IRT Trace[/bold blue]")
+    mode = "RL (LinUCB)" if use_rl else "Rule-based"
+    console.rule(f"[bold blue]DeepKT + Wide&Deep IRT Trace ({mode})[/bold blue]")
     console.print(f"[bold]Student:[/] {student_id}")
     console.print(f"[bold]Topic:[/] {topic}")
     console.print(f"[bold]Time Window:[/] {time_window}")
@@ -45,15 +49,17 @@ def trace(
     skill_mastery_path = reports_dir / "skill_mastery.parquet"
     item_params_path = reports_dir / "item_params.parquet"
     item_drift_path = reports_dir / "item_drift.parquet"
+    bandit_path = reports_dir / "bandit_state.npz"
+
+    events_df = pd.read_parquet(events_path) if events_path.exists() else pd.DataFrame()
 
     if not skill_mastery_path.exists():
         if not student_state_path.exists():
             raise typer.Exit(f"Missing student mastery parquet at {student_state_path}")
-        if not events_path.exists():
+        if events_df.empty:
             raise typer.Exit(f"Missing events parquet at {events_path}")
         console.print("[yellow]Generating skill mastery from student state + events...[/yellow]")
         mastery_df = pd.read_parquet(student_state_path)
-        events_df = pd.read_parquet(events_path)
         skill_mastery_df = aggregate_skill_mastery(mastery_df, events_df)
         skill_mastery_path.parent.mkdir(parents=True, exist_ok=True)
         skill_mastery_df.to_parquet(skill_mastery_path, index=False)
@@ -73,15 +79,6 @@ def trace(
     mastery_mean = float(user_mastery["mastery_mean"].iloc[0]) if not user_mastery.empty else 0.5
     interactions = int(user_mastery["interaction_count"].iloc[0]) if not user_mastery.empty else 0
 
-    recs = recommend_items(
-        user_id=student_id,
-        target_skill=topic,
-        skill_mastery=skill_mastery_df,
-        item_params=item_params_df,
-        max_items=recommendation_count,
-        exclude_high_drift=True,
-    )
-
     console.print()
     console.print("[bold green]Mastery[/bold green]")
     mastery_table = Table(show_header=True, header_style="bold magenta")
@@ -92,14 +89,153 @@ def trace(
     console.print(mastery_table)
 
     console.print()
-    console.print("[bold yellow]Recommendations[/bold yellow]")
-    rec_table = Table(show_header=True, header_style="bold magenta")
-    rec_table.add_column("Item ID")
-    rec_table.add_column("Difficulty")
-    rec_table.add_column("Reason")
-    for rec in recs:
-        rec_table.add_row(rec.item_id, f"{rec.difficulty:.2f}", rec.reason)
-    console.print(rec_table)
+
+    if use_rl:
+        bandit = _load_or_create_bandit(bandit_path)
+        rl_recs = recommend_items_rl(
+            user_id=student_id,
+            target_skill=topic,
+            item_params=item_params_df,
+            events_df=events_df,
+            bandit=bandit,
+            max_items=recommendation_count,
+            exclude_high_drift=True,
+        )
+        console.print(f"[bold cyan]RL Recommendations[/bold cyan] (Bandit: {bandit.n_updates} updates)")
+        rec_table = Table(show_header=True, header_style="bold magenta")
+        rec_table.add_column("Rank")
+        rec_table.add_column("Item ID")
+        rec_table.add_column("Expected")
+        rec_table.add_column("Uncertainty")
+        rec_table.add_column("Mode")
+        rec_table.add_column("Reason")
+        for i, rec in enumerate(rl_recs, 1):
+            mode_str = "[dim]Explore[/dim]" if rec.is_exploration else "[bold]Exploit[/bold]"
+            rec_table.add_row(
+                str(i),
+                rec.item.item_id,
+                f"{rec.expected_reward:.0%}",
+                f"±{rec.uncertainty:.0%}",
+                mode_str,
+                rec.reason[:35] + "..." if len(rec.reason) > 35 else rec.reason,
+            )
+        console.print(rec_table)
+    else:
+        recs = recommend_items(
+            user_id=student_id,
+            target_skill=topic,
+            skill_mastery=skill_mastery_df,
+            item_params=item_params_df,
+            max_items=recommendation_count,
+            exclude_high_drift=True,
+        )
+        console.print("[bold yellow]Rule-Based Recommendations[/bold yellow]")
+        rec_table = Table(show_header=True, header_style="bold magenta")
+        rec_table.add_column("Item ID")
+        rec_table.add_column("Difficulty")
+        rec_table.add_column("Reason")
+        for rec in recs:
+            rec_table.add_row(rec.item_id, f"{rec.difficulty:.2f}", rec.reason)
+        console.print(rec_table)
+
+
+def _load_or_create_bandit(bandit_path: Path) -> LinUCBBandit:
+    """Load existing bandit or create new one."""
+    if bandit_path.exists():
+        return LinUCBBandit.load(bandit_path)
+    return LinUCBBandit(n_features=8, alpha=1.0)
+
+
+@app.command("compare-recs")
+def compare_recs(
+    student_id: str = typer.Option(..., "--student-id", help="Student identifier."),
+    topic: str = typer.Option(..., "--topic", help="Skill or curriculum node."),
+    reports_dir: Path = typer.Option(_default_reports_dir(), "--reports-dir", help="Directory containing model outputs."),
+    events_path: Path = typer.Option(Path("data/interim/edm_cup_2023_42_events.parquet"), "--events-path", help="Canonical events parquet."),
+    recommendation_count: int = typer.Option(5, "--recommendation-count", help="Number of items."),
+) -> None:
+    """
+    Compare rule-based vs RL recommendations side-by-side.
+    """
+    console.rule("[bold blue]Recommendation Comparison: Rule-Based vs RL[/bold blue]")
+
+    skill_mastery_path = reports_dir / "skill_mastery.parquet"
+    item_params_path = reports_dir / "item_params.parquet"
+    item_drift_path = reports_dir / "item_drift.parquet"
+    bandit_path = reports_dir / "bandit_state.npz"
+
+    if not skill_mastery_path.exists() or not item_params_path.exists():
+        console.print("[red]Missing required parquet files. Run trace first.[/red]")
+        raise typer.Exit(code=1)
+
+    events_df = pd.read_parquet(events_path) if events_path.exists() else pd.DataFrame()
+    skill_mastery_df = pd.read_parquet(skill_mastery_path)
+    item_params_df = pd.read_parquet(item_params_path)
+    if item_drift_path.exists():
+        drift_df = pd.read_parquet(item_drift_path)
+        item_params_df = item_params_df.merge(drift_df, on="item_id", how="left")
+
+    rule_recs = recommend_items(
+        user_id=student_id,
+        target_skill=topic,
+        skill_mastery=skill_mastery_df,
+        item_params=item_params_df,
+        max_items=recommendation_count,
+        exclude_high_drift=True,
+    )
+
+    bandit = _load_or_create_bandit(bandit_path)
+    rl_recs = recommend_items_rl(
+        user_id=student_id,
+        target_skill=topic,
+        item_params=item_params_df,
+        events_df=events_df,
+        bandit=bandit,
+        max_items=recommendation_count,
+        exclude_high_drift=True,
+    )
+
+    console.print()
+    console.print(Panel(
+        f"[bold]Student:[/] {student_id}\n"
+        f"[bold]Topic:[/] {topic}\n"
+        f"[bold]Bandit Updates:[/] {bandit.n_updates}",
+        title="Context",
+        border_style="cyan",
+    ))
+
+    console.print()
+    console.print("[bold yellow]Rule-Based (sorts by difficulty)[/bold yellow]")
+    rule_table = Table(show_header=True, header_style="bold yellow")
+    rule_table.add_column("Rank")
+    rule_table.add_column("Item ID")
+    rule_table.add_column("Difficulty")
+    for i, rec in enumerate(rule_recs, 1):
+        rule_table.add_row(str(i), rec.item_id, f"{rec.difficulty:.2f}")
+    console.print(rule_table)
+
+    console.print()
+    console.print("[bold cyan]RL (LinUCB bandit)[/bold cyan]")
+    rl_table = Table(show_header=True, header_style="bold cyan")
+    rl_table.add_column("Rank")
+    rl_table.add_column("Item ID")
+    rl_table.add_column("Expected")
+    rl_table.add_column("Uncertainty")
+    rl_table.add_column("Mode")
+    for i, rec in enumerate(rl_recs, 1):
+        mode_str = "Explore" if rec.is_exploration else "Exploit"
+        rl_table.add_row(
+            str(i),
+            rec.item.item_id,
+            f"{rec.expected_reward:.0%}",
+            f"±{rec.uncertainty:.0%}",
+            mode_str,
+        )
+    console.print(rl_table)
+
+    console.print()
+    console.print("[dim]Note: RL recommendations improve with more training data.[/dim]")
+    console.print("[dim]Run warmstart_bandit.py to train on historical events.[/dim]")
 
 
 @app.command()

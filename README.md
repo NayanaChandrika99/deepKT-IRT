@@ -188,12 +188,30 @@ python scripts/demo_trace.py gaming-check --user-id <user>  # or omit for all st
 
 Outputs rely on the same artifacts as the demo; attention parquet is optional (explanations degrade gracefully without it).
 
+### RL Recommendations (Phase 5B)
+
+Use reinforcement learning (LinUCB bandit) for adaptive recommendations:
+
+```bash
+# Warm-start the bandit from historical data (one-time setup)
+python scripts/warmstart_bandit.py
+
+# Use RL recommendations
+python scripts/demo_trace.py trace --student-id <user> --topic <skill> --time-window <window> --use-rl
+
+# Compare rule-based vs RL side-by-side
+python scripts/demo_trace.py compare-recs --student-id <user> --topic <skill>
+```
+
+The bandit learns which items work best for which student profiles, balancing exploration (trying new items) and exploitation (using best known). Recommendations include expected success probability and uncertainty estimates.
+
 ### Current Status
 
 - ✅ **SAKT Engine** — Complete (training, export, 0.74 AUC)
 - ✅ **Wide & Deep IRT** — Complete (training, export)
 - ✅ **Demo CLI (Phase 4)** — Joins both engines' outputs with recommendations
 - ✅ **Explainability & Gaming (Phase 5A)** — Attention-based explanations and behavioral alerts
+- ✅ **RL Recommendations (Phase 5B)** — LinUCB contextual bandit for adaptive item selection
 
 ## License
 
