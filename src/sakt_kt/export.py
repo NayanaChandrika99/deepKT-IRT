@@ -2,13 +2,18 @@
 # ABOUTME: Produces parquet artifacts consumed by demos and downstream analytics.
 
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 import pandas as pd
 import torch
 import yaml
 
 from .adapters import canonical_to_pykt_csv
+from .attention_extractor import (
+    AttentionExtractor,
+    compute_attention_from_scratch,
+    extract_top_influences,
+)
 from .datasets import PyKTDataset, load_data_config
 
 
@@ -16,18 +21,21 @@ def export_student_mastery(
     checkpoint_path: Path,
     config_path: Path,
     output_dir: Path,
+    extract_attention: bool = True,
 ) -> None:
     """
     Export student mastery and predictions from a trained SAKT model.
     
-    Generates two artifacts:
+    Generates artifacts:
     1. sakt_student_state.parquet - Per-interaction mastery estimates
     2. sakt_predictions.parquet - Predicted vs actual correctness
+    3. sakt_attention.parquet - Attention weights for explainability (optional)
     
     Args:
         checkpoint_path: Path to saved model checkpoint (.pt file)
         config_path: Path to training config YAML
         output_dir: Directory to write output files
+        extract_attention: Whether to extract and save attention weights
     """
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -74,10 +82,12 @@ def export_student_mastery(
         max_seq_len = model_cfg.get("seq_len", 200)
         csv_path, _ = canonical_to_pykt_csv(events_df, pykt_dir, max_seq_len=max_seq_len)
     
-    # Run inference on all data
+    # Run inference on all data (with optional attention extraction)
     print("[sakt-export] Running inference...")
-    predictions_rows, mastery_rows = _run_inference(
-        model, csv_path, device, idx_to_item, events_df
+    predictions_rows, mastery_rows, attention_rows = _run_inference_with_attention(
+        model, csv_path, device, idx_to_item, events_df,
+        data_config=data_config,
+        extract_attention=extract_attention,
     )
     
     # Save predictions
@@ -98,6 +108,15 @@ def export_student_mastery(
     mastery_df.to_parquet(mastery_path, index=False)
     print(f"✅ Exported {len(mastery_df)} mastery records to {mastery_path}")
     print(f"   Unique students: {mastery_df['user_id'].nunique()}")
+    
+    # Save attention data if extracted
+    if attention_rows:
+        attention_df = pd.DataFrame(attention_rows)
+        attention_path = output_dir / "sakt_attention.parquet"
+        attention_df.to_parquet(attention_path, index=False)
+        print(f"✅ Exported {len(attention_df)} attention records to {attention_path}")
+    elif extract_attention:
+        print("⚠️ No attention weights captured (model may not expose attention)")
     
     # Generate summary report
     _generate_mastery_report(mastery_df, predictions_df, output_dir)
@@ -137,24 +156,26 @@ def _build_shifted_query(qseqs: torch.Tensor) -> torch.Tensor:
     return qry
 
 
-def _run_inference(
+def _run_inference_with_attention(
     model,
     csv_path: Path,
     device: torch.device,
     idx_to_item: Dict[int, str],
     events_df: pd.DataFrame,
+    data_config: Optional[Dict[str, Any]] = None,
+    extract_attention: bool = True,
 ) -> tuple:
-    """Run inference on all data and collect predictions and mastery."""
-    from torch.utils.data import DataLoader
-    
+    """Run inference on all data, collect predictions, mastery, and attention."""
     predictions_rows = []
     mastery_rows = []
+    attention_rows = []
     
     # Load full dataset (all folds)
     df = pd.read_csv(csv_path)
     
-    # Build user_id mapping from uid column
-    uid_list = df["uid"].tolist()
+    # Setup attention extractor if requested
+    extractor = AttentionExtractor(model) if extract_attention else None
+    num_c = data_config.get("num_c", 1) if data_config else 1
     
     # Process each user
     with torch.no_grad():
@@ -168,9 +189,32 @@ def _run_inference(
             rseqs = torch.tensor([responses], dtype=torch.long, device=device)
             qryseqs = _build_shifted_query(qseqs)
             
-            # Get predictions
-            y_pred = model(qseqs, rseqs, qryseqs)  # (1, seq_len)
-            y_pred = y_pred.squeeze(0).cpu().numpy()
+            # Get predictions (with or without attention extraction)
+            attn_weights = None
+            if extractor:
+                y_pred, captured_attn = extractor.extract(qseqs, rseqs, qryseqs)
+                y_pred = y_pred.squeeze(0).cpu().numpy()
+                
+                # Use captured attention or compute from scratch
+                if captured_attn:
+                    # Take first layer's attention, average over heads if multi-head
+                    attn = captured_attn[0]
+                    if attn.dim() == 4:  # [batch, heads, seq, seq]
+                        attn = attn.mean(dim=1)  # Average over heads
+                    attn_weights = attn.squeeze(0)  # [seq, seq]
+                else:
+                    # Try computing attention manually
+                    computed = compute_attention_from_scratch(
+                        model, qseqs.cpu(), rseqs.cpu(), num_c
+                    )
+                    if computed is not None:
+                        attn_weights = computed.squeeze(0)
+            else:
+                y_pred = model(qseqs, rseqs, qryseqs)
+                y_pred = y_pred.squeeze(0).cpu().numpy()
+            
+            # Build item_ids list for this sequence
+            item_ids = [idx_to_item.get(q, f"item_{q}") for q in questions]
             
             # Collect predictions and mastery for non-padding positions
             for pos in range(len(questions)):
@@ -202,10 +246,29 @@ def _run_inference(
                     "item_id": item_id,
                     "position": pos,
                     "response": r,
-                    "mastery": float(y_pred[pos]) if pos > 0 else 0.5,  # First position has no history
+                    "mastery": float(y_pred[pos]) if pos > 0 else 0.5,
                 })
+            
+            # Extract top influences for the last valid position
+            if attn_weights is not None and extract_attention:
+                # Find last non-padding position
+                last_pos = len(questions) - 1
+                while last_pos > 0 and questions[last_pos] == 0:
+                    last_pos -= 1
+                
+                if last_pos > 0:
+                    top_influences = extract_top_influences(
+                        attn_weights, item_ids, responses, last_pos, k=5
+                    )
+                    
+                    attention_rows.append({
+                        "user_id": user_id,
+                        "position": last_pos,
+                        "mastery": float(y_pred[last_pos]) if last_pos > 0 else 0.5,
+                        "top_influences": top_influences,
+                    })
     
-    return predictions_rows, mastery_rows
+    return predictions_rows, mastery_rows, attention_rows
 
 
 def _generate_mastery_report(

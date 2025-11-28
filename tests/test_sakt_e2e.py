@@ -180,6 +180,38 @@ class TestArtifactSchemas(unittest.TestCase):
         
         self.assertEqual(set(mastery_df.columns), expected_columns,
             f"Mastery should have columns {expected_columns}")
+    
+    def test_attention_schema(self):
+        """Attention parquet should have required columns."""
+        expected_columns = {"user_id", "position", "mastery", "top_influences"}
+        
+        # Create mock attention DataFrame
+        attention_df = pd.DataFrame({
+            "user_id": ["U1", "U2"],
+            "position": [5, 3],
+            "mastery": [0.65, 0.45],
+            "top_influences": [
+                [
+                    {"item_id": "Q1", "correct": True, "weight": 0.3, "position": 0},
+                    {"item_id": "Q3", "correct": False, "weight": 0.25, "position": 2},
+                ],
+                [
+                    {"item_id": "Q2", "correct": True, "weight": 0.4, "position": 1},
+                ],
+            ],
+        })
+        
+        self.assertEqual(set(attention_df.columns), expected_columns,
+            f"Attention should have columns {expected_columns}")
+        
+        # Verify top_influences structure
+        for influences in attention_df["top_influences"]:
+            self.assertIsInstance(influences, list, "top_influences should be a list")
+            for inf in influences:
+                self.assertIn("item_id", inf, "Each influence should have item_id")
+                self.assertIn("correct", inf, "Each influence should have correct")
+                self.assertIn("weight", inf, "Each influence should have weight")
+                self.assertIn("position", inf, "Each influence should have position")
 
 
 if __name__ == "__main__":

@@ -53,6 +53,7 @@ python -m src.sakt_kt.train export \
 **Expected outputs:**
 - `reports/sakt_predictions.parquet` — Predicted vs actual correctness
 - `reports/sakt_student_state.parquet` — Per-interaction mastery estimates
+- `reports/sakt_attention.parquet` — Attention weights for explainability
 - `reports/sakt_mastery_report.md` — Summary statistics
 
 **Validated performance:** AUC 0.74 on ASSISTments skill_builder dataset.
@@ -191,7 +192,8 @@ Outputs rely on the same artifacts as the demo; attention parquet is optional (e
 
 - ✅ **SAKT Engine** — Complete (training, export, 0.74 AUC)
 - ✅ **Wide & Deep IRT** — Complete (training, export)
-- ⏳ **Demo CLI** — Joins both engines' outputs (placeholder)
+- ✅ **Demo CLI (Phase 4)** — Joins both engines' outputs with recommendations
+- ✅ **Explainability & Gaming (Phase 5A)** — Attention-based explanations and behavioral alerts
 
 ## License
 
