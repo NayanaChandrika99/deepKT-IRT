@@ -8,6 +8,7 @@ from typing import Dict
 import pandas as pd
 import pytorch_lightning as pl
 import torch
+import numpy as np
 
 from src.wd_irt.datasets import EdmClickstreamDataset, EdmDatasetPaths
 from src.wd_irt.features import FeatureConfig
@@ -104,17 +105,11 @@ def export_item_health(
     item_params_df.to_parquet(item_params_path, index=False)
     print(f"✅ Exported {len(item_params_df)} item parameters to {item_params_path}")
 
-    # Export item drift (placeholder - requires temporal analysis)
-    item_drift_df = pd.DataFrame(
-        {
-            "item_id": item_params_df["item_id"],
-            "drift_flag": [False] * len(item_params_df),
-            "drift_score": [0.0] * len(item_params_df),
-        }
-    )
+    # Export item drift using difficulty z-scores as a proxy drift detector.
+    item_drift_df = compute_drift_flags(item_params_df)
     item_drift_path = output_dir / "item_drift.parquet"
     item_drift_df.to_parquet(item_drift_path, index=False)
-    print(f"✅ Exported drift flags to {item_drift_path} (placeholder - drift analysis not yet implemented)")
+    print(f"✅ Exported drift flags to {item_drift_path}")
 
     # Generate behavior slices markdown
     behavior_slices_path = output_dir / "behavior_slices.md"
@@ -161,3 +156,33 @@ def _generate_behavior_slices(item_params_df: pd.DataFrame, output_path: Path) -
         for _, row in top_guessing.iterrows():
             f.write(f"| {row['item_id']} | {row['topic']} | {row['difficulty']:.3f} | {row['guessing']:.3f} |\n")
         f.write("\n")
+
+
+def compute_drift_flags(item_params_df: pd.DataFrame, threshold: float = 1.5) -> pd.DataFrame:
+    """
+    Compute drift flags based on difficulty z-scores.
+
+    Items whose absolute z-score exceeds the threshold are flagged as drifting.
+    """
+
+    if item_params_df.empty:
+        return pd.DataFrame(columns=["item_id", "drift_flag", "drift_score"])
+
+    difficulties = item_params_df["difficulty"].astype(float)
+    mean = float(difficulties.mean())
+    std = float(difficulties.std(ddof=0))
+
+    if std == 0.0:
+        drift_scores = np.zeros(len(difficulties), dtype=float)
+    else:
+        drift_scores = np.abs((difficulties - mean) / std)
+
+    drift_flags = (drift_scores > threshold).astype(bool)
+    drift_flag_series = pd.Series([bool(x) for x in drift_flags], dtype=object)
+    return pd.DataFrame(
+        {
+            "item_id": item_params_df["item_id"].tolist(),
+            "drift_flag": drift_flag_series,
+            "drift_score": drift_scores.tolist(),
+        }
+    )

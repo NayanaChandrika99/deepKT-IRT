@@ -32,10 +32,10 @@ python demo_trace.py --student-id 123 --topic fractions
 
 ## Progress
 
-- [ ] Milestone 1: Build skill-level mastery aggregation from SAKT outputs
-- [ ] Milestone 2: Implement recommendation engine joining mastery + item health
-- [ ] Milestone 3: Update demo_trace.py with real outputs
-- [ ] Milestone 4: End-to-end validation and documentation
+- [x] (2025-11-27 20:20Z) Milestone 1: Built skill-level mastery aggregation from SAKT outputs (tests added).
+- [x] (2025-11-27 20:35Z) Milestone 2: Implemented recommendation engine joining mastery + item health.
+- [x] (2025-11-27 20:45Z) Milestone 3: Updated demo_trace.py to load real artifacts and emit mastery + recommendations.
+- [x] (2025-11-27 21:00Z) Milestone 4: End-to-end validation via integration test; brief doc updates pending.
 
 
 ## Surprises & Discoveries
@@ -60,10 +60,20 @@ python demo_trace.py --student-id 123 --topic fractions
   Rationale: SAKT model outputs don't include skill_ids (only item_id). We'll join mastery predictions back to events to get skill information. This is a data processing step, not a model change.
   Date/Author: 2025-11-27 / Planning
 
+- Decision: Default mastery to 0.5 when a user/skill pair is missing to keep recommendations available without crashes.
+  Rationale: Demo should remain usable for cold-start users; explicit fallback prevents failures.
+  Date/Author: 2025-11-27 / Codex
+
+- Decision: Default mastery to 0.5 when a user/skill pair is missing to keep recommendations available without crashes.
+  Rationale: Demo should always return items even for cold-start users; explicit fallback keeps CLI usable.
+  Date/Author: 2025-11-27 / Codex
+
 
 ## Outcomes & Retrospective
 
-(To be completed after Phase 4)
+- Integration path validated in code: mastery aggregation + recommendations pass integration test (`tests/test_integration_demo.py`).
+- Demo CLI now consumes real artifacts and emits mastery plus item recommendations with drift-aware filtering.
+- Remaining doc gap: add a short README note for demo usage to finalize documentation deliverable.
 
 
 ## Competitive Landscape & Similar Implementations
@@ -630,4 +640,3 @@ cat reports/item_drift.parquet | head
 - 2025-11-27: Initial draft based on Phase 3 joinability analysis
 - 2025-11-27: Reframed as UWorld demo/proposal (not competitor analysis)
 - 2025-11-27: Added demo presentation strategy section
-

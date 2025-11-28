@@ -165,6 +165,17 @@ PYTHONPATH=. uv run pytest tests/test_sakt_adapter.py -v
 
 This project follows the ExecPlan methodology documented in `PLANS.md`. Each major feature has an associated execution plan in `execplans/`.
 
+### Demo (Phase 4)
+
+Generate skill mastery (if not already present) and emit recommendations by joining SAKT + WD-IRT outputs:
+
+```bash
+source .venv/bin/activate
+python scripts/demo_trace.py --student-id <user> --topic <skill_code> --time-window <window>
+```
+
+Requirements: `reports/sakt_student_state.parquet`, `data/interim/...events.parquet`, and `reports/item_params.parquet` (with optional `reports/item_drift.parquet`). The CLI writes `reports/skill_mastery.parquet` on first run.
+
 ### Current Status
 
 - ✅ **SAKT Engine** — Complete (training, export, 0.74 AUC)
