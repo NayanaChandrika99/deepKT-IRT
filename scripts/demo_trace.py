@@ -3,12 +3,13 @@
 
 from pathlib import Path
 
+import pandas as pd
 import typer
 from rich.console import Console
 from rich.table import Table
 
-import pandas as pd
-
+from src.common.explainability import generate_explanation, format_explanation
+from src.common.gaming_detection import analyze_student, generate_gaming_report
 from src.common.mastery_aggregation import aggregate_skill_mastery
 from src.common.recommendation import recommend_items
 
@@ -99,6 +100,91 @@ def trace(
     for rec in recs:
         rec_table.add_row(rec.item_id, f"{rec.difficulty:.2f}", rec.reason)
     console.print(rec_table)
+
+
+@app.command()
+def explain(
+    user_id: str = typer.Option(..., "--user-id", help="Student identifier to explain."),
+    skill: str = typer.Option(None, "--skill", help="Skill to explain; defaults to user's weakest skill."),
+    reports_dir: Path = typer.Option(_default_reports_dir(), "--reports-dir", help="Directory containing model outputs."),
+    events_path: Path = typer.Option(Path("data/interim/edm_cup_2023_42_events.parquet"), "--events-path", help="Canonical events parquet."),
+    attention_path: Path = typer.Option(Path("reports/sakt_attention.parquet"), "--attention-path", help="Parquet containing attention weights (optional)."),
+) -> None:
+    """
+    Explain why a student's mastery sits where it does using attention patterns.
+    """
+    events_df = pd.read_parquet(events_path)
+    student_state_path = reports_dir / "sakt_student_state.parquet"
+    if not student_state_path.exists():
+        console.print(f"[red]Missing student state at {student_state_path}[/red]")
+        raise typer.Exit(code=1)
+    mastery_df = pd.read_parquet(student_state_path)
+
+    skill_mastery_path = reports_dir / "skill_mastery.parquet"
+    if skill_mastery_path.exists():
+        skill_mastery_df = pd.read_parquet(skill_mastery_path)
+    else:
+        skill_mastery_df = aggregate_skill_mastery(mastery_df, events_df)
+        skill_mastery_path.parent.mkdir(parents=True, exist_ok=True)
+        skill_mastery_df.to_parquet(skill_mastery_path, index=False)
+
+    user_mastery = skill_mastery_df[skill_mastery_df["user_id"] == user_id]
+    if user_mastery.empty:
+        console.print(f"[yellow]No mastery data for {user_id}[/yellow]")
+        raise typer.Exit(code=1)
+
+    if skill is None:
+        weakest = user_mastery.sort_values("mastery_mean").head(1)
+        skill = weakest.iloc[0]["skill"]
+    mastery_score = float(user_mastery[user_mastery["skill"] == skill]["mastery_mean"].iloc[0])
+    interaction_count = int(user_mastery[user_mastery["skill"] == skill]["interaction_count"].iloc[0])
+
+    attention_df = pd.read_parquet(attention_path) if attention_path.exists() else pd.DataFrame(
+        {"user_id": [], "top_influences": []}
+    )
+
+    explanation = generate_explanation(
+        user_id=user_id,
+        skill_id=skill,
+        mastery_score=mastery_score,
+        attention_data=attention_df,
+        events_df=events_df,
+        interaction_count=interaction_count,
+    )
+
+    console.print(format_explanation(explanation))
+
+
+@app.command("gaming-check")
+def gaming_check(
+    user_id: str = typer.Option(None, "--user-id", help="Student identifier to check; leave empty to scan all."),
+    events_path: Path = typer.Option(Path("data/interim/edm_cup_2023_42_events.parquet"), "--events-path", help="Canonical events parquet."),
+    output: Path = typer.Option(Path("reports/gaming_alerts.parquet"), "--output", help="Output parquet for alerts when scanning all."),
+    severity: str = typer.Option(None, "--severity", help="Optional severity filter for reports."),
+) -> None:
+    """
+    Detect rapid guessing, help abuse, and suspicious patterns.
+    """
+    events_df = pd.read_parquet(events_path)
+
+    if user_id:
+        alerts = analyze_student(events_df, user_id)
+        if not alerts:
+            console.print(f"[green]✅ No gaming alerts for {user_id}[/green]")
+            return
+        for alert in alerts:
+            color = {"low": "yellow", "medium": "orange3", "high": "red"}.get(alert.severity, "white")
+            console.print(f"[{color}]{alert.alert_type} ({alert.severity})[/{color}]")
+            for k, v in alert.evidence.items():
+                console.print(f"  {k}: {v}")
+            console.print(f"  → {alert.recommendation}")
+        return
+
+    alerts_df = generate_gaming_report(events_df)
+    if severity:
+        alerts_df = alerts_df[alerts_df["severity"] == severity]
+    alerts_df.to_parquet(output, index=False)
+    console.print(f"[bold]Analyzed {events_df['user_id'].nunique():,} students; alerts saved to {output}[/bold]")
 
 
 if __name__ == "__main__":

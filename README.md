@@ -176,6 +176,17 @@ python scripts/demo_trace.py --student-id <user> --topic <skill_code> --time-win
 
 Requirements: `reports/sakt_student_state.parquet`, `data/interim/...events.parquet`, and `reports/item_params.parquet` (with optional `reports/item_drift.parquet`). The CLI writes `reports/skill_mastery.parquet` on first run.
 
+### Explainability & Gaming (Phase 5A)
+
+Explain a student's mastery and surface gaming alerts:
+
+```bash
+python scripts/demo_trace.py explain --user-id <user> --skill <skill_code>
+python scripts/demo_trace.py gaming-check --user-id <user>  # or omit for all students
+```
+
+Outputs rely on the same artifacts as the demo; attention parquet is optional (explanations degrade gracefully without it).
+
 ### Current Status
 
 - ✅ **SAKT Engine** — Complete (training, export, 0.74 AUC)

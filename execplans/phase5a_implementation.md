@@ -92,11 +92,11 @@ Review Q_ratios2 and Q_ratios3, then try similar items.
 
 ## Progress
 
-- [ ] Milestone 1: Extract attention weights from pyKT SAKT
-- [ ] Milestone 2: Build explanation generator
-- [ ] Milestone 3: Implement gaming detection
-- [ ] Milestone 4: Integrate with demo CLI
-- [ ] Milestone 5: Tests and documentation
+- [x] (2025-11-27 22:00Z) Milestone 1: Extract attention weights from SAKT via forward hooks.
+- [x] (2025-11-27 22:10Z) Milestone 2: Build explanation generator from attention patterns.
+- [x] (2025-11-27 22:20Z) Milestone 3: Implement gaming detection heuristics.
+- [x] (2025-11-27 22:30Z) Milestone 4: Integrate explain/gaming commands into demo CLI.
+- [x] (2025-11-27 22:40Z) Milestone 5: Tests and documentation updates.
 
 ---
 
@@ -1005,6 +1005,13 @@ Detects:
 - Help abuse (> 30% help requests)
 - Suspicious patterns (rapid wrong → sudden correct)
 ```
+
+---
+
+## Outcomes & Retrospective
+
+- Attention extraction, explanations, and gaming detection implemented with unit coverage and CLI surfaces (`explain`, `gaming-check`).
+- Remaining optional: capture real SAKT attention parquet from checkpoints and tune heuristics on production-like data.
 
 ---
 
