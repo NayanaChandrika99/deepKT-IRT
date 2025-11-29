@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from typing import List, Dict, Tuple
 
@@ -22,7 +23,10 @@ class MasteryExplanation:
 
 def analyze_attention_pattern(key_factors: List[Dict], mastery_score: float) -> Tuple[str, str]:
     """
-    Generate a short insight and recommendation from attention factors.
+    Generate insight and specific recommendation from attention factors.
+    Uses actual item IDs and skills from key_factors for actionable advice.
+    
+    This is the FALLBACK template-based method. Use LLM version if available.
     """
     if not key_factors:
         return "Insufficient history for an explanation.", "Practice more problems in this skill."
@@ -35,12 +39,23 @@ def analyze_attention_pattern(key_factors: List[Dict], mastery_score: float) -> 
         max_pos = max(positions)
         recency_bias = (sum(positions) / len(positions)) / max_pos if max_pos else 0.5
 
+    # Extract specific items and skills for recommendations
+    missed_items = [f for f in key_factors if not f.get("correct")]
+    missed_item_ids = [f.get("item_id", "")[:10] for f in missed_items[:3]]
+    missed_skills = list({f.get("skill", "") for f in missed_items if f.get("skill")})[:2]
+
     if mastery_score < 0.4:
         if incorrect_count >= 2 and recency_bias > 0.6:
-            return (
-                "Recent struggles heavily influenced this prediction.",
-                "Review the most recent incorrect problems before attempting new ones.",
-            )
+            insight = "Recent struggles heavily influenced this prediction."
+            if missed_item_ids:
+                rec = f"Review items: {', '.join(missed_item_ids)}. "
+                if missed_skills:
+                    rec += f"Focus on skills: {', '.join(missed_skills)}."
+                else:
+                    rec += "Then try similar problems."
+            else:
+                rec = "Review your most recent incorrect answers before attempting new ones."
+            return insight, rec
         return (
             "Limited correct attempts in this skill.",
             "Start with easier problems to rebuild confidence.",
@@ -48,10 +63,16 @@ def analyze_attention_pattern(key_factors: List[Dict], mastery_score: float) -> 
 
     if mastery_score < 0.7:
         if correct_count and incorrect_count:
-            return (
-                "Mixed performance across attempts.",
-                "Focus on the specific problem types you missed to stabilize mastery.",
-            )
+            insight = "Mixed performance across attempts."
+            if missed_item_ids:
+                rec = f"Review items you missed: {', '.join(missed_item_ids)}. "
+                if missed_skills:
+                    rec += f"Practice more problems in: {', '.join(missed_skills)}."
+                else:
+                    rec += "Then try similar problems to stabilize mastery."
+            else:
+                rec = "Practice more problems to stabilize mastery."
+            return insight, rec
         return (
             "Moderate confidence based on available history.",
             "Continue practicing similar problems to solidify understanding.",
@@ -116,7 +137,27 @@ def generate_explanation(
                 skills = skills.tolist()
             factor["skill"] = skills[0] if skills else "unknown"
 
-    insight, recommendation = analyze_attention_pattern(key_factors, mastery_score)
+    # Try LLM first, fallback to templates
+    use_llm = os.environ.get("USE_LLM_EXPLANATIONS", "false").lower() == "true"
+    if use_llm:
+        try:
+            from .llm_explainability import (
+                build_attention_context,
+                generate_llm_insight_recommendation_sync,
+            )
+            context = build_attention_context(
+                user_id=user_id,
+                skill_id=skill_id,
+                mastery_score=mastery_score,
+                key_factors=key_factors,
+                interaction_count=interaction_count,
+            )
+            insight, recommendation = generate_llm_insight_recommendation_sync(context)
+        except Exception:
+            # Fallback to template-based
+            insight, recommendation = analyze_attention_pattern(key_factors, mastery_score)
+    else:
+        insight, recommendation = analyze_attention_pattern(key_factors, mastery_score)
 
     if interaction_count < 5:
         confidence = "low"

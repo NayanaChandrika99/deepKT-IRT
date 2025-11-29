@@ -52,13 +52,32 @@ def recommend_items(
 
     candidates = candidates.sort_values("difficulty")
     recs: List[ItemRecommendation] = []
+    
+    # Check if LLM should be used
+    import os
+    use_llm = os.environ.get("USE_LLM_EXPLANATIONS", "false").lower() == "true"
+    
     for _, row in candidates.head(max_items).iterrows():
-        reason = f"Skill {target_skill} mastery {mastery_mean:.2f}, item difficulty {float(row['difficulty']):.2f}"
+        item_id = str(row["item_id"])
+        item_difficulty = float(row["difficulty"])
+        
+        if use_llm:
+            try:
+                from .llm_explainability import generate_llm_rule_based_reason_sync
+                reason = generate_llm_rule_based_reason_sync(
+                    user_id, target_skill, mastery_mean, item_id, item_difficulty
+                )
+            except Exception:
+                # Fallback to template
+                reason = f"Skill {target_skill} mastery {mastery_mean:.2f}, item difficulty {item_difficulty:.2f}"
+        else:
+            reason = f"Skill {target_skill} mastery {mastery_mean:.2f}, item difficulty {item_difficulty:.2f}"
+        
         recs.append(
             ItemRecommendation(
-                item_id=str(row["item_id"]),
+                item_id=item_id,
                 topic=str(row["topic"]),
-                difficulty=float(row["difficulty"]),
+                difficulty=item_difficulty,
                 discrimination=float(row.get("discrimination", 1.0)),
                 reason=reason,
             )
@@ -106,7 +125,9 @@ def recommend_items_rl(
         ucb = expected + uncertainty
         is_exploration = uncertainty > expected * 0.5
 
-        reason = generate_rl_reason(student, item, expected, uncertainty, is_exploration)
+        # Use LLM-aware reason generator
+        from .bandit import generate_rl_reason_with_llm
+        reason = generate_rl_reason_with_llm(student, item, expected, uncertainty, is_exploration)
 
         recommendations.append(
             BanditRecommendation(

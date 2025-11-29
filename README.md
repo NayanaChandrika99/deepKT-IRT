@@ -179,6 +179,32 @@ Requirements: `reports/sakt_student_state.parquet`, `data/interim/...events.parq
 
 ### Explainability & Gaming (Phase 5A)
 
+**LLM-Generated Explanations (Optional)**
+
+All explanations can be generated using LLMs for more natural, contextual language. By default, the system uses template-based explanations. To enable LLM generation:
+
+```bash
+# Set environment variable
+export USE_LLM_EXPLANATIONS=true
+
+# Choose provider (default: openai)
+export LLM_PROVIDER=openai  # or "anthropic"
+export LLM_MODEL=gpt-4o-mini  # or "claude-3-haiku-20240307"
+
+# Set API key
+export OPENAI_API_KEY="sk-..."  # or ANTHROPIC_API_KEY for Claude
+
+# Now all explanations will use LLM
+python scripts/demo_trace.py explain --user-id 1006OOQBE9 --skill "4.NBT.A.1"
+```
+
+**What gets LLM-generated:**
+- **Mastery explanations** — Insights and recommendations from attention patterns
+- **RL recommendation reasons** — Why items are recommended by the bandit
+- **Rule-based recommendation reasons** — Why items match student mastery
+
+**Cost:** ~$0.00015-0.00025 per explanation (gpt-4o-mini or claude-3-haiku)
+
 Explain a student's mastery and surface gaming alerts:
 
 ```bash

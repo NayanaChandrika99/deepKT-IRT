@@ -219,7 +219,11 @@ def generate_rl_reason(
     uncertainty: float,
     is_exploration: bool,
 ) -> str:
-    """Generate human-readable reason for RL recommendation."""
+    """
+    Generate human-readable reason for RL recommendation.
+    
+    This is the FALLBACK template-based method. Use LLM version if available.
+    """
     parts = []
 
     if is_exploration:
@@ -236,4 +240,27 @@ def generate_rl_reason(
         parts.append("builds confidence")
 
     return "; ".join(parts)
+
+
+def generate_rl_reason_with_llm(
+    student: StudentContext,
+    item: ItemArm,
+    expected: float,
+    uncertainty: float,
+    is_exploration: bool,
+) -> str:
+    """
+    Generate human-readable reason for RL recommendation using LLM.
+    Falls back to template-based if LLM unavailable.
+    """
+    import os
+    use_llm = os.environ.get("USE_LLM_EXPLANATIONS", "false").lower() == "true"
+    if use_llm:
+        try:
+            from .llm_explainability import generate_llm_rl_reason_sync
+            return generate_llm_rl_reason_sync(student, item, expected, uncertainty, is_exploration)
+        except Exception:
+            # Fallback to template
+            return generate_rl_reason(student, item, expected, uncertainty, is_exploration)
+    return generate_rl_reason(student, item, expected, uncertainty, is_exploration)
 
