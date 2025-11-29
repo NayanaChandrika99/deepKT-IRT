@@ -66,4 +66,11 @@ def _normalize_skills(value) -> Iterable[str]:
         return [v for v in value if v]
     if isinstance(value, str) and value.strip():
         return [value.strip()]
+    # Handle numpy arrays
+    try:
+        import numpy as np
+        if isinstance(value, np.ndarray):
+            return [str(v) for v in value if v]
+    except ImportError:
+        pass
     return []

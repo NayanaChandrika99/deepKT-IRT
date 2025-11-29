@@ -128,19 +128,16 @@ def _load_model_from_checkpoint(
     data_config: Dict[str, Any],
 ):
     """Reconstruct SAKT model from checkpoint."""
-    from pykt.models import init_model
+    # Import SAKT directly to avoid pykt's init_model which has tkinter dependency issues
+    from pykt.models.sakt import SAKT
     
-    pykt_model_config = {
-        "seq_len": model_cfg.get("seq_len", 200),
-        "emb_size": model_cfg.get("emb_size", 64),
-        "num_attn_heads": model_cfg.get("num_attn_heads", 4),
-        "dropout": model_cfg.get("dropout", 0.2),
-    }
-    
-    model = init_model(
-        model_name="sakt",
-        model_config=pykt_model_config,
-        data_config=data_config,
+    model = SAKT(
+        num_c=data_config["num_c"],
+        seq_len=model_cfg.get("seq_len", 200),
+        emb_size=model_cfg.get("emb_size", 64),
+        num_attn_heads=model_cfg.get("num_attn_heads", 4),
+        dropout=model_cfg.get("dropout", 0.2),
+        num_en=model_cfg.get("num_encoder_layers", 2),
         emb_type=model_cfg.get("emb_type", "qid"),
     )
     
