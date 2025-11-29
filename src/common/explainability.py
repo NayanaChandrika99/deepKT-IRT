@@ -94,15 +94,26 @@ def generate_explanation(
         )
 
     latest = user_attention.iloc[-1]
-    key_factors = latest.get("top_influences", []) or []
+    # Handle numpy arrays and Series - convert to list of dicts
+    raw_influences = latest["top_influences"] if "top_influences" in latest.index else []
+    if hasattr(raw_influences, "tolist"):
+        raw_influences = raw_influences.tolist()
+    key_factors = list(raw_influences) if raw_influences is not None else []
 
     # enrich with skill ids when possible
     for factor in key_factors:
+        if not isinstance(factor, dict):
+            continue
+        item_id = factor.get("item_id")
+        if not item_id:
+            continue
         event = events_df[
-            (events_df["user_id"] == user_id) & (events_df["item_id"] == factor.get("item_id"))
+            (events_df["user_id"] == user_id) & (events_df["item_id"] == item_id)
         ]
         if not event.empty:
             skills = event.iloc[0].get("skill_ids", [])
+            if hasattr(skills, "tolist"):
+                skills = skills.tolist()
             factor["skill"] = skills[0] if skills else "unknown"
 
     insight, recommendation = analyze_attention_pattern(key_factors, mastery_score)
