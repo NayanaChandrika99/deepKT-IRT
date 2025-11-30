@@ -122,17 +122,21 @@ def generate_explanation(
     key_factors = list(raw_influences) if raw_influences is not None else []
 
     # enrich with skill ids when possible
-    for factor in key_factors:
-        if not isinstance(factor, dict):
-            continue
-        item_id = factor.get("item_id")
-        if not item_id:
-            continue
-        event = events_df[
-            (events_df["user_id"] == user_id) & (events_df["item_id"] == item_id)
-        ]
-        if not event.empty:
-            skills = event.iloc[0].get("skill_ids", [])
+    # Pre-filter events to user and create lookup dict for O(1) access
+    user_events = events_df[events_df["user_id"] == user_id]
+    if not user_events.empty:
+        # Create item_id -> event lookup
+        event_lookup = {row["item_id"]: row for _, row in user_events.iterrows()}
+
+        for factor in key_factors:
+            if not isinstance(factor, dict):
+                continue
+            item_id = factor.get("item_id")
+            if not item_id or item_id not in event_lookup:
+                continue
+
+            event = event_lookup[item_id]
+            skills = event.get("skill_ids", [])
             if hasattr(skills, "tolist"):
                 skills = skills.tolist()
             factor["skill"] = skills[0] if skills else "unknown"
