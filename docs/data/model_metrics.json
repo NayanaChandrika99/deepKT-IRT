@@ -1,0 +1,7 @@
+[
+  { "epoch": 1, "sakt_auc": 0.60, "wd_auc": 0.58 },
+  { "epoch": 2, "sakt_auc": 0.66, "wd_auc": 0.63 },
+  { "epoch": 3, "sakt_auc": 0.71, "wd_auc": 0.68 },
+  { "epoch": 4, "sakt_auc": 0.74, "wd_auc": 0.72 },
+  { "epoch": 5, "sakt_auc": 0.76, "wd_auc": 0.74 }
+]

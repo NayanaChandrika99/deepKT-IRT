@@ -1,0 +1,6 @@
+[
+  { "item": "ITEM-7Y9", "expected": 0.78, "uncertainty": 0.10, "mode": "exploit" },
+  { "item": "ITEM-5Q2", "expected": 0.64, "uncertainty": 0.26, "mode": "explore" },
+  { "item": "ITEM-9L4", "expected": 0.58, "uncertainty": 0.18, "mode": "balanced" },
+  { "item": "ITEM-3D8", "expected": 0.51, "uncertainty": 0.32, "mode": "explore" }
+]
