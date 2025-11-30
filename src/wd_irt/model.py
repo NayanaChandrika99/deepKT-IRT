@@ -92,7 +92,7 @@ class WideDeepIrtModule(pl.LightningModule):
         return loss
 
     def on_validation_epoch_end(self):
-            auc = self.val_auc.compute()
+        auc = self.val_auc.compute()
         if not torch.isnan(auc):
             self.log("val_auc", auc, prog_bar=True)
         self.val_auc.reset()
@@ -103,7 +103,7 @@ class WideDeepIrtModule(pl.LightningModule):
         self.test_auc.update(probs, labels.int())
 
     def on_test_epoch_end(self):
-            auc = self.test_auc.compute()
+        auc = self.test_auc.compute()
         if not torch.isnan(auc):
             self.log("test_auc", auc, prog_bar=True)
         self.test_auc.reset()
