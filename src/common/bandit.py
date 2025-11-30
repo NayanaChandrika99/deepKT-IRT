@@ -84,8 +84,9 @@ class LinUCBBandit:
         """Predict expected reward and uncertainty."""
         x = self.get_context_vector(student, item)
         expected = np.clip(np.dot(self.theta, x), 0, 1)
-        A_inv = np.linalg.inv(self.A)
-        uncertainty = self.alpha * np.sqrt(np.dot(x, np.dot(A_inv, x)))
+        # Solve A @ y = x instead of computing A_inv for numerical stability
+        y = np.linalg.solve(self.A, x)
+        uncertainty = self.alpha * np.sqrt(np.dot(x, y))
         return float(expected), float(uncertainty)
 
     def select_best(
