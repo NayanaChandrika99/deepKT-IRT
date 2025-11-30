@@ -57,9 +57,15 @@ class LinUCBBandit:
     5. Observe reward and update model
     """
 
-    def __init__(self, n_features: int = 8, alpha: float = 1.0):
+    def __init__(
+        self,
+        n_features: int = 8,
+        alpha: float = 1.0,
+        exploration_threshold: float = 0.5,
+    ):
         self.n_features = n_features
         self.alpha = alpha  # Exploration parameter
+        self.exploration_threshold = exploration_threshold  # Threshold for exploration vs exploitation
         self.A = np.eye(n_features)  # Design matrix (regularized covariance)
         self.b = np.zeros(n_features)  # Reward-weighted features
         self.theta = np.zeros(n_features)  # Learned weights
@@ -131,6 +137,7 @@ class LinUCBBandit:
             theta=self.theta,
             n_features=self.n_features,
             alpha=self.alpha,
+            exploration_threshold=self.exploration_threshold,
             n_updates=self.n_updates,
         )
 
@@ -138,7 +145,12 @@ class LinUCBBandit:
     def load(cls, path: Path) -> "LinUCBBandit":
         """Load bandit state from file."""
         data = np.load(path)
-        bandit = cls(n_features=int(data["n_features"]), alpha=float(data["alpha"]))
+        exploration_threshold = float(data.get("exploration_threshold", 0.5))
+        bandit = cls(
+            n_features=int(data["n_features"]),
+            alpha=float(data["alpha"]),
+            exploration_threshold=exploration_threshold,
+        )
         bandit.A = data["A"]
         bandit.b = data["b"]
         bandit.theta = data["theta"]
@@ -213,6 +225,21 @@ def items_to_arms(
     return arms
 
 
+def is_exploring(uncertainty: float, expected: float, threshold: float = 0.5) -> bool:
+    """
+    Determine if recommendation is exploration vs exploitation.
+
+    Args:
+        uncertainty: Uncertainty estimate from bandit
+        expected: Expected reward from bandit
+        threshold: Multiplier threshold (default 0.5 means explore if uncertainty > 0.5 * expected)
+
+    Returns:
+        True if uncertainty dominates (exploration), False otherwise (exploitation)
+    """
+    return uncertainty > expected * threshold
+
+
 def generate_rl_reason(
     student: StudentContext,
     item: ItemArm,
@@ -222,7 +249,7 @@ def generate_rl_reason(
 ) -> str:
     """
     Generate human-readable reason for RL recommendation.
-    
+
     This is the FALLBACK template-based method. Use LLM version if available.
     """
     parts = []

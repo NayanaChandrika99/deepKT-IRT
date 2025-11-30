@@ -14,6 +14,7 @@ from .bandit import (
     build_student_context,
     items_to_arms,
     generate_rl_reason,
+    is_exploring,
 )
 
 
@@ -123,11 +124,12 @@ def recommend_items_rl(
     for item in items:
         expected, uncertainty = bandit.predict(student, item)
         ucb = expected + uncertainty
-        is_exploration = uncertainty > expected * 0.5
+        # Use bandit's configurable exploration threshold
+        exploration_flag = is_exploring(uncertainty, expected, bandit.exploration_threshold)
 
         # Use LLM-aware reason generator
         from .bandit import generate_rl_reason_with_llm
-        reason = generate_rl_reason_with_llm(student, item, expected, uncertainty, is_exploration)
+        reason = generate_rl_reason_with_llm(student, item, expected, uncertainty, exploration_flag)
 
         recommendations.append(
             BanditRecommendation(
@@ -136,7 +138,7 @@ def recommend_items_rl(
                 uncertainty=uncertainty,
                 ucb_score=ucb,
                 reason=reason,
-                is_exploration=is_exploration,
+                is_exploration=exploration_flag,
             )
         )
 
