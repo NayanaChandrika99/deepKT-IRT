@@ -33,11 +33,20 @@ def analyze_attention_pattern(key_factors: List[Dict], mastery_score: float) -> 
 
     correct_count = sum(1 for f in key_factors if f.get("correct"))
     incorrect_count = len(key_factors) - correct_count
+
+    # Calculate recency bias: what fraction of attention is on recent interactions?
+    # A score close to 1 means attention is on recent items, close to 0 means older items
     positions = [f.get("position", 0) for f in key_factors if f.get("position") is not None]
-    recency_bias = 0.5
+    recency_bias = 0.5  # Default neutral
     if positions:
         max_pos = max(positions)
-        recency_bias = (sum(positions) / len(positions)) / max_pos if max_pos else 0.5
+        if max_pos > 0:
+            # Normalize positions to [0, 1] and compute mean
+            # Mean close to 1 = focus on recent, close to 0 = focus on old
+            normalized_positions = [pos / max_pos for pos in positions]
+            recency_bias = sum(normalized_positions) / len(normalized_positions)
+        else:
+            recency_bias = 0.5
 
     # Extract specific items and skills for recommendations
     missed_items = [f for f in key_factors if not f.get("correct")]
