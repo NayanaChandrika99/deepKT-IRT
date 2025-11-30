@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from dataclasses import dataclass, asdict
 from typing import List, Dict, Optional, Tuple, TYPE_CHECKING
 
@@ -12,6 +13,38 @@ from .explainability import MasteryExplanation
 
 if TYPE_CHECKING:
     from .bandit import StudentContext, ItemArm
+
+
+def sanitize_for_prompt(text: str, max_length: int = 100) -> str:
+    """
+    Sanitize user-provided text for safe inclusion in LLM prompts.
+
+    Removes newlines, non-printable characters, and truncates to prevent
+    prompt injection attacks.
+
+    Args:
+        text: Input text to sanitize
+        max_length: Maximum allowed length (default 100)
+
+    Returns:
+        Sanitized text safe for prompt inclusion
+    """
+    if not isinstance(text, str):
+        text = str(text)
+
+    # Replace newlines with spaces to prevent prompt structure manipulation
+    text = text.replace("\n", " ").replace("\r", " ")
+
+    # Remove control characters except space
+    text = "".join(char for char in text if char.isprintable() or char == " ")
+
+    # Collapse multiple spaces
+    text = re.sub(r"\s+", " ", text)
+
+    # Truncate to max length
+    text = text[:max_length].strip()
+
+    return text
 
 
 @dataclass
@@ -80,28 +113,35 @@ def build_attention_context(
 def format_prompt_for_llm(context: AttentionContext) -> str:
     """
     Format attention context into a prompt for LLM explanation generation.
-    
+
     The prompt includes:
     - Student's mastery score and confidence
     - Top influential interactions (item ID, correct/incorrect, attention weight)
     - Instructions for generating explanation
+
+    All user-provided fields are sanitized to prevent prompt injection.
     """
-    
+
+    # Sanitize user-provided fields
+    safe_user_id = sanitize_for_prompt(context.user_id, max_length=50)
+    safe_skill_id = sanitize_for_prompt(context.skill_id, max_length=50)
+    safe_skill_name = sanitize_for_prompt(context.skill_name, max_length=100)
+
     interactions_text = []
     for i, factor in enumerate(context.key_interactions, 1):
         status = "✓ correct" if factor.get("correct") else "✗ incorrect"
         weight = factor.get("weight", 0) * 100
-        skill = factor.get("skill", "unknown")
-        item_id = factor.get("item_id", "unknown")[:12]
+        safe_skill = sanitize_for_prompt(str(factor.get("skill", "unknown")), max_length=50)
+        safe_item_id = sanitize_for_prompt(str(factor.get("item_id", "unknown")), max_length=20)
         interactions_text.append(
-            f"  {i}. Item {item_id} ({status}, {weight:.0f}% attention weight, skill: {skill})"
+            f"  {i}. Item {safe_item_id} ({status}, {weight:.0f}% attention weight, skill: {safe_skill})"
         )
-    
+
     prompt = f"""You are an educational analytics assistant explaining a student's mastery prediction.
 
 ## Student Context
-- Student ID: {context.user_id}
-- Skill: {context.skill_name} ({context.skill_id})
+- Student ID: {safe_user_id}
+- Skill: {safe_skill_name} ({safe_skill_id})
 - Predicted Mastery: {context.mastery_score:.0%}
 - Confidence: {context.confidence} ({context.interaction_count} interactions)
 
@@ -275,15 +315,22 @@ async def generate_llm_insight_recommendation(
     """
     Generate insight and recommendation using LLM.
     Returns (insight, recommendation) tuple.
+
+    All user inputs are sanitized to prevent prompt injection.
     """
     provider = provider or LLM_PROVIDER
     model = model or LLM_MODEL
-    
+
+    # Sanitize user inputs
+    safe_user_id = sanitize_for_prompt(context.user_id, max_length=50)
+    safe_skill_name = sanitize_for_prompt(context.skill_name, max_length=100)
+    safe_skill_id = sanitize_for_prompt(context.skill_id, max_length=50)
+
     prompt = f"""You are an educational analytics assistant explaining a student's mastery prediction.
 
 ## Student Context
-- Student ID: {context.user_id}
-- Skill: {context.skill_name} ({context.skill_id})
+- Student ID: {safe_user_id}
+- Skill: {safe_skill_name} ({safe_skill_id})
 - Predicted Mastery: {context.mastery_score:.0%}
 - Confidence: {context.confidence} ({context.interaction_count} interactions)
 
@@ -372,7 +419,9 @@ async def generate_llm_rl_reason(
 ) -> str:
     """
     Generate natural language reason for RL recommendation using LLM.
-    
+
+    All user inputs are sanitized to prevent prompt injection.
+
     Args:
         student: Student context (mastery, recent_accuracy, etc.)
         item: Item being recommended
@@ -382,16 +431,20 @@ async def generate_llm_rl_reason(
         api_key: API key (defaults to env var)
         provider: "openai" or "anthropic"
         model: Model name
-    
+
     Returns:
         Natural language reason for recommendation
     """
     # Import here to avoid circular dependency
     from .bandit import StudentContext, ItemArm
-    
+
     provider = provider or LLM_PROVIDER
     model = model or LLM_MODEL
-    
+
+    # Sanitize user inputs
+    safe_item_id = sanitize_for_prompt(item.item_id, max_length=50)
+    safe_skill = sanitize_for_prompt(item.skill, max_length=50)
+
     prompt = f"""You are an educational recommendation system explaining why an item is recommended.
 
 ## Student Profile
@@ -402,8 +455,8 @@ async def generate_llm_rl_reason(
 - Skill Gap: {student.skill_gap:.2f}
 
 ## Item Details
-- Item ID: {item.item_id}
-- Skill: {item.skill}
+- Item ID: {safe_item_id}
+- Skill: {safe_skill}
 - Difficulty: {item.difficulty:.2f}
 - Discrimination: {item.discrimination:.2f}
 
@@ -488,7 +541,9 @@ async def generate_llm_rule_based_reason(
 ) -> str:
     """
     Generate natural language reason for rule-based recommendation using LLM.
-    
+
+    All user inputs are sanitized to prevent prompt injection.
+
     Args:
         user_id: Student identifier
         target_skill: Skill being targeted
@@ -498,22 +553,27 @@ async def generate_llm_rule_based_reason(
         api_key: API key (defaults to env var)
         provider: "openai" or "anthropic"
         model: Model name
-    
+
     Returns:
         Natural language reason for recommendation
     """
     provider = provider or LLM_PROVIDER
     model = model or LLM_MODEL
-    
+
+    # Sanitize user inputs
+    safe_user_id = sanitize_for_prompt(user_id, max_length=50)
+    safe_target_skill = sanitize_for_prompt(target_skill, max_length=50)
+    safe_item_id = sanitize_for_prompt(item_id, max_length=50)
+
     prompt = f"""You are an educational recommendation system explaining why an item is recommended.
 
 ## Student Profile
-- Student ID: {user_id}
-- Skill: {target_skill}
+- Student ID: {safe_user_id}
+- Skill: {safe_target_skill}
 - Mastery Level: {mastery_mean:.0%}
 
 ## Item Details
-- Item ID: {item_id}
+- Item ID: {safe_item_id}
 - Difficulty: {item_difficulty:.2f}
 
 ## Recommendation Logic
