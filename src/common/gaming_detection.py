@@ -106,17 +106,26 @@ def detect_suspicious_patterns(events_df: pd.DataFrame, user_id: str) -> Optiona
         return None
 
     suspicious_count = 0
-    streak = 0
+    rapid_incorrect_streak = 0
+    in_suspicious_streak = False
+
     for _, row in user_events.iterrows():
         is_rapid = row["latency_ms"] < GamingThresholds.RAPID_RESPONSE_MS
         is_incorrect = row["correct"] == 0
+
         if is_rapid and is_incorrect:
-            streak += 1
-        elif streak >= GamingThresholds.RAPID_INCORRECT_STREAK and row["correct"] == 1:
-            suspicious_count += 1
-            streak = 0
+            rapid_incorrect_streak += 1
+            # Mark as suspicious if we hit the threshold
+            if rapid_incorrect_streak >= GamingThresholds.RAPID_INCORRECT_STREAK:
+                in_suspicious_streak = True
         else:
-            streak = 0
+            # Any non-(rapid-incorrect) event ends the rapid streak
+            if in_suspicious_streak and row["correct"] == 1:
+                # Correct answer after suspicious streak → flag it
+                suspicious_count += 1
+            # Reset streak tracking
+            rapid_incorrect_streak = 0
+            in_suspicious_streak = False
 
     if suspicious_count < 2:
         return None
