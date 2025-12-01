@@ -37,17 +37,18 @@ make data dataset=assistments_skill_builder split_seed=42
 
 ### Training
 
+You can drive the training/exports either with `make` or by invoking the modules directly.
+
 #### SAKT (Student Readiness)
 
 ```bash
-# Train SAKT model
-python -m src.sakt_kt.train --config configs/sakt_assist2009.yaml
+# Train SAKT model on the chosen config (local or remote GPU)
+make train_sakt SAKT_CONFIG=configs/sakt_edm.yaml
 
-# Export student mastery and predictions
-python -m src.sakt_kt.train export \
-    --checkpoint reports/checkpoints/sakt_assist2009/sakt_assist2009_seed42_best.pt \
-    --config configs/sakt_assist2009.yaml \
-    --output-dir reports
+# Export student mastery, predictions, attention weights
+make export_sakt \
+    SAKT_CONFIG=configs/sakt_edm.yaml \
+    SAKT_CHECKPOINT=reports/checkpoints/sakt_edm/sakt_edm_seed42_best.pt
 ```
 
 **Expected outputs:**
@@ -56,25 +57,35 @@ python -m src.sakt_kt.train export \
 - `reports/sakt_attention.parquet` — Attention weights for explainability
 - `reports/sakt_mastery_report.md` — Summary statistics
 
-**Validated performance:** AUC 0.74 on ASSISTments skill_builder dataset.
+**Validated performance:** AUC 0.74 on the EDM Cup skill set. The production checkpoint was trained on Lightning.ai (remote A100) and committed to `reports/checkpoints/sakt_edm/sakt_edm_seed42_best.pt`.
 
 #### Wide & Deep IRT (Item Health)
 
 ```bash
 # Train Wide & Deep IRT model
-python -m src.wd_irt.train --config configs/wd_irt_edm.yaml
+make train_wdirt WD_CONFIG=configs/wd_irt_edm.yaml
 
-# Export item parameters
-python -m src.wd_irt.train export \
-    --checkpoint reports/checkpoints/wd_irt_edm/best.ckpt \
-    --config configs/wd_irt_edm.yaml \
-    --output-dir reports
+# Export item parameters and drift
+make export_wdirt \
+    WD_CONFIG=configs/wd_irt_edm.yaml \
+    WD_CHECKPOINT=reports/checkpoints/wd_irt_edm/latest.ckpt
 ```
 
 **Expected outputs:**
 - `reports/item_params.parquet` — Item difficulty, discrimination, guessing
 - `reports/item_drift.parquet` — Temporal drift flags
 - `reports/behavior_slices.md` — Item health summary by topic
+
+> **Training on Lightning.ai**  
+> Both engines were originally trained on Lightning.ai remote GPU sessions to keep local development lean. The resulting checkpoints live in `reports/checkpoints/` so you can run exports or demos without re-training unless you need to fine-tune. When re-training, you can either run locally (if you have GPU access) or trigger a Lightning.ai job and copy the resulting `.pt/.ckpt` files back into this directory.
+
+### Pretrained Checkpoints
+
+| Engine | Dataset | Path | Notes |
+|--------|---------|------|-------|
+| SAKT | EDM Cup 2023 | `reports/checkpoints/sakt_edm/sakt_edm_seed42_best.pt` | Trained on Lightning.ai (A100) seed 42 job. |
+| SAKT | ASSISTments 2009 | `reports/checkpoints/sakt_assist2009/sakt_assist2009_seed42_best.pt` | Baseline benchmark checkpoint. |
+| Wide & Deep IRT | EDM Cup 2023 | `reports/checkpoints/wd_irt_edm/latest.ckpt` (update if re-trained) | Produced on Lightning.ai; use `make export_wdirt` to regenerate item health artifacts. |
 
 ## Directory Layout
 
@@ -168,11 +179,14 @@ This project follows the ExecPlan methodology documented in `PLANS.md`. Each maj
 
 ### Demo (Phase 4)
 
-Generate skill mastery (if not already present) and emit recommendations by joining SAKT + WD-IRT outputs:
+Generate skill mastery (if not already present) and emit recommendations by joining SAKT + WD-IRT outputs. The CLI already layers on Phase 5 features (explainability, gaming detection, RL bandit), so one command shows the full experience:
 
 ```bash
 source .venv/bin/activate
 python scripts/demo_trace.py --student-id <user> --topic <skill_code> --time-window <window>
+python scripts/demo_trace.py --student-id <user> --topic <skill_code> --time-window <window> --use-rl  # LinUCB
+python scripts/demo_trace.py explain --user-id <user> --skill <skill_code>  # Attention-based insight
+python scripts/demo_trace.py gaming-check --user-id <user>  # Clickstream alerting
 ```
 
 Requirements: `reports/sakt_student_state.parquet`, `data/interim/...events.parquet`, and `reports/item_params.parquet` (with optional `reports/item_drift.parquet`). The CLI writes `reports/skill_mastery.parquet` on first run.
@@ -229,15 +243,15 @@ python scripts/demo_trace.py trace --student-id <user> --topic <skill> --time-wi
 python scripts/demo_trace.py compare-recs --student-id <user> --topic <skill>
 ```
 
-The bandit learns which items work best for which student profiles, balancing exploration (trying new items) and exploitation (using best known). Recommendations include expected success probability and uncertainty estimates.
+The bandit learns which items work best for which student profiles, balancing exploration (trying new items) and exploitation (using best known). Recommendations include expected success probability, uncertainty estimates, and human-readable reasons (LLM-backed when enabled). In practice you can keep the rule-based recommendations as a baseline or let RL fully replace the Phase 4 logic by passing `--use-rl` (and optionally wiring that path up as the default in your product surface).
 
 ### Current Status
 
 - ✅ **SAKT Engine** — Complete (training, export, 0.74 AUC)
 - ✅ **Wide & Deep IRT** — Complete (training, export)
-- ✅ **Demo CLI (Phase 4)** — Joins both engines' outputs with recommendations
+- ✅ **Static GitHub Pages Dashboard** — `docs/` contains Plotly.js visuals powered by JSON exports (enable GitHub Pages to view)
 - ✅ **Explainability & Gaming (Phase 5A)** — Attention-based explanations and behavioral alerts
-- ✅ **RL Recommendations (Phase 5B)** — LinUCB contextual bandit for adaptive item selection
+- ✅ **RL Recommendations (Phase 5B)** — LinUCB contextual bandit for adaptive item selection (fully integrated; toggle via `--use-rl`)
 
 ## License
 

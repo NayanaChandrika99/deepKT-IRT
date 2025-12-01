@@ -2,6 +2,18 @@ Here’s a clean build plan for the **two-engine system** (no Streamlit/UI yet):
 
 ---
 
+## Status Snapshot (2025‑11‑28)
+
+- ✅ Canonical ingestion pipeline, SAKT, and Wide & Deep IRT engines are implemented and covered by tests (`src/common`, `src/sakt_kt`, `src/wd_irt`, `tests/`).
+- ✅ Demo + analytics surfaces (`scripts/demo_trace.py`, explainability, RL bandit, gaming detection) are wired to the exported parquet artifacts.
+- ✅ Training runs were executed on Lightning.ai remote GPUs; resulting checkpoints are committed so local demos don’t require retraining unless desired:
+  - `reports/checkpoints/sakt_edm/sakt_edm_seed42_best.pt`
+  - `reports/checkpoints/sakt_assist2009/sakt_assist2009_seed42_best.pt`
+  - `reports/checkpoints/wd_irt_edm/latest.ckpt` (replace with the newest Lightning.ai export when retraining)
+- ✅ Exports (`reports/sakt_*.parquet`, `reports/item_*.parquet`, `reports/behavior_slices.md`) are generated from those checkpoints and stay in sync with the demo CLI.
+
+---
+
 ## Phase 0 — Repo + reproducibility (set the project up like an MLE would)
 
 **Artifacts**
@@ -38,7 +50,7 @@ You want to **first replicate the authors’ results** on the *EDM Cup 2023 clic
 
 ### 1.3 Produce the “Item Health Lab” outputs (no UI)
 
-Generate machine-readable outputs you’ll later wire into a UI:
+Generate machine-readable outputs you’ll later wire into a UI (already in place via the Lightning.ai training run, see `reports/item_params.parquet`, `reports/item_drift.parquet`, and `reports/behavior_slices.md`):
 
 * `item_params.parquet`: item difficulty/discrimination/guessing-like parameters (whatever the reference code exports)
 * `item_drift.parquet`: drift flags across time windows (weekly/monthly)
@@ -64,6 +76,7 @@ Before adapting to EDM Cup, start with a “boring but reliable” KT benchmark 
 
 * `train_sakt.py` (wrap pyKT config + logging)
 * `eval_sakt.py` (AUC, calibration plots, subgroup metrics)
+* Lightning.ai job artifacts synced to `reports/checkpoints/sakt_*/*.pt`, enabling exports without re-running training locally.
 
 ---
 
