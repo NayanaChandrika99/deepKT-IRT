@@ -84,6 +84,31 @@ section h2 {
   color: var(--text-primary);
 }
 
+/* Visualization containers need minimum height for Plotly */
+#mastery-timeline,
+#skill-radar,
+#attention-heatmap,
+#rl-recommendations,
+#ucb-gauge,
+#rec-comparison,
+#training-metrics,
+#attention-network,
+#item-health,
+#training-curves,
+#feature-importance,
+#pipeline-flow,
+#coverage-heatmap,
+#sequence-quality,
+#split-integrity,
+#schema-validation,
+#joinability-gauge,
+#lineage-map,
+#throughput-monitoring,
+#join-overview,
+#drift-alerts {
+  min-height: 400px;
+}
+
 .viz-container {
   background: #1b1f2a;
   padding: 1.5rem;
