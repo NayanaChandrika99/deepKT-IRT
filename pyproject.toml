@@ -1,0 +1,20 @@
+[project]
+name = "deepkt-irt"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.11"
+dependencies = [
+    "ipywidgets>=8.1.8",
+    "jupyter>=1.1.1",
+    "jupyterlab>=4.5.0",
+    "matplotlib>=3.10.7",
+    "notebook>=7.5.0",
+    "numpy>=2.3.5",
+    "pandas>=2.3.3",
+    "plotly>=6.5.0",
+    "pyarrow>=22.0.0",
+    "rich>=14.2.0",
+    "scikit-learn>=1.7.2",
+    "seaborn>=0.13.2",
+    "typer>=0.20.0",
+]

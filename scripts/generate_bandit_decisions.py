@@ -35,60 +35,97 @@ def compute_decision_event(
     skill_mastery_df: pd.DataFrame,
     target_skill: str,
     timestamp: int,
+    max_candidates: int = 200,
 ) -> List[Dict]:
-    """Compute a single decision event with full candidate scoring."""
-    
+    """Compute a single decision event with sampled candidate scoring.
+
+    Strategy: Sample candidates to balance:
+    1. All items from target skill (pedagogically relevant)
+    2. Stratified sample across difficulty ranges (show diversity)
+    3. Limit total to max_candidates for performance
+    """
+
     # Build student context
     student_events = events_df[
-        (events_df['user_id'] == student_id) & 
+        (events_df['user_id'] == student_id) &
         (events_df['timestamp'] <= timestamp)
     ].tail(20)
-    
+
     if len(student_events) < 3:
         return []
-    
+
     student = build_student_context(student_id, student_events, target_skill=target_skill)
-    
-    # Get candidate items for this skill
-    candidates = item_params_df[item_params_df['topic'] == target_skill].copy()
-    if candidates.empty:
+
+    # Filter out drifted items (quality filter)
+    all_items = item_params_df.copy()
+    if 'drift_flag' in all_items.columns:
+        all_items = all_items[~all_items['drift_flag'].fillna(False)]
+
+    if all_items.empty:
         return []
-    
-    # Filter out drifted items
-    if 'drift_flag' in candidates.columns:
-        candidates = candidates[~candidates['drift_flag'].fillna(False)]
-    
-    # Get SAKT predictions if available
-    sakt_predictions = {}
-    
-    decision_rows = []
-    
-    for _, item_row in candidates.iterrows():
-        item_id = str(item_row['item_id'])
-        difficulty = float(item_row['difficulty'])
-        discrimination = float(item_row.get('discrimination', 1.0))
-        
-        # Create ItemArm
-        item = ItemArm(
-            item_id=item_id,
-            skill=target_skill,
-            difficulty=difficulty,
-            discrimination=discrimination,
+
+    # Smart sampling strategy
+    # 1. Include ALL items from target skill (these are pedagogically relevant)
+    target_skill_items = all_items[all_items['topic'] == target_skill]
+
+    # 2. Sample from other skills across difficulty quantiles
+    other_items = all_items[all_items['topic'] != target_skill]
+
+    n_target = len(target_skill_items)
+    n_remaining = max(0, max_candidates - n_target)
+
+    if n_remaining > 0 and len(other_items) > 0:
+        # Stratified sampling by difficulty quartiles
+        other_items = other_items.copy()
+        other_items['difficulty_bin'] = pd.qcut(
+            other_items['difficulty'],
+            q=min(4, len(other_items)),
+            labels=False,
+            duplicates='drop'
         )
-        
-        # Compute bandit scores
+        sampled_other = other_items.groupby('difficulty_bin', group_keys=False).apply(
+            lambda x: x.sample(n=min(len(x), max(1, n_remaining // 4)), random_state=42),
+            include_groups=False
+        ).head(n_remaining)
+
+        candidates = pd.concat([target_skill_items, sampled_other]).reset_index(drop=True)
+    else:
+        candidates = target_skill_items.reset_index(drop=True)
+
+    # Vectorized UCB computation (much faster)
+    decision_rows = []
+    context_vectors = []
+
+    # First pass: build context vectors
+    for _, item_row in candidates.iterrows():
+        item = ItemArm(
+            item_id=str(item_row['item_id']),
+            skill=target_skill,
+            difficulty=float(item_row['difficulty']),
+            discrimination=float(item_row.get('discrimination', 1.0)),
+        )
         x = bandit.get_context_vector(student, item)
-        mu = np.clip(np.dot(bandit.theta, x), 0, 1)
+        context_vectors.append(x)
+
+    # Vectorized computation
+    X = np.array(context_vectors)  # Shape: (n_candidates, n_features)
+    mu_vec = np.clip(X @ bandit.theta, 0, 1)  # Vectorized dot product
+
+    # Compute sigma for each context (still needs loop for solve, but faster)
+    sigma_vec = np.zeros(len(candidates))
+    for i, x in enumerate(context_vectors):
         y = np.linalg.solve(bandit.A, x)
-        sigma = bandit.alpha * np.sqrt(np.dot(x, y))
-        ucb = mu + sigma
-        
-        # Determine mode
-        is_explore = sigma > mu * bandit.exploration_threshold
-        
-        # Get SAKT prediction (mock for now, would come from sakt_predictions.parquet)
+        sigma_vec[i] = bandit.alpha * np.sqrt(np.dot(x, y))
+
+    ucb_vec = mu_vec + sigma_vec
+    is_explore_vec = sigma_vec > mu_vec * bandit.exploration_threshold
+
+    # Build decision rows with vectorized results
+    sakt_predictions = {}
+    for i, (_, item_row) in enumerate(candidates.iterrows()):
+        item_id = str(item_row['item_id'])
         sakt_p = sakt_predictions.get(item_id, student.mastery)
-        
+
         decision_rows.append({
             't': timestamp,
             'student_id': student_id,
@@ -101,16 +138,16 @@ def compute_decision_event(
             'x_help_tendency': student.help_tendency,
             'x_skill_gap': student.skill_gap,
             # Item features
-            'irt_difficulty': difficulty,
-            'irt_discrimination': discrimination,
+            'irt_difficulty': float(item_row['difficulty']),
+            'irt_discrimination': float(item_row.get('discrimination', 1.0)),
             'drift_flag': item_row.get('drift_flag', False),
             'sakt_p_correct': sakt_p,
-            # Bandit math
-            'mu': float(mu),
-            'sigma': float(sigma),
-            'ucb': float(ucb),
+            # Bandit math (from vectorized computation)
+            'mu': float(mu_vec[i]),
+            'sigma': float(sigma_vec[i]),
+            'ucb': float(ucb_vec[i]),
             'alpha': bandit.alpha,
-            'mode': 'explore' if is_explore else 'exploit',
+            'mode': 'explore' if is_explore_vec[i] else 'exploit',
         })
     
     # Rank by UCB
@@ -190,41 +227,60 @@ def generate(
         bandit = LinUCBBandit(n_features=8, alpha=1.0)
     
     # Sample decision events
-    # Strategy: Sample students, pick their interaction points, simulate recommendations
-    console.print(f"\n[dim]Sampling {max_decisions} decision events...[/dim]")
-    
-    students = events_df['user_id'].unique()
-    sampled_students = np.random.choice(students, size=min(100, len(students)), replace=False)
-    
+    # Strategy: Pre-filter viable students, then sample decision points
+    console.print(f"\n[dim]Pre-filtering viable students...[/dim]")
+
+    # Get students with sufficient event history and skill mastery data
+    event_counts = events_df['user_id'].value_counts()
+    students_with_history = event_counts[event_counts >= 20].index
+
+    students_with_skills = skill_mastery_df['user_id'].unique()
+    viable_students = list(set(students_with_history) & set(students_with_skills))
+
+    console.print(f"  Viable students: {len(viable_students):,} (of {events_df['user_id'].nunique():,} total)")
+
+    if len(viable_students) == 0:
+        console.print("[red]✗ No viable students found![/red]")
+        return
+
+    # Sample more students to ensure we hit max_decisions
+    # Estimate: ~0.12 success rate, so sample 10x to be safe
+    n_students_to_sample = min(len(viable_students), max(500, max_decisions // 10))
+    sampled_students = np.random.choice(viable_students, size=n_students_to_sample, replace=False)
+
+    console.print(f"  Sampling from {len(sampled_students):,} students")
+    console.print(f"\n[dim]Generating {max_decisions} decision events...[/dim]")
+
     all_decisions = []
-    
+    decision_count = 0
+
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
         console=console,
     ) as progress:
         task = progress.add_task("Generating decisions...", total=max_decisions)
-        
+
         for student_id in sampled_students:
-            if len(all_decisions) >= max_decisions:
+            if decision_count >= max_decisions:
                 break
-            
+
             student_events = events_df[events_df['user_id'] == student_id].sort_values('timestamp')
-            
+
             # Sample decision points (every 5th event)
             decision_points = student_events.iloc[::5]
-            
+
+            # Get student's active skills (pre-filtered, so this should always succeed)
+            student_skills = skill_mastery_df[skill_mastery_df['user_id'] == student_id]['skill'].unique()
+            if len(student_skills) == 0:
+                continue
+
             for _, event in decision_points.iterrows():
-                if len(all_decisions) >= max_decisions:
+                if decision_count >= max_decisions:
                     break
-                
-                # Get student's active skills
-                student_skills = skill_mastery_df[skill_mastery_df['user_id'] == student_id]['skill'].unique()
-                if len(student_skills) == 0:
-                    continue
-                
+
                 target_skill = np.random.choice(student_skills)
-                
+
                 decision_rows = compute_decision_event(
                     bandit=bandit,
                     student_id=student_id,
@@ -234,9 +290,11 @@ def generate(
                     target_skill=target_skill,
                     timestamp=event['timestamp'],
                 )
-                
-                all_decisions.extend(decision_rows)
-                progress.advance(task, advance=len(decision_rows))
+
+                if decision_rows:  # Only count successful generations
+                    all_decisions.extend(decision_rows)
+                    decision_count += 1
+                    progress.advance(task, advance=1)
     
     # Save to parquet
     decisions_df = pd.DataFrame(all_decisions)
