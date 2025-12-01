@@ -1,0 +1,14 @@
+{
+  "data": {
+    "train": 35000,
+    "val": 7500,
+    "test": 7500
+  },
+  "metadata": {
+    "train_pct": 70,
+    "val_pct": 15,
+    "test_pct": 15,
+    "user_overlap": 0,
+    "mock": true
+  }
+}

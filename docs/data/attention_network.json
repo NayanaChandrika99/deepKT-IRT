@@ -1,0 +1,34 @@
+{
+  "data": {
+    "nodes": [
+      {
+        "id": "node_0",
+        "position": 0,
+        "item_id": "item_0",
+        "correct": true,
+        "skill": "unknown"
+      }
+    ],
+    "edges": [
+      {
+        "source": "node_1",
+        "target": "node_0",
+        "weight": 0.44788795709609985
+      },
+      {
+        "source": "node_4",
+        "target": "node_0",
+        "weight": 0.24779276549816132
+      },
+      {
+        "source": "node_0",
+        "target": "node_0",
+        "weight": 0.0681036114692688
+      }
+    ]
+  },
+  "metadata": {
+    "user_id": "1006OOQBE9",
+    "total_nodes": 1
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "data": [
+    {
+      "check": "Required columns present",
+      "status": "pass"
+    },
+    {
+      "check": "Correct data types",
+      "status": "pass"
+    },
+    {
+      "check": "No nulls in required fields",
+      "status": "pass"
+    },
+    {
+      "check": "Valid value ranges",
+      "status": "fail",
+      "details": "3 timestamps out of range"
+    }
+  ],
+  "metadata": {
+    "total_checks": 4,
+    "passed": 3,
+    "mock": true
+  }
+}

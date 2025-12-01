@@ -1,0 +1,26 @@
+{
+  "data": {
+    "stages": [
+      "Ingestion",
+      "Canonical",
+      "SAKT Prep",
+      "WD-IRT Prep"
+    ],
+    "event_counts": [
+      50000,
+      50000,
+      35000,
+      35000
+    ],
+    "processing_rates": [
+      1000,
+      950,
+      800,
+      750
+    ]
+  },
+  "metadata": {
+    "bottleneck": "WD-IRT Prep",
+    "mock": true
+  }
+}

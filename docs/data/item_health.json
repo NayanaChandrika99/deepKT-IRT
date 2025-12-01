@@ -1,0 +1,1407 @@
+{
+  "data": [
+    {
+      "item_id": "104GN803C7",
+      "difficulty": 0.4443058967590332,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "104VLLW3BE",
+      "difficulty": 0.2533813714981079,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "1052VSI90Q",
+      "difficulty": -0.11997660249471664,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "1056MOBB1X",
+      "difficulty": -0.2277386635541916,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "106UK9X9MA",
+      "difficulty": -0.29609569907188416,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "107HWF0F0D",
+      "difficulty": 0.2811371386051178,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "10B335WIH",
+      "difficulty": -0.330575168132782,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "10BM23AWDO",
+      "difficulty": -0.23945723474025726,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "10CIBCCQRG",
+      "difficulty": -0.3889731764793396,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "10FMHR2CYN",
+      "difficulty": -0.03871995210647583,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "10SSP5RETT",
+      "difficulty": 0.24305658042430878,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "10T2B0N9A0",
+      "difficulty": 0.22564037144184113,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "10V3SPQQAR",
+      "difficulty": 0.04978539049625397,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "10VCHKBZ2A",
+      "difficulty": 0.46115902066230774,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "10VLMC97FW",
+      "difficulty": -0.10965684056282043,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "10X056K44",
+      "difficulty": 0.14420188963413239,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "10YSIUB392",
+      "difficulty": -0.3552371561527252,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "10Z5Q3G5X5",
+      "difficulty": 0.35092875361442566,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "110PI51YMQ",
+      "difficulty": 0.1792706400156021,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "113M0V7SQJ",
+      "difficulty": 0.09945010393857956,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "11738AJNXZ",
+      "difficulty": -0.40839502215385437,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "1198RDHBTJ",
+      "difficulty": 0.0780055969953537,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "11APCESCRC",
+      "difficulty": -0.0030793347395956516,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "11EDV698UH",
+      "difficulty": -0.17528292536735535,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "11EMB9D8YD",
+      "difficulty": 0.47646188735961914,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "11EMFVBKYP",
+      "difficulty": 0.161221444606781,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "11FDIVRT0",
+      "difficulty": 0.6768655180931091,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "11G62YBHDV",
+      "difficulty": -0.14985616505146027,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "11LIBS6V9U",
+      "difficulty": -0.1627364605665207,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "11NP4ZBJHH",
+      "difficulty": -0.02729196846485138,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "11O6PUPOMN",
+      "difficulty": 0.168355792760849,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "11OIO7Q0X1",
+      "difficulty": -0.40933114290237427,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "11RX3L6VPZ",
+      "difficulty": -0.2928496301174164,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "11T79IQ2ZS",
+      "difficulty": 0.25408288836479187,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "11WZYZYFHN",
+      "difficulty": -0.28892067074775696,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "11XOUTD81M",
+      "difficulty": -0.23929832875728607,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "11ZYG3DAA1",
+      "difficulty": -0.38160476088523865,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "123M9UFYL2",
+      "difficulty": 0.0034002503380179405,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "124BUBG3I0",
+      "difficulty": -0.3102385103702545,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "125MFC7145",
+      "difficulty": 0.0,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "125PE8REE",
+      "difficulty": -0.16176225244998932,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "1267QCELR8",
+      "difficulty": -0.14890950918197632,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "129QNUB5KP",
+      "difficulty": 0.2338312268257141,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "12C5Y522YN",
+      "difficulty": -0.05496741086244583,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "12CP5D8YKZ",
+      "difficulty": 0.04674052074551582,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "12HF2JH5PO",
+      "difficulty": 0.28269052505493164,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "12O1CO8SKD",
+      "difficulty": 0.15193842351436615,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "12RXY58078",
+      "difficulty": -0.29889899492263794,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "12W0R6ONPL",
+      "difficulty": -0.05635927990078926,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "12WIBQLJBA",
+      "difficulty": 0.14156341552734375,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "12YL3ARS11",
+      "difficulty": -0.2497110664844513,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "12Z3HNBY11",
+      "difficulty": 0.007652477826923132,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "130BUYLZ7E",
+      "difficulty": -0.19619956612586975,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "130Y5FDPGP",
+      "difficulty": 0.2455928474664688,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "131WTUJVKM",
+      "difficulty": 0.28482627868652344,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "132YA0Q7ZX",
+      "difficulty": 0.11787158995866776,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "133LU98GC6",
+      "difficulty": -0.5213236808776855,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "13BQ3XZEY7",
+      "difficulty": 0.2666928172111511,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "13G7S0ORMH",
+      "difficulty": -0.09063896536827087,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "13KJ6FTANO",
+      "difficulty": -0.6571876406669617,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "13KSR2LQIJ",
+      "difficulty": 0.060129422694444656,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "13MOD5J5KI",
+      "difficulty": 0.3941643536090851,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "13ORJMQLN3",
+      "difficulty": -0.0020130048505961895,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "13PEIS30JB",
+      "difficulty": -0.06333103030920029,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "13Q8OSVP8A",
+      "difficulty": -0.010477999225258827,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "13R0XN9V0P",
+      "difficulty": -0.5077636241912842,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "13RM2ICS38",
+      "difficulty": 0.23189018666744232,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "13VCQUYTM0",
+      "difficulty": -0.133372962474823,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "13YOBHXV25",
+      "difficulty": 0.08207221329212189,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "13Z0OYF52W",
+      "difficulty": -0.14700451493263245,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "13Z4KVQSKK",
+      "difficulty": -0.26423966884613037,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "143EIBAN4F",
+      "difficulty": 0.008430433459579945,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "143J019QOE",
+      "difficulty": -0.4472971558570862,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "143W25HD94",
+      "difficulty": -0.12201055139303207,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "148K0J9RD3",
+      "difficulty": -0.15029051899909973,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14A6MQXD5S",
+      "difficulty": -0.2536922097206116,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14AXZMZ426",
+      "difficulty": -0.18800592422485352,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14HLZSY7P2",
+      "difficulty": 0.0,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14IMD2OXNQ",
+      "difficulty": 0.019551055505871773,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14J0K78NPC",
+      "difficulty": -0.6106535196304321,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14MZBMZSW1",
+      "difficulty": 0.10371854156255722,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14OBT7LVS1",
+      "difficulty": -0.5557284355163574,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14QEQB1UOI",
+      "difficulty": 0.10803359746932983,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14RF64SG8",
+      "difficulty": 0.05932127684354782,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14RJ82CZKU",
+      "difficulty": -0.07327410578727722,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14RP26PTV9",
+      "difficulty": 0.0,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14TS3GANGH",
+      "difficulty": -0.5376411080360413,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14VGE7DE7G",
+      "difficulty": -0.29041019082069397,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14WJDVOCLN",
+      "difficulty": -0.008931800723075867,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14Y4E32LLP",
+      "difficulty": 0.18549875915050507,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14YKGV0BZP",
+      "difficulty": 0.30074983835220337,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "14YX2TXHDZ",
+      "difficulty": -0.7745506167411804,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "150HT7MSQA",
+      "difficulty": 0.004988973028957844,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "150MD8QAO1",
+      "difficulty": -0.14409944415092468,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "1528KHXJT4",
+      "difficulty": -0.42812711000442505,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "156G0NX3T8",
+      "difficulty": -0.11072602868080139,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "156U44BQJ",
+      "difficulty": -0.06070762127637863,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "157FGJGIZC",
+      "difficulty": 0.5819209218025208,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "15896PYG9B",
+      "difficulty": -0.043692104518413544,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "158Q7NBFX8",
+      "difficulty": 0.5024451613426208,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "159ZC56HQQ",
+      "difficulty": 0.05405346304178238,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "15CZZM7727",
+      "difficulty": 0.2613963484764099,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "15F897BVBT",
+      "difficulty": 0.40981724858283997,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "15G1JUEUC2",
+      "difficulty": 0.2982104420661926,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "15IH5JYP29",
+      "difficulty": -0.34718263149261475,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "15NOV43JBM",
+      "difficulty": -0.5481483340263367,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "15Q356BTVN",
+      "difficulty": 0.5816492438316345,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "15SKPEYU48",
+      "difficulty": 0.29310688376426697,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "15TI6ID7CO",
+      "difficulty": -0.034299857914447784,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "15UF4ZUKQY",
+      "difficulty": 0.49639949202537537,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "15VOE8COWO",
+      "difficulty": -0.3632436692714691,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "15WQO3NHYA",
+      "difficulty": -0.34038689732551575,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "160WQ1JBR",
+      "difficulty": -0.4113073945045471,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "161CUIFZ1G",
+      "difficulty": -0.20973528921604156,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "1624VFJ4IM",
+      "difficulty": -0.35082167387008667,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "163GJ2Q6VN",
+      "difficulty": -0.7336406707763672,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "163SY1SBFC",
+      "difficulty": -0.2751372158527374,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "166AZBIW3E",
+      "difficulty": 0.024145660921931267,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "166GTUQSRZ",
+      "difficulty": -0.22381630539894104,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "169417PRBJ",
+      "difficulty": -0.06304320693016052,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "16DIMZMQK3",
+      "difficulty": 0.18115678429603577,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "16G54F7HPQ",
+      "difficulty": 0.2673962116241455,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "16KSQT75T8",
+      "difficulty": 0.0428585484623909,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "16LWJF24J6",
+      "difficulty": -0.28900256752967834,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "16NKIYQFLZ",
+      "difficulty": -0.6280639171600342,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "16NNX40USV",
+      "difficulty": -0.28911373019218445,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "16QMQZL8WO",
+      "difficulty": -0.15678010880947113,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "16QMVEW4CO",
+      "difficulty": -0.2426401525735855,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "16TIIW0JAC",
+      "difficulty": -0.02022767998278141,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "16W117R9ZN",
+      "difficulty": -0.17593573033809662,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "171IEZILO5",
+      "difficulty": -0.32042136788368225,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "1726JTIV1X",
+      "difficulty": 0.20752552151679993,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "173JYGBX0O",
+      "difficulty": 0.11724312603473663,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "174ET7DE19",
+      "difficulty": -0.6209824085235596,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "174OL8UJRG",
+      "difficulty": 0.18146225810050964,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "176ZDGTYCN",
+      "difficulty": -0.24953751266002655,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "179ZPEJZ27",
+      "difficulty": 0.21002694964408875,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "17AD88D3MR",
+      "difficulty": 0.3441425859928131,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "17ASWSZSGW",
+      "difficulty": -0.09189721196889877,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "17BO70YGNH",
+      "difficulty": -0.02069084718823433,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "17FZVXO5GB",
+      "difficulty": -0.4205983877182007,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "17GSBKW3K0",
+      "difficulty": -0.2935991585254669,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "17HR2PKSOO",
+      "difficulty": 0.22025729715824127,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "17LN9I3GJ8",
+      "difficulty": 0.27403298020362854,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "17Q9H5OERX",
+      "difficulty": -0.12414808571338654,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "17UGQT3R63",
+      "difficulty": 0.15882033109664917,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "17UMLN70YN",
+      "difficulty": -0.19524751603603363,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "17UZN4GMMS",
+      "difficulty": 0.11631304025650024,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "17WYYHQLNK",
+      "difficulty": 0.05075090378522873,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "17ZT5LM9U0",
+      "difficulty": 0.08466816693544388,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "180UD2UZQD",
+      "difficulty": 0.16777613759040833,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "184U5N7URM",
+      "difficulty": 0.10309252887964249,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "1863EN5GJU",
+      "difficulty": -0.4504402279853821,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "1867KOPAEW",
+      "difficulty": -0.5062463879585266,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "188DO8ZMQZ",
+      "difficulty": -0.17117264866828918,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18C57PVB9H",
+      "difficulty": -0.11577639728784561,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18CHGAQUHO",
+      "difficulty": 0.13383634388446808,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18EJEP3IK1",
+      "difficulty": 0.06263834238052368,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18GFK9ZFDD",
+      "difficulty": -0.032052215188741684,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18H6RW4J1H",
+      "difficulty": -0.6983789205551147,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18HH3HB2PC",
+      "difficulty": 0.22561833262443542,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18INUWYALJ",
+      "difficulty": 0.13753743469715118,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18J6436AS5",
+      "difficulty": 0.20863287150859833,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18JJFMZA7W",
+      "difficulty": -0.04382150620222092,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18JKUICV0X",
+      "difficulty": 0.06149011105298996,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18LFM4VVCY",
+      "difficulty": 0.02871047519147396,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18MTB98CAJ",
+      "difficulty": 0.149511456489563,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18NAW5W9HN",
+      "difficulty": 0.6757227778434753,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18NKA07L0X",
+      "difficulty": 0.0,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18OY6GB5ZN",
+      "difficulty": -0.19314411282539368,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18PRFKBF0B",
+      "difficulty": 0.023418840020895004,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18QC9CTECX",
+      "difficulty": 0.08545304834842682,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18QJWJ7147",
+      "difficulty": 0.16610552370548248,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18RP4OEZUV",
+      "difficulty": -0.44737571477890015,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18VAYQMA2K",
+      "difficulty": 0.02632853202521801,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18XRJFCU4R",
+      "difficulty": 0.06579817831516266,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18XZPLN0VW",
+      "difficulty": -0.13653062283992767,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18YRXES4HE",
+      "difficulty": -0.6680493950843811,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "18ZC44097W",
+      "difficulty": -0.016133172437548637,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "1902MEMU4E",
+      "difficulty": 0.26033514738082886,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "193SRN0TY6",
+      "difficulty": 0.1574513167142868,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "19583IU5TP",
+      "difficulty": 0.0843241885304451,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "1960JCIS4P",
+      "difficulty": 0.05540838465094566,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "196UW5VWKE",
+      "difficulty": 0.1354614794254303,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "197D9RIPU",
+      "difficulty": -0.10119432210922241,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "19B97GBJ6K",
+      "difficulty": -0.09640625864267349,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "19ETIY40PT",
+      "difficulty": -0.4473969340324402,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "19FB067E96",
+      "difficulty": 0.012975920923054218,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "19FFTGM9M3",
+      "difficulty": 0.032615501433610916,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "19M2N5WVYY",
+      "difficulty": 0.16488231718540192,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "19MZSVTMA9",
+      "difficulty": -0.13459575176239014,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "19PCKVO4TF",
+      "difficulty": -0.09201370179653168,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "19RKUUJX5S",
+      "difficulty": 0.23176409304141998,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "19SKWBLJMK",
+      "difficulty": -0.15871188044548035,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "19TYDR2L22",
+      "difficulty": -0.1947558969259262,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "1A1E1BJ5ND",
+      "difficulty": 0.0,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "1A3L1MSP7B",
+      "difficulty": 0.177565798163414,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "1A4CNG0YMZ",
+      "difficulty": 0.3545909821987152,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "1A5FXQ457J",
+      "difficulty": -0.03813910856842995,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    },
+    {
+      "item_id": "1A8LMPS8MI",
+      "difficulty": -0.3859569728374481,
+      "discrimination": 1.0,
+      "drift_score": 0.0,
+      "alert": false
+    }
+  ],
+  "metadata": {
+    "total_items": 200
+  }
+}

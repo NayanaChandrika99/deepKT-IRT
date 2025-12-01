@@ -1,0 +1,36 @@
+{
+  "data": {
+    "matrix": [
+      [
+        5,
+        2,
+        0
+      ],
+      [
+        3,
+        8,
+        1
+      ],
+      [
+        0,
+        4,
+        6
+      ]
+    ],
+    "users": [
+      "user_1",
+      "user_2",
+      "user_3"
+    ],
+    "skills": [
+      "skill_A",
+      "skill_B",
+      "skill_C"
+    ]
+  },
+  "metadata": {
+    "total_users": 3,
+    "total_skills": 3,
+    "mock": true
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "data": [
+    {
+      "feature_group": "Wide Features",
+      "importance": 0.35,
+      "features": [
+        "user_id",
+        "item_id",
+        "skill_id"
+      ]
+    },
+    {
+      "feature_group": "Deep Features",
+      "importance": 0.65,
+      "features": [
+        "clickstream_embeddings",
+        "sequence_context"
+      ]
+    }
+  ],
+  "metadata": {
+    "model": "WD-IRT",
+    "mock": true
+  }
+}

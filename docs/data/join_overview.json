@@ -1,0 +1,15 @@
+{
+  "data": {
+    "canonical_users": 1000,
+    "prediction_users": 950,
+    "mastery_users": 920,
+    "canonical_prediction_overlap": 940,
+    "canonical_mastery_overlap": 910,
+    "prediction_mastery_overlap": 900,
+    "all_three_overlap": 890
+  },
+  "metadata": {
+    "total_unique_users": 1050,
+    "mock": true
+  }
+}

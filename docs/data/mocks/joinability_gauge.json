@@ -1,0 +1,11 @@
+{
+  "data": {
+    "valid_user_ids": 98.5,
+    "valid_item_ids": 99.2,
+    "valid_skill_ids": 97.8
+  },
+  "metadata": {
+    "total_events": 50000,
+    "mock": true
+  }
+}

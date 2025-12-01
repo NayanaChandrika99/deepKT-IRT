@@ -1,0 +1,767 @@
+{
+  "data": [
+    {
+      "user_id": "1006OOQBE9",
+      "recommendations": [
+        {
+          "item_id": "107HWF0F0D",
+          "expected": 0.876,
+          "uncertainty": 0.25,
+          "ucb_score": 1.126,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10FMHR2CYN",
+          "expected": 0.891,
+          "uncertainty": 0.207,
+          "ucb_score": 1.098,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10V3SPQQAR",
+          "expected": 0.886,
+          "uncertainty": 0.193,
+          "ucb_score": 1.079,
+          "mode": "explore"
+        },
+        {
+          "item_id": "1052VSI90Q",
+          "expected": 0.853,
+          "uncertainty": 0.198,
+          "ucb_score": 1.051,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10SSP5RETT",
+          "expected": 0.837,
+          "uncertainty": 0.152,
+          "ucb_score": 0.989,
+          "mode": "explore"
+        },
+        {
+          "item_id": "106UK9X9MA",
+          "expected": 0.781,
+          "uncertainty": 0.199,
+          "ucb_score": 0.98,
+          "mode": "explore"
+        },
+        {
+          "item_id": "104GN803C7",
+          "expected": 0.771,
+          "uncertainty": 0.191,
+          "ucb_score": 0.962,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10B335WIH",
+          "expected": 0.694,
+          "uncertainty": 0.249,
+          "ucb_score": 0.943,
+          "mode": "explore"
+        },
+        {
+          "item_id": "110PI51YMQ",
+          "expected": 0.694,
+          "uncertainty": 0.236,
+          "ucb_score": 0.93,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10CIBCCQRG",
+          "expected": 0.717,
+          "uncertainty": 0.192,
+          "ucb_score": 0.909,
+          "mode": "explore"
+        }
+      ],
+      "exploration_ratio": 1.0
+    },
+    {
+      "user_id": "10074HFUHT",
+      "recommendations": [
+        {
+          "item_id": "1052VSI90Q",
+          "expected": 0.882,
+          "uncertainty": 0.218,
+          "ucb_score": 1.1,
+          "mode": "explore"
+        },
+        {
+          "item_id": "104VLLW3BE",
+          "expected": 0.881,
+          "uncertainty": 0.19,
+          "ucb_score": 1.07,
+          "mode": "explore"
+        },
+        {
+          "item_id": "113M0V7SQJ",
+          "expected": 0.862,
+          "uncertainty": 0.144,
+          "ucb_score": 1.006,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "1056MOBB1X",
+          "expected": 0.852,
+          "uncertainty": 0.139,
+          "ucb_score": 0.991,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "106UK9X9MA",
+          "expected": 0.72,
+          "uncertainty": 0.205,
+          "ucb_score": 0.925,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10SSP5RETT",
+          "expected": 0.776,
+          "uncertainty": 0.124,
+          "ucb_score": 0.9,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10V3SPQQAR",
+          "expected": 0.699,
+          "uncertainty": 0.185,
+          "ucb_score": 0.884,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10B335WIH",
+          "expected": 0.761,
+          "uncertainty": 0.088,
+          "ucb_score": 0.849,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10FMHR2CYN",
+          "expected": 0.746,
+          "uncertainty": 0.095,
+          "ucb_score": 0.842,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "107HWF0F0D",
+          "expected": 0.781,
+          "uncertainty": 0.054,
+          "ucb_score": 0.835,
+          "mode": "exploit"
+        }
+      ],
+      "exploration_ratio": 0.4
+    },
+    {
+      "user_id": "1007ZGJMZS",
+      "recommendations": [
+        {
+          "item_id": "10CIBCCQRG",
+          "expected": 0.89,
+          "uncertainty": 0.181,
+          "ucb_score": 1.071,
+          "mode": "explore"
+        },
+        {
+          "item_id": "107HWF0F0D",
+          "expected": 0.813,
+          "uncertainty": 0.25,
+          "ucb_score": 1.063,
+          "mode": "explore"
+        },
+        {
+          "item_id": "1052VSI90Q",
+          "expected": 0.825,
+          "uncertainty": 0.151,
+          "ucb_score": 0.977,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10VLMC97FW",
+          "expected": 0.703,
+          "uncertainty": 0.247,
+          "ucb_score": 0.95,
+          "mode": "explore"
+        },
+        {
+          "item_id": "106UK9X9MA",
+          "expected": 0.838,
+          "uncertainty": 0.091,
+          "ucb_score": 0.929,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "113M0V7SQJ",
+          "expected": 0.853,
+          "uncertainty": 0.05,
+          "ucb_score": 0.903,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "1056MOBB1X",
+          "expected": 0.808,
+          "uncertainty": 0.081,
+          "ucb_score": 0.89,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10VCHKBZ2A",
+          "expected": 0.762,
+          "uncertainty": 0.109,
+          "ucb_score": 0.87,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "104VLLW3BE",
+          "expected": 0.7,
+          "uncertainty": 0.147,
+          "ucb_score": 0.847,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10X056K44",
+          "expected": 0.639,
+          "uncertainty": 0.191,
+          "ucb_score": 0.83,
+          "mode": "explore"
+        }
+      ],
+      "exploration_ratio": 0.5
+    },
+    {
+      "user_id": "100GVRIQ9W",
+      "recommendations": [
+        {
+          "item_id": "10B335WIH",
+          "expected": 0.832,
+          "uncertainty": 0.224,
+          "ucb_score": 1.056,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10CIBCCQRG",
+          "expected": 0.877,
+          "uncertainty": 0.104,
+          "ucb_score": 0.981,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "104GN803C7",
+          "expected": 0.808,
+          "uncertainty": 0.163,
+          "ucb_score": 0.971,
+          "mode": "explore"
+        },
+        {
+          "item_id": "110PI51YMQ",
+          "expected": 0.846,
+          "uncertainty": 0.093,
+          "ucb_score": 0.939,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10SSP5RETT",
+          "expected": 0.733,
+          "uncertainty": 0.199,
+          "ucb_score": 0.933,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10YSIUB392",
+          "expected": 0.767,
+          "uncertainty": 0.159,
+          "ucb_score": 0.926,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10BM23AWDO",
+          "expected": 0.819,
+          "uncertainty": 0.106,
+          "ucb_score": 0.925,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10FMHR2CYN",
+          "expected": 0.677,
+          "uncertainty": 0.216,
+          "ucb_score": 0.894,
+          "mode": "explore"
+        },
+        {
+          "item_id": "104VLLW3BE",
+          "expected": 0.747,
+          "uncertainty": 0.093,
+          "ucb_score": 0.84,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "106UK9X9MA",
+          "expected": 0.765,
+          "uncertainty": 0.053,
+          "ucb_score": 0.818,
+          "mode": "exploit"
+        }
+      ],
+      "exploration_ratio": 0.5
+    },
+    {
+      "user_id": "100HENWXVZ",
+      "recommendations": [
+        {
+          "item_id": "10BM23AWDO",
+          "expected": 0.872,
+          "uncertainty": 0.228,
+          "ucb_score": 1.099,
+          "mode": "explore"
+        },
+        {
+          "item_id": "113M0V7SQJ",
+          "expected": 0.871,
+          "uncertainty": 0.184,
+          "ucb_score": 1.054,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10FMHR2CYN",
+          "expected": 0.826,
+          "uncertainty": 0.225,
+          "ucb_score": 1.051,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10X056K44",
+          "expected": 0.825,
+          "uncertainty": 0.219,
+          "ucb_score": 1.044,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10Z5Q3G5X5",
+          "expected": 0.878,
+          "uncertainty": 0.133,
+          "ucb_score": 1.011,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10VCHKBZ2A",
+          "expected": 0.857,
+          "uncertainty": 0.141,
+          "ucb_score": 0.998,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "104VLLW3BE",
+          "expected": 0.835,
+          "uncertainty": 0.148,
+          "ucb_score": 0.983,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10YSIUB392",
+          "expected": 0.72,
+          "uncertainty": 0.221,
+          "ucb_score": 0.941,
+          "mode": "explore"
+        },
+        {
+          "item_id": "107HWF0F0D",
+          "expected": 0.703,
+          "uncertainty": 0.219,
+          "ucb_score": 0.922,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10SSP5RETT",
+          "expected": 0.727,
+          "uncertainty": 0.172,
+          "ucb_score": 0.899,
+          "mode": "explore"
+        }
+      ],
+      "exploration_ratio": 0.7
+    },
+    {
+      "user_id": "100JIG3NPG",
+      "recommendations": [
+        {
+          "item_id": "10V3SPQQAR",
+          "expected": 0.893,
+          "uncertainty": 0.167,
+          "ucb_score": 1.06,
+          "mode": "explore"
+        },
+        {
+          "item_id": "107HWF0F0D",
+          "expected": 0.819,
+          "uncertainty": 0.226,
+          "ucb_score": 1.045,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10YSIUB392",
+          "expected": 0.835,
+          "uncertainty": 0.196,
+          "ucb_score": 1.031,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10Z5Q3G5X5",
+          "expected": 0.822,
+          "uncertainty": 0.18,
+          "ucb_score": 1.001,
+          "mode": "explore"
+        },
+        {
+          "item_id": "106UK9X9MA",
+          "expected": 0.75,
+          "uncertainty": 0.196,
+          "ucb_score": 0.946,
+          "mode": "explore"
+        },
+        {
+          "item_id": "110PI51YMQ",
+          "expected": 0.732,
+          "uncertainty": 0.209,
+          "ucb_score": 0.941,
+          "mode": "explore"
+        },
+        {
+          "item_id": "104VLLW3BE",
+          "expected": 0.824,
+          "uncertainty": 0.079,
+          "ucb_score": 0.903,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10CIBCCQRG",
+          "expected": 0.732,
+          "uncertainty": 0.168,
+          "ucb_score": 0.9,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10SSP5RETT",
+          "expected": 0.652,
+          "uncertainty": 0.245,
+          "ucb_score": 0.897,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10VCHKBZ2A",
+          "expected": 0.774,
+          "uncertainty": 0.116,
+          "ucb_score": 0.89,
+          "mode": "exploit"
+        }
+      ],
+      "exploration_ratio": 0.8
+    },
+    {
+      "user_id": "100L8W15E4",
+      "recommendations": [
+        {
+          "item_id": "10V3SPQQAR",
+          "expected": 0.829,
+          "uncertainty": 0.212,
+          "ucb_score": 1.041,
+          "mode": "explore"
+        },
+        {
+          "item_id": "107HWF0F0D",
+          "expected": 0.849,
+          "uncertainty": 0.181,
+          "ucb_score": 1.029,
+          "mode": "explore"
+        },
+        {
+          "item_id": "106UK9X9MA",
+          "expected": 0.731,
+          "uncertainty": 0.226,
+          "ucb_score": 0.957,
+          "mode": "explore"
+        },
+        {
+          "item_id": "1052VSI90Q",
+          "expected": 0.696,
+          "uncertainty": 0.227,
+          "ucb_score": 0.923,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10SSP5RETT",
+          "expected": 0.846,
+          "uncertainty": 0.063,
+          "ucb_score": 0.909,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "1056MOBB1X",
+          "expected": 0.775,
+          "uncertainty": 0.133,
+          "ucb_score": 0.908,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "110PI51YMQ",
+          "expected": 0.819,
+          "uncertainty": 0.087,
+          "ucb_score": 0.907,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10BM23AWDO",
+          "expected": 0.807,
+          "uncertainty": 0.098,
+          "ucb_score": 0.906,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10X056K44",
+          "expected": 0.752,
+          "uncertainty": 0.133,
+          "ucb_score": 0.885,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10CIBCCQRG",
+          "expected": 0.762,
+          "uncertainty": 0.077,
+          "ucb_score": 0.839,
+          "mode": "exploit"
+        }
+      ],
+      "exploration_ratio": 0.4
+    },
+    {
+      "user_id": "100LXR9AV4",
+      "recommendations": [
+        {
+          "item_id": "10T2B0N9A0",
+          "expected": 0.878,
+          "uncertainty": 0.206,
+          "ucb_score": 1.085,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10VLMC97FW",
+          "expected": 0.896,
+          "uncertainty": 0.101,
+          "ucb_score": 0.997,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10VCHKBZ2A",
+          "expected": 0.845,
+          "uncertainty": 0.148,
+          "ucb_score": 0.992,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "1056MOBB1X",
+          "expected": 0.859,
+          "uncertainty": 0.112,
+          "ucb_score": 0.971,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "107HWF0F0D",
+          "expected": 0.816,
+          "uncertainty": 0.141,
+          "ucb_score": 0.957,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "1052VSI90Q",
+          "expected": 0.764,
+          "uncertainty": 0.173,
+          "ucb_score": 0.937,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10SSP5RETT",
+          "expected": 0.78,
+          "uncertainty": 0.116,
+          "ucb_score": 0.896,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10V3SPQQAR",
+          "expected": 0.614,
+          "uncertainty": 0.24,
+          "ucb_score": 0.854,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10FMHR2CYN",
+          "expected": 0.593,
+          "uncertainty": 0.231,
+          "ucb_score": 0.824,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10Z5Q3G5X5",
+          "expected": 0.599,
+          "uncertainty": 0.081,
+          "ucb_score": 0.68,
+          "mode": "exploit"
+        }
+      ],
+      "exploration_ratio": 0.4
+    },
+    {
+      "user_id": "1012A1G9J5",
+      "recommendations": [
+        {
+          "item_id": "110PI51YMQ",
+          "expected": 0.897,
+          "uncertainty": 0.206,
+          "ucb_score": 1.103,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10SSP5RETT",
+          "expected": 0.888,
+          "uncertainty": 0.186,
+          "ucb_score": 1.074,
+          "mode": "explore"
+        },
+        {
+          "item_id": "113M0V7SQJ",
+          "expected": 0.771,
+          "uncertainty": 0.181,
+          "ucb_score": 0.952,
+          "mode": "explore"
+        },
+        {
+          "item_id": "104VLLW3BE",
+          "expected": 0.865,
+          "uncertainty": 0.064,
+          "ucb_score": 0.929,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "1056MOBB1X",
+          "expected": 0.646,
+          "uncertainty": 0.246,
+          "ucb_score": 0.892,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10BM23AWDO",
+          "expected": 0.685,
+          "uncertainty": 0.19,
+          "ucb_score": 0.875,
+          "mode": "explore"
+        },
+        {
+          "item_id": "107HWF0F0D",
+          "expected": 0.799,
+          "uncertainty": 0.065,
+          "ucb_score": 0.864,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10B335WIH",
+          "expected": 0.606,
+          "uncertainty": 0.19,
+          "ucb_score": 0.796,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10Z5Q3G5X5",
+          "expected": 0.611,
+          "uncertainty": 0.179,
+          "ucb_score": 0.79,
+          "mode": "explore"
+        },
+        {
+          "item_id": "10X056K44",
+          "expected": 0.611,
+          "uncertainty": 0.161,
+          "ucb_score": 0.772,
+          "mode": "explore"
+        }
+      ],
+      "exploration_ratio": 0.8
+    },
+    {
+      "user_id": "1014A9225O",
+      "recommendations": [
+        {
+          "item_id": "107HWF0F0D",
+          "expected": 0.879,
+          "uncertainty": 0.128,
+          "ucb_score": 1.007,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10VCHKBZ2A",
+          "expected": 0.837,
+          "uncertainty": 0.139,
+          "ucb_score": 0.976,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "1052VSI90Q",
+          "expected": 0.823,
+          "uncertainty": 0.117,
+          "ucb_score": 0.94,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "104GN803C7",
+          "expected": 0.714,
+          "uncertainty": 0.212,
+          "ucb_score": 0.926,
+          "mode": "explore"
+        },
+        {
+          "item_id": "1056MOBB1X",
+          "expected": 0.784,
+          "uncertainty": 0.109,
+          "ucb_score": 0.893,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "106UK9X9MA",
+          "expected": 0.802,
+          "uncertainty": 0.078,
+          "ucb_score": 0.88,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "104VLLW3BE",
+          "expected": 0.751,
+          "uncertainty": 0.123,
+          "ucb_score": 0.874,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10B335WIH",
+          "expected": 0.732,
+          "uncertainty": 0.138,
+          "ucb_score": 0.869,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10YSIUB392",
+          "expected": 0.785,
+          "uncertainty": 0.075,
+          "ucb_score": 0.86,
+          "mode": "exploit"
+        },
+        {
+          "item_id": "10FMHR2CYN",
+          "expected": 0.604,
+          "uncertainty": 0.224,
+          "ucb_score": 0.828,
+          "mode": "explore"
+        }
+      ],
+      "exploration_ratio": 0.2
+    }
+  ],
+  "metadata": {
+    "total_students": 10
+  }
+}

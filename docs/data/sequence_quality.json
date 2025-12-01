@@ -1,0 +1,29 @@
+{
+  "data": {
+    "lengths": [
+      10,
+      25,
+      50,
+      75,
+      100,
+      150,
+      200
+    ],
+    "frequencies": [
+      100,
+      250,
+      400,
+      300,
+      200,
+      150,
+      50
+    ]
+  },
+  "metadata": {
+    "avg_length": 87.5,
+    "median": 75,
+    "pct_padded": 15,
+    "pct_truncated": 8,
+    "mock": true
+  }
+}

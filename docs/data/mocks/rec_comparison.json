@@ -1,0 +1,23 @@
+{
+  "data": [
+    {
+      "user_id": "demo_001",
+      "rl_recommendations": [
+        "item_42",
+        "item_17",
+        "item_91"
+      ],
+      "rule_based_recommendations": [
+        "item_42",
+        "item_55",
+        "item_23"
+      ],
+      "overlap_count": 1,
+      "overlap_percentage": 33.3
+    }
+  ],
+  "metadata": {
+    "total_students": 1,
+    "mock": true
+  }
+}

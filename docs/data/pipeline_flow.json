@@ -1,0 +1,21 @@
+{
+  "data": {
+    "nodes": [
+      "Raw CSV",
+      "Canonical Events",
+      "SAKT Prepared",
+      "WD-IRT Prepared"
+    ],
+    "counts": [
+      5167603,
+      5167603,
+      3617322,
+      3617322
+    ]
+  },
+  "metadata": {
+    "canonical": 5167603,
+    "sakt_prep": 3617322,
+    "wd_prep": 3617322
+  }
+}

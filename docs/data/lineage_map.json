@@ -1,0 +1,40 @@
+{
+  "data": {
+    "nodes": [
+      {
+        "id": "raw_csv",
+        "label": "Raw CSV",
+        "size": 1024,
+        "last_modified": "2024-11-01"
+      },
+      {
+        "id": "canonical",
+        "label": "Canonical Events",
+        "size": 2048,
+        "last_modified": "2024-11-15"
+      },
+      {
+        "id": "sakt_prep",
+        "label": "SAKT Prepared",
+        "size": 1536,
+        "last_modified": "2024-11-20"
+      }
+    ],
+    "edges": [
+      {
+        "source": "raw_csv",
+        "target": "canonical",
+        "transform": "data_pipeline.py"
+      },
+      {
+        "source": "canonical",
+        "target": "sakt_prep",
+        "transform": "prepare_sakt.py"
+      }
+    ]
+  },
+  "metadata": {
+    "total_files": 3,
+    "mock": true
+  }
+}
