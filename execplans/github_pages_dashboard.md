@@ -4,10 +4,350 @@
 
 Static GitHub Pages site (`docs/`) showcasing the twin-engine analytics system (SAKT + Wide & Deep IRT) with **24 interactive visualizations** using Plotly.js and pre-exported JSON data.
 
-**Tech Stack:** HTML + CSS + JavaScript + Plotly.js (v2.32+)
+**Tech Stack:** HTML + CSS + JavaScript (ES6 Modules) + Plotly.js (v2.32+)
 **Data Mode:** Static JSON exports from parquet artifacts
 **Target Audience:** Product/Business Stakeholders + Technical Teams
 **Deployment:** GitHub Pages (main branch, `/docs` folder)
+**Architecture:** Modular component library with reusable visualization classes
+
+## Modular Component Architecture
+
+All visualizations are built as **self-contained, reusable JavaScript classes** following a consistent design pattern:
+
+### Component Design Pattern
+
+Each visualization component:
+- **Encapsulates** rendering logic, state, and configuration
+- **Accepts** a container ID and optional configuration
+- **Exposes** `render()`, `update()`, and `destroy()` methods
+- **Returns** itself for method chaining
+- **Handles** its own error states and loading indicators
+
+**Example Component Structure:**
+```javascript
+// components/MasteryTimeline.js
+class MasteryTimeline {
+  constructor(containerId, options = {}) {
+    this.containerId = containerId;
+    this.options = {
+      animationDuration: 300,
+      transitionDuration: 500,
+      height: 400,
+      ...options
+    };
+    this.chart = null;
+    this.data = null;
+  }
+
+  async render(data) {
+    this.data = data;
+    const trace = {
+      x: data.map(d => d.sequence_position),
+      y: data.map(d => d.mastery_score),
+      type: 'scatter',
+      mode: 'lines+markers',
+      // ... Plotly config
+    };
+
+    const layout = {
+      transition: { duration: this.options.transitionDuration },
+      height: this.options.height,
+      // ... layout config
+    };
+
+    this.chart = await Plotly.newPlot(this.containerId, [trace], layout);
+    return this;
+  }
+
+  update(newData) {
+    this.data = newData;
+    Plotly.animate(this.containerId, {
+      data: [/* transformed newData */],
+      traces: [0]
+    }, {
+      transition: { duration: this.options.transitionDuration }
+    });
+    return this;
+  }
+
+  destroy() {
+    if (this.chart) {
+      Plotly.purge(this.containerId);
+      this.chart = null;
+    }
+  }
+}
+
+export default MasteryTimeline;
+```
+
+### Project Structure (Modular)
+
+```
+docs/
+├── index.html                          # Main landing page
+├── css/
+│   └── styles.css                      # Dark theme, responsive layout
+├── js/
+│   ├── app.js                          # Main orchestrator (imports & wires components)
+│   ├── components/                     # 24 visualization components
+│   │   ├── StudentDashboard.js         # 1.1 - Metrics + bar + table
+│   │   ├── MasteryTimeline.js          # 1.2 - Animated timeline
+│   │   ├── ExplainabilityCard.js       # 1.3 - Attention reasoning
+│   │   ├── SkillRadar.js               # 1.4 - Polar chart
+│   │   ├── GamingConsole.js            # 1.5 - Alert panel
+│   │   ├── AttentionHeatmap.js         # 1.6 - Interactive heatmap
+│   │   ├── RLExplorer.js               # 2.1 - Recommendation table
+│   │   ├── UCBGauge.js                 # 2.2 - Animated gauge
+│   │   ├── RecComparison.js            # 2.3 - Side-by-side table
+│   │   ├── TrainingDashboard.js        # 3.1 - Dual-pane charts
+│   │   ├── AttentionNetwork.js         # 3.2 - Force-directed graph
+│   │   ├── ItemHealthDashboard.js      # 3.3 - Scatter + alerts
+│   │   ├── TrainingCurves.js           # 3.4 - Multi-metric explorer
+│   │   ├── FeatureImportance.js        # 3.5 - Horizontal bar
+│   │   ├── PipelineFlow.js             # 4.1 - Animated Sankey
+│   │   ├── CoverageHeatmap.js          # 4.2 - User×skill density
+│   │   ├── SequenceQuality.js          # 4.3 - Histogram + metrics
+│   │   ├── SplitIntegrity.js           # 4.4 - Validation metrics
+│   │   ├── SchemaValidation.js         # 4.5 - Compliance checklist
+│   │   ├── JoinabilityGauge.js         # 4.6 - Venn + metrics
+│   │   ├── LineageMap.js               # 5.1 - Dependency graph
+│   │   ├── ThroughputMonitoring.js     # 5.2 - Bottleneck metrics
+│   │   ├── JoinOverview.js             # 5.3 - 3-way Venn
+│   │   └── DriftAlerts.js              # 5.4 - Animated trends
+│   └── utils/
+│       ├── DataLoader.js               # Fetch & cache JSON
+│       ├── PlotlyHelpers.js            # Common configs (themes, transitions)
+│       ├── Dropdown.js                 # Reusable dropdown widget
+│       └── MetricCard.js               # Reusable metric display
+├── data/
+│   ├── student_dashboard.json
+│   ├── mastery_timeline.json
+│   ├── explainability_sample.json
+│   └── ... (21 more JSON files)
+└── scripts/
+    └── export_all_visuals.py
+```
+
+### Utility Modules
+
+**DataLoader.js** - Centralized data fetching with caching:
+```javascript
+class DataLoader {
+  constructor() {
+    this.cache = new Map();
+  }
+
+  async load(filename) {
+    if (this.cache.has(filename)) {
+      return this.cache.get(filename);
+    }
+
+    const response = await fetch(`data/${filename}`);
+    if (!response.ok) throw new Error(`Failed to load ${filename}`);
+
+    const data = await response.json();
+    this.cache.set(filename, data);
+    return data;
+  }
+
+  clearCache() {
+    this.cache.clear();
+  }
+}
+
+export default new DataLoader(); // Singleton
+```
+
+**PlotlyHelpers.js** - Common configurations:
+```javascript
+export const darkTheme = {
+  paper_bgcolor: 'transparent',
+  plot_bgcolor: '#1b1f2a',
+  font: { color: '#f5f5f5', family: 'Inter, sans-serif' }
+};
+
+export const smoothTransition = {
+  transition: { duration: 500, easing: 'cubic-in-out' }
+};
+
+export const interactiveConfig = {
+  hovermode: 'closest',
+  dragmode: 'zoom',
+  displayModeBar: true,
+  modeBarButtonsToRemove: ['lasso2d', 'select2d']
+};
+```
+
+**Dropdown.js** - Reusable selector:
+```javascript
+class Dropdown {
+  constructor(containerId, options = {}) {
+    this.containerId = containerId;
+    this.options = {
+      label: 'Select',
+      onChange: () => {},
+      ...options
+    };
+    this.element = null;
+  }
+
+  render(items, selectedValue = null) {
+    const container = document.getElementById(this.containerId);
+    container.innerHTML = `
+      <label>${this.options.label}</label>
+      <select id="${this.containerId}-select">
+        ${items.map(item => `
+          <option value="${item.value}" ${item.value === selectedValue ? 'selected' : ''}>
+            ${item.label}
+          </option>
+        `).join('')}
+      </select>
+    `;
+
+    this.element = container.querySelector('select');
+    this.element.addEventListener('change', (e) => {
+      this.options.onChange(e.target.value);
+    });
+
+    return this;
+  }
+}
+
+export default Dropdown;
+```
+
+**MetricCard.js** - Reusable metric display:
+```javascript
+class MetricCard {
+  constructor(containerId, options = {}) {
+    this.containerId = containerId;
+    this.options = {
+      title: '',
+      formatter: (v) => v,
+      ...options
+    };
+  }
+
+  render(value, delta = null) {
+    const container = document.getElementById(this.containerId);
+    container.className = 'metric-card';
+    container.innerHTML = `
+      <span class="metric-title">${this.options.title}</span>
+      <strong class="metric-value">${this.options.formatter(value)}</strong>
+      ${delta !== null ? `<small class="metric-delta ${delta >= 0 ? 'positive' : 'negative'}">${delta >= 0 ? '+' : ''}${delta}</small>` : ''}
+    `;
+    return this;
+  }
+}
+
+export default MetricCard;
+```
+
+### Main App Orchestration
+
+**app.js** - Wires everything together:
+```javascript
+import DataLoader from './utils/DataLoader.js';
+import Dropdown from './utils/Dropdown.js';
+import MasteryTimeline from './components/MasteryTimeline.js';
+import SkillRadar from './components/SkillRadar.js';
+// ... import all 24 components
+
+class DashboardApp {
+  constructor() {
+    this.components = {};
+    this.currentStudent = null;
+  }
+
+  async init() {
+    // Initialize student selector
+    const students = await DataLoader.load('student_list.json');
+    const selector = new Dropdown('student-selector', {
+      label: 'Select Student',
+      onChange: (studentId) => this.onStudentChange(studentId)
+    });
+    selector.render(students.map(s => ({
+      value: s.user_id,
+      label: s.name || s.user_id
+    })), students[0].user_id);
+
+    // Initialize Section 1 components
+    await this.initSection1();
+
+    // Initialize other sections (lazy-loaded)
+    this.setupLazyLoading();
+  }
+
+  async initSection1() {
+    const data = await DataLoader.load('mastery_timeline.json');
+
+    this.components.masteryTimeline = new MasteryTimeline('mastery-timeline', {
+      animationDuration: 300
+    });
+    await this.components.masteryTimeline.render(data);
+
+    this.components.skillRadar = new SkillRadar('skill-radar');
+    await this.components.skillRadar.render(data);
+
+    // ... initialize other Section 1 components
+  }
+
+  async onStudentChange(studentId) {
+    this.currentStudent = studentId;
+    // Reload data for new student and update all components
+    const data = await DataLoader.load(`student_${studentId}.json`);
+
+    Object.values(this.components).forEach(component => {
+      if (component.update) {
+        component.update(data);
+      }
+    });
+  }
+
+  setupLazyLoading() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.dataset.loaded) {
+          const section = entry.target.dataset.section;
+          this.loadSection(section);
+          entry.target.dataset.loaded = 'true';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('[data-section]').forEach(el => observer.observe(el));
+  }
+
+  async loadSection(sectionName) {
+    switch(sectionName) {
+      case 'recommendations':
+        await this.initSection2();
+        break;
+      case 'models':
+        await this.initSection3();
+        break;
+      // ... other sections
+    }
+  }
+}
+
+// Initialize app when DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  const app = new DashboardApp();
+  app.init();
+});
+```
+
+### Benefits of Modular Architecture
+
+1. **Reusability** - Each component can be used multiple times with different data/config
+2. **Testability** - Each component can be unit tested independently
+3. **Maintainability** - Changes to one component don't affect others
+4. **Composability** - Combine components to create complex dashboards
+5. **Lazy Loading** - Load sections on-demand for faster initial page load
+6. **Configurability** - Each component accepts options for customization
+7. **Consistency** - Shared utilities ensure consistent UX (transitions, themes)
 
 ## Animation & Interactivity Philosophy
 
@@ -259,49 +599,6 @@ Visualizations tell dynamic stories through:
 
 ---
 
-## Project Structure
-
-```
-docs/
-├── index.html                          # Main landing page (redesign from index.md)
-├── css/
-│   └── styles.css                      # Dark theme, responsive layout
-├── js/
-│   ├── app.js                          # Main orchestration (data loading, router)
-│   ├── section1_students.js            # Visualizations 1.1-1.6
-│   ├── section2_recommendations.js     # Visualizations 2.1-2.3
-│   ├── section3_models.js              # Visualizations 3.1-3.5
-│   ├── section4_quality.js             # Visualizations 4.1-4.6
-│   ├── section5_pipeline.js            # Visualizations 5.1-5.4
-│   └── utils.js                        # Shared helpers (dropdowns, metric cards, transitions)
-├── data/
-│   ├── student_dashboard.json
-│   ├── mastery_timeline.json
-│   ├── explainability_sample.json
-│   ├── skill_radar.json
-│   ├── gaming_alerts.json
-│   ├── attention_heatmap.json
-│   ├── rl_recommendations.json
-│   ├── rec_comparison.json
-│   ├── training_metrics.json
-│   ├── attention_network.json
-│   ├── item_health.json
-│   ├── feature_importance.json
-│   ├── pipeline_flow.json
-│   ├── coverage_heatmap.json
-│   ├── sequence_quality.json
-│   ├── split_integrity.json
-│   ├── schema_validation.json
-│   ├── joinability_metrics.json
-│   ├── lineage_graph.json
-│   ├── throughput_metrics.json
-│   ├── join_overview.json
-│   └── drift_alerts.json
-└── scripts/
-    └── export_all_visuals.py          # Generate all 24 JSON files from parquet
-```
-
----
 
 ## Data Export Strategy
 
@@ -376,63 +673,114 @@ All JSON files generated by `docs/scripts/export_all_visuals.py`:
 - Each JSON < 500KB
 - Valid JSON syntax (test with `jq`)
 
-### Phase 3: Redesign HTML Landing Page
-**Goal:** Replace `index.md` with rich `index.html`
+### Phase 3: Build Utility Modules
+**Goal:** Create reusable utility classes (foundation for all components)
+
+**Tasks:**
+1. Create `docs/js/utils/DataLoader.js`:
+   - Fetch JSON with caching
+   - Error handling for missing files
+   - Cache invalidation method
+2. Create `docs/js/utils/PlotlyHelpers.js`:
+   - Dark theme config
+   - Smooth transition defaults
+   - Interactive config (zoom/pan)
+   - Hover template formatters
+3. Create `docs/js/utils/Dropdown.js`:
+   - Reusable dropdown component
+   - Event handling (onChange callback)
+   - Styling helpers
+4. Create `docs/js/utils/MetricCard.js`:
+   - Metric display component
+   - Formatting helpers (%, currency, etc.)
+   - Delta indicators (positive/negative)
+
+**Verification:**
+- All utility modules export correctly (ES6 modules)
+- DataLoader caches JSON correctly
+- Dropdown triggers onChange callback
+- MetricCard renders with correct formatting
+
+### Phase 4: Redesign HTML Landing Page
+**Goal:** Replace `index.md` with rich `index.html` supporting modular components
 
 **Tasks:**
 1. Create `docs/index.html` with:
+   - ES6 module support (`<script type="module">`)
    - Navigation tabs (5 sections)
-   - Section containers (`<div id="section-{1-5}">`)
+   - Section containers with component mount points
    - Plotly.js CDN (v2.32)
-   - Import all JS modules
+   - Loading spinners for each section
 2. Add interactive navigation:
    - Click tab → scroll to section
    - Sticky header with section links
+   - Active tab highlighting
 3. Responsive design (mobile/tablet/desktop)
-
-### Phase 4: Implement Section 1 (Student Insights)
-**Goal:** Build all 6 visualizations (1.1-1.6)
-
-**Tasks:**
-1. Create `docs/js/section1_students.js`
-2. Implement:
-   - `renderStudentDashboard(data)` - dropdown, metrics, bar chart, table
-   - `renderMasteryTimeline(data)` - animated line chart
-   - `renderExplainabilityCard(data)` - rich text card with emoji
-   - `renderSkillRadar(data)` - polar scatter
-   - `renderGamingConsole(data)` - alert panel, table
-   - `renderAttentionHeatmap(data)` - 2D heatmap with zoom
-3. Wire up student selector dropdown to update all 6 charts
-4. Add smooth transitions (500ms)
+4. Define component mount points (container divs with IDs)
 
 **Verification:**
-- All 6 visualizations render without errors
-- Student dropdown filters all charts
-- Animations play smoothly
-- Hover details show correctly
+- HTML loads without errors
+- ES6 modules work (check browser console)
+- Navigation scrolls to sections
+- Responsive on mobile/tablet/desktop
 
-### Phase 5: Implement Section 2 (Recommendations)
-**Goal:** Build all 3 visualizations (2.1-2.3)
+### Phase 5: Build Component Library - Section 1 (Student Insights)
+**Goal:** Create all 6 modular visualization components (1.1-1.6)
 
 **Tasks:**
-1. Create `docs/js/section2_recommendations.js`
-2. Implement:
-   - `renderRLExplorer(data)` - table, metrics
-   - `renderUCBGauge(data)` - animated gauge
-   - `renderRecComparison(data)` - side-by-side table
-3. Wire up student selector to update all charts
-4. Animate gauge needle on student change
+1. Create component classes:
+   - `docs/js/components/StudentDashboard.js` (1.1)
+   - `docs/js/components/MasteryTimeline.js` (1.2)
+   - `docs/js/components/ExplainabilityCard.js` (1.3)
+   - `docs/js/components/SkillRadar.js` (1.4)
+   - `docs/js/components/GamingConsole.js` (1.5)
+   - `docs/js/components/AttentionHeatmap.js` (1.6)
+2. Each component implements:
+   - `constructor(containerId, options)`
+   - `async render(data)` - initial render
+   - `update(newData)` - smooth transition update
+   - `destroy()` - cleanup
+3. Wire components in `app.js`:
+   - Initialize all Section 1 components
+   - Connect to student dropdown
+   - Handle data loading errors
+
+**Verification:**
+- All 6 components render without errors
+- Student dropdown updates all components
+- Animations smooth (300-500ms transitions)
+- Hover details show correctly
+- No memory leaks (test with Chrome DevTools)
+
+### Phase 6: Build Component Library - Section 2 (Recommendations)
+**Goal:** Create all 3 modular visualization components (2.1-2.3)
+
+**Tasks:**
+1. Create component classes:
+   - `docs/js/components/RLExplorer.js` (2.1)
+   - `docs/js/components/UCBGauge.js` (2.2)
+   - `docs/js/components/RecComparison.js` (2.3)
+2. Wire components in `app.js`:
+   - Lazy-load Section 2 when scrolled into view
+   - Connect to student dropdown
+3. Add gauge animation on student change
 
 **Verification:**
 - RL recommendations display correctly
-- Gauge animates smoothly
-- Comparison highlights differences
+- Gauge animates smoothly (needle transition)
+- Comparison highlights differences (color coding)
+- Lazy loading works (check Network tab)
 
-### Phase 6: Implement Section 3 (Model Performance)
-**Goal:** Build all 5 visualizations (3.1-3.5)
+### Phase 7: Build Component Library - Section 3 (Model Performance)
+**Goal:** Create all 5 modular visualization components (3.1-3.5)
 
 **Tasks:**
-1. Create `docs/js/section3_models.js`
+1. Create component classes:
+   - `docs/js/components/TrainingDashboard.js` (3.1)
+   - `docs/js/components/AttentionNetwork.js` (3.2)
+   - `docs/js/components/ItemHealthDashboard.js` (3.3)
+   - `docs/js/components/TrainingCurves.js` (3.4)
+   - `docs/js/components/FeatureImportance.js` (3.5)
 2. Implement:
    - `renderTrainingDashboard(data)` - dual-pane animated lines
    - `renderAttentionNetwork(data)` - force-directed graph
@@ -470,11 +818,35 @@ All JSON files generated by `docs/scripts/export_all_visuals.py`:
 - Schema validation runs all checks
 - Venn diagram renders correctly
 
-### Phase 8: Implement Section 5 (Pipeline Health)
-**Goal:** Build all 4 visualizations (5.1-5.4)
+### Phase 8: Build Component Library - Section 4 (Data Quality)
+**Goal:** Create all 6 modular visualization components (4.1-4.6)
 
 **Tasks:**
-1. Create `docs/js/section5_pipeline.js`
+1. Create component classes:
+   - `docs/js/components/PipelineFlow.js` (4.1)
+   - `docs/js/components/CoverageHeatmap.js` (4.2)
+   - `docs/js/components/SequenceQuality.js` (4.3)
+   - `docs/js/components/SplitIntegrity.js` (4.4)
+   - `docs/js/components/SchemaValidation.js` (4.5)
+   - `docs/js/components/JoinabilityGauge.js` (4.6)
+2. Wire components in `app.js` with lazy loading
+
+**Verification:**
+- Sankey flows correctly with animations
+- Coverage heatmap highlights sparse regions
+- Split integrity shows no user overlap
+- Schema validation runs all checks
+- Venn diagram renders correctly
+
+### Phase 9: Build Component Library - Section 5 (Pipeline Health)
+**Goal:** Create all 4 modular visualization components (5.1-5.4)
+
+**Tasks:**
+1. Create component classes:
+   - `docs/js/components/LineageMap.js` (5.1)
+   - `docs/js/components/ThroughputMonitoring.js` (5.2)
+   - `docs/js/components/JoinOverview.js` (5.3)
+   - `docs/js/components/DriftAlerts.js` (5.4)
 2. Implement:
    - `renderLineageMap(data)` - interactive dependency graph
    - `renderThroughputMonitoring(data)` - metrics + bar chart
@@ -489,7 +861,7 @@ All JSON files generated by `docs/scripts/export_all_visuals.py`:
 - Join overview shows user overlaps
 - Drift alerts highlight high-drift items
 
-### Phase 9: Polish & Optimization
+### Phase 10: Polish & Optimization
 **Goal:** Performance, UX, accessibility
 
 **Tasks:**
@@ -520,7 +892,7 @@ All JSON files generated by `docs/scripts/export_all_visuals.py`:
 - Works on mobile/tablet/desktop
 - Passes basic accessibility checks (axe DevTools)
 
-### Phase 10: Deploy & Document
+### Phase 11: Deploy & Document
 **Goal:** Go live on GitHub Pages
 
 **Tasks:**
