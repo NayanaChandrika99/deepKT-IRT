@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>deepKT + Wide & Deep IRT Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>deepKT + Wide & Deep IRT Dashboard</h1>
+    <p class="subtitle">Twin-engine learning analytics: SAKT readiness tracking + WD-IRT item health + LinUCB recommendations</p>
+  </header>
+
+  <main>
+    <!-- Section 1: Student Insights -->
+    <section id="section-1">
+      <h2>Section 1: Student Insights</h2>
+
+      <div class="viz-card">
+        <h3>1.1 Student Dashboard</h3>
+        <div class="metrics-row">
+          <div id="student-avg-mastery"></div>
+          <div id="student-total-skills"></div>
+          <div id="student-confidence"></div>
+        </div>
+        <div id="student-dashboard-chart"></div>
+        <div id="student-dashboard-activity"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>1.2 Student Mastery Timeline</h3>
+        <div id="mastery-timeline"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>1.3 Explainability Card</h3>
+        <div id="explainability-card"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>1.4 Skill Radar Chart</h3>
+        <div id="skill-radar"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>1.5 Gaming Detection Console</h3>
+        <div id="gaming-console"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>1.6 Attention Heatmap</h3>
+        <div id="attention-heatmap"></div>
+      </div>
+    </section>
+
+    <!-- Section 2: Recommendations -->
+    <section id="section-2">
+      <h2>Section 2: Recommendations</h2>
+
+      <div class="viz-card">
+        <h3>2.1 RL Recommendation Explorer</h3>
+        <div id="rl-recommendations"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>2.2 UCB Confidence Gauge</h3>
+        <div id="ucb-gauge"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>2.3 RL vs Rule-Based Comparison</h3>
+        <div id="rec-comparison"></div>
+      </div>
+    </section>
+
+    <!-- Section 3: Model Performance -->
+    <section id="section-3">
+      <h2>Section 3: Model Performance</h2>
+
+      <div class="viz-card">
+        <h3>3.1 Training Dashboard</h3>
+        <div id="training-metrics"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>3.2 Attention Mapping Visualization</h3>
+        <div id="attention-network"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>3.3 Item Health Dashboard</h3>
+        <div id="item-health"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>3.4 Training Curves (Deep Dive)</h3>
+        <div id="training-curves"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>3.5 Feature Importance (WD-IRT)</h3>
+        <div id="feature-importance"></div>
+      </div>
+    </section>
+
+    <!-- Section 4: Data Quality -->
+    <section id="section-4">
+      <h2>Section 4: Data Quality</h2>
+
+      <div class="viz-card">
+        <h3>4.1 Data Pipeline Flow</h3>
+        <div id="pipeline-flow"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>4.2 User×Skill Coverage Heatmap</h3>
+        <div id="coverage-heatmap"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>4.3 Sequence Quality Metrics</h3>
+        <div id="sequence-quality"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>4.4 Train/Val/Test Split Integrity</h3>
+        <div id="split-integrity"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>4.5 Schema Validation Results</h3>
+        <div id="schema-validation"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>4.6 Joinability Score Gauge</h3>
+        <div id="joinability-gauge"></div>
+      </div>
+    </section>
+
+    <!-- Section 5: Pipeline Health -->
+    <section id="section-5">
+      <h2>Section 5: Pipeline Health</h2>
+
+      <div class="viz-card">
+        <h3>5.1 Data Lineage Map</h3>
+        <div id="lineage-map"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>5.2 Pipeline Throughput Monitoring</h3>
+        <div id="throughput-monitoring"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>5.3 Join Overlap Analysis</h3>
+        <div id="join-overview"></div>
+      </div>
+
+      <div class="viz-card">
+        <h3>5.4 Item Drift Alerts</h3>
+        <div id="drift-alerts"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Data refreshed from parquet sources via <code>docs/scripts/export_all_visuals.py</code></p>
+    <p>Graceful fallbacks to mock data when sources unavailable</p>
+  </footer>
+
+  <script type="module" src="js/app-modular.js"></script>
+</body>
+</html>
