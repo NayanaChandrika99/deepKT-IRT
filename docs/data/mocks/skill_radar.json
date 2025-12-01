@@ -1,0 +1,27 @@
+{
+  "data": [
+    {
+      "user_id": "demo_001",
+      "skills": [
+        "algebra",
+        "geometry",
+        "fractions",
+        "decimals",
+        "ratios",
+        "percentages"
+      ],
+      "mastery_values": [
+        0.85,
+        0.72,
+        0.68,
+        0.91,
+        0.55,
+        0.78
+      ]
+    }
+  ],
+  "metadata": {
+    "max_skills": 8,
+    "mock": true
+  }
+}

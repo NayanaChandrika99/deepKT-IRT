@@ -1,0 +1,56 @@
+{
+  "data": [
+    {
+      "user_id": "demo_001",
+      "avg_mastery": 0.73,
+      "total_skills": 12,
+      "confidence_score": 0.15,
+      "skill_distribution": [
+        0.8,
+        0.7,
+        0.9,
+        0.6,
+        0.75,
+        0.85
+      ],
+      "recent_activity": [
+        {
+          "skill": "algebra",
+          "mastery": 0.8,
+          "timestamp": "2024-11-30T10:00:00"
+        },
+        {
+          "skill": "geometry",
+          "mastery": 0.7,
+          "timestamp": "2024-11-30T10:05:00"
+        }
+      ]
+    },
+    {
+      "user_id": "demo_002",
+      "avg_mastery": 0.45,
+      "total_skills": 8,
+      "confidence_score": 0.22,
+      "skill_distribution": [
+        0.5,
+        0.4,
+        0.6,
+        0.3,
+        0.45,
+        0.5
+      ],
+      "recent_activity": [
+        {
+          "skill": "fractions",
+          "mastery": 0.5,
+          "timestamp": "2024-11-30T09:00:00"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "total_students": 2,
+    "last_updated": "2025-11-30T21:39:52.952846",
+    "mock": true
+  }
+}

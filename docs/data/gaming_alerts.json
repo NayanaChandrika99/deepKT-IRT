@@ -1,0 +1,20 @@
+{
+  "data": [
+    {
+      "user_id": "flagged_001",
+      "rapid_guess_rate": 0.45,
+      "help_abuse_pct": 0.3,
+      "severity": "high"
+    },
+    {
+      "user_id": "flagged_002",
+      "rapid_guess_rate": 0.15,
+      "help_abuse_pct": 0.1,
+      "severity": "low"
+    }
+  ],
+  "metadata": {
+    "total_flagged": 2,
+    "mock": true
+  }
+}
