@@ -76,7 +76,7 @@ class StudentDashboard {
     const container = document.getElementById(`${this.containerId}-chart`);
     if (!container) return;
 
-    const distribution = studentData.mastery_distribution || [];
+    const distribution = studentData.skill_distribution || studentData.mastery_distribution || [];
 
     const trace = {
       x: distribution.map((_, i) => `${(i * 0.05).toFixed(2)}-${((i + 1) * 0.05).toFixed(2)}`),
@@ -130,9 +130,9 @@ class StudentDashboard {
           ${activities.map(a => `
             <tr>
               <td>${a.item_id || 'N/A'}</td>
-              <td>${a.skill_name || a.skill_id || 'N/A'}</td>
-              <td class="correctness ${a.correct ? 'correct' : 'incorrect'}">
-                ${a.correct ? '✅' : '❌'}
+              <td>${a.skill || a.skill_name || a.skill_id || 'N/A'}</td>
+              <td class="correctness ${a.correct !== undefined ? (a.correct ? 'correct' : 'incorrect') : ''}">
+                ${a.correct !== undefined ? (a.correct ? '✅' : '❌') : (a.mastery !== undefined ? a.mastery.toFixed(2) : 'N/A')}
               </td>
               <td>${a.timestamp || 'N/A'}</td>
             </tr>
