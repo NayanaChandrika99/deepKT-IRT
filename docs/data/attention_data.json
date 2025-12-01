@@ -1,0 +1,38 @@
+{
+  "data": {
+    "user_id": "1006OOQBE9",
+    "position": 6,
+    "influences": [
+      {
+        "correct": false,
+        "item_id": "1IVTOQT7GK",
+        "position": 1,
+        "weight": 0.44788795709609985
+      },
+      {
+        "correct": true,
+        "item_id": "2RNRZF1BSI",
+        "position": 4,
+        "weight": 0.24779276549816132
+      },
+      {
+        "correct": true,
+        "item_id": "ZK1I2M76F",
+        "position": 0,
+        "weight": 0.0681036114692688
+      },
+      {
+        "correct": true,
+        "item_id": "2FPPD9076Y",
+        "position": 5,
+        "weight": 0.06461834907531738
+      },
+      {
+        "correct": true,
+        "item_id": "1IVTOQT7GK",
+        "position": 2,
+        "weight": 0.0437207967042923
+      }
+    ]
+  }
+}

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCB Confidence Gauge - RL Exploration</title>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            margin: 0 0 0.5rem 0;
+            color: #2d3748;
+            font-size: 1.75rem;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 2rem;
+        }
+
+        #gauge-container {
+            min-height: 400px;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .metric {
+            background: #f7fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-top: 0.25rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 0.5rem;
+        }
+
+        .badge.explore {
+            background: #ffd93d;
+            color: #744210;
+        }
+
+        .badge.exploit {
+            background: #48bb78;
+            color: white;
+        }
+
+        .explanation {
+            background: #edf2f7;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎯 UCB Confidence Gauge</h1>
+        <p class="subtitle">Reinforcement Learning: Exploration vs Exploitation</p>
+
+        <div id="gauge-container"></div>
+
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-label">Expected Reward</div>
+                <div class="metric-value" id="expected-value">--</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Uncertainty</div>
+                <div class="metric-value" id="uncertainty-value">--</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Mode</div>
+                <div class="metric-value">
+                    <span class="badge" id="mode-badge">--</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="explanation" id="explanation">
+            Loading...
+        </div>
+    </div>
+
+    <script>
+        // Mock data for prototype if file load fails
+        const MOCK_DATA = {
+            data: [{
+                user_id: "mock_user",
+                top_recommendation: {
+                    item_id: "item_123",
+                    expected_reward: 0.75,
+                    uncertainty: 0.15,
+                    ucb_score: 0.90,
+                    confidence_pct: 60,
+                    mode: "exploit"
+                }
+            }]
+        };
+
+        // Load data and render
+        async function init() {
+            try {
+                // Try to load real data, fall back to mock
+                let data;
+                try {
+                    const response = await fetch('../data/ucb_gauge.json');
+                    if (response.ok) {
+                        data = await response.json();
+                    } else {
+                        throw new Error('File not found');
+                    }
+                } catch (e) {
+                    console.warn('Using mock data:', e);
+                    data = MOCK_DATA;
+                }
+
+                if (!data.data || data.data.length === 0) {
+                    throw new Error('No data available');
+                }
+
+                const studentData = data.data[0];
+                const rec = studentData.top_recommendation;
+
+                renderGauge(rec.confidence_pct);
+                updateMetrics(rec);
+                updateExplanation(rec);
+
+            } catch (error) {
+                console.error('Failed to load data:', error);
+                document.getElementById('explanation').textContent =
+                    '⚠️ Failed to load visualization data.';
+            }
+        }
+
+        function renderGauge(confidence) {
+            const trace = {
+                type: 'indicator',
+                mode: 'gauge+number',
+                value: confidence,
+                title: { text: 'Confidence Level', font: { size: 18 } },
+                number: { suffix: '%', font: { size: 36 } },
+                gauge: {
+                    axis: { range: [0, 100], tickwidth: 2 },
+                    bar: { color: confidence > 70 ? '#48bb78' : (confidence > 40 ? '#ffd93d' : '#fc8181') },
+                    steps: [
+                        { range: [0, 40], color: '#fee' },
+                        { range: [40, 70], color: '#ffd93d33' },
+                        { range: [70, 100], color: '#48bb7833' }
+                    ],
+                    threshold: {
+                        line: { color: '#667eea', width: 4 },
+                        thickness: 0.75,
+                        value: confidence
+                    }
+                }
+            };
+
+            const layout = {
+                height: 400,
+                margin: { t: 50, b: 50, l: 50, r: 50 },
+                font: { family: 'Inter, sans-serif' }
+            };
+
+            const config = {
+                displayModeBar: false,
+                responsive: true
+            };
+
+            Plotly.newPlot('gauge-container', [trace], layout, config);
+        }
+
+        function updateMetrics(rec) {
+            document.getElementById('expected-value').textContent =
+                (rec.expected_reward * 100).toFixed(1) + '%';
+            document.getElementById('uncertainty-value').textContent =
+                (rec.uncertainty * 100).toFixed(1) + '%';
+
+            const badge = document.getElementById('mode-badge');
+            badge.textContent = rec.mode;
+            badge.className = 'badge ' + rec.mode;
+        }
+
+        function updateExplanation(rec) {
+            const isExploring = rec.mode === 'explore';
+
+            const text = isExploring
+                ? `🔍 <strong>Exploring:</strong> The system is trying item <code>${rec.item_id}</code> because uncertainty is high (${(rec.uncertainty * 100).toFixed(1)}%). This helps gather more information about items we haven't tried much.`
+                : `✅ <strong>Exploiting:</strong> The system is confident about item <code>${rec.item_id}</code> with ${(rec.expected_reward * 100).toFixed(1)}% expected success and low uncertainty (${(rec.uncertainty * 100).toFixed(1)}%). Sticking with what works!`;
+
+            document.getElementById('explanation').innerHTML = text;
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+
+</html>

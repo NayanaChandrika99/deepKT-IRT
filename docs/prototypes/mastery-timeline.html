@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Mastery Timeline - Animated Evolution</title>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin: 0 0 0.5rem 0;
+            color: #2d3748;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        button {
+            background: #0072ff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #0058cc;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #chart {
+            min-height: 600px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat {
+            background: #f7fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0072ff;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #718096;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📈 Student Mastery Timeline</h1>
+        <p class="subtitle">Watch skill mastery evolve through interactions</p>
+
+        <div class="controls">
+            <button id="play-btn" onclick="playAnimation()">▶ Play</button>
+            <button id="pause-btn" onclick="pauseAnimation()" disabled>⏸ Pause</button>
+            <button onclick="resetAnimation()">↻ Reset</button>
+            <select id="student-select" onchange="switchStudent()">
+                <option value="0">Loading...</option>
+            </select>
+        </div>
+
+        <div id="chart"></div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="current-position">0</div>
+                <div class="stat-label">Current Interaction</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="skills-covered">0</div>
+                <div class="stat-label">Skills Covered</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="avg-mastery">0.0</div>
+                <div class="stat-label">Avg Mastery</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock data for prototype if file load fails
+        const MOCK_DATA = {
+            data: [
+                { user_id: "u1", skill_id: "Algebra", sequence_position: 1, mastery_score: 0.2 },
+                { user_id: "u1", skill_id: "Algebra", sequence_position: 2, mastery_score: 0.3 },
+                { user_id: "u1", skill_id: "Algebra", sequence_position: 3, mastery_score: 0.5 },
+                { user_id: "u1", skill_id: "Geometry", sequence_position: 4, mastery_score: 0.1 },
+                { user_id: "u1", skill_id: "Geometry", sequence_position: 5, mastery_score: 0.2 },
+                { user_id: "u1", skill_id: "Algebra", sequence_position: 6, mastery_score: 0.6 },
+                { user_id: "u2", skill_id: "Algebra", sequence_position: 1, mastery_score: 0.4 }
+            ]
+        };
+
+        let rawData = null;
+        let currentStudent = null;
+        let isPlaying = false;
+        let animationFrame = 0;
+
+        async function init() {
+            try {
+                let data;
+                try {
+                    const response = await fetch('../data/mastery_timeline.json');
+                    if (response.ok) {
+                        data = await response.json();
+                    } else {
+                        throw new Error('File not found');
+                    }
+                } catch (e) {
+                    console.warn('Using mock data:', e);
+                    data = MOCK_DATA;
+                }
+
+                rawData = data;
+
+                // Get unique students
+                const students = [...new Set(data.data.map(d => d.user_id))];
+                const select = document.getElementById('student-select');
+                select.innerHTML = students.map((s, i) =>
+                    `<option value="${i}">${s}</option>`
+                ).join('');
+
+                // Load first student
+                switchStudent();
+
+            } catch (error) {
+                console.error('Failed to load data:', error);
+            }
+        }
+
+        function switchStudent() {
+            const select = document.getElementById('student-select');
+            const studentIndex = parseInt(select.value);
+            const students = [...new Set(rawData.data.map(d => d.user_id))];
+            const studentId = students[studentIndex];
+
+            currentStudent = rawData.data.filter(d => d.user_id === studentId);
+            resetAnimation();
+            renderTimeline();
+        }
+
+        function renderTimeline() {
+            if (!currentStudent || currentStudent.length === 0) return;
+
+            // Group by skill
+            const skillGroups = {};
+            currentStudent.forEach(d => {
+                if (!skillGroups[d.skill_id]) {
+                    skillGroups[d.skill_id] = [];
+                }
+                skillGroups[d.skill_id].push(d);
+            });
+
+            // Create traces
+            const traces = Object.entries(skillGroups).map(([skill, points]) => ({
+                x: points.map(p => p.sequence_position),
+                y: points.map(p => p.mastery_score),
+                mode: 'lines+markers',
+                name: skill,
+                line: { width: 3 },
+                marker: { size: 8 }
+            }));
+
+            const layout = {
+                title: 'Mastery Evolution by Skill',
+                xaxis: {
+                    title: 'Interaction Sequence',
+                    range: [0, Math.max(...currentStudent.map(d => d.sequence_position))]
+                },
+                yaxis: {
+                    title: 'Mastery Score',
+                    range: [0, 1]
+                },
+                height: 600,
+                hovermode: 'closest',
+                showlegend: true,
+                legend: { x: 1.05, y: 1 }
+            };
+
+            const config = {
+                responsive: true,
+                displaylogo: false
+            };
+
+            Plotly.newPlot('chart', traces, layout, config);
+        }
+
+        function playAnimation() {
+            isPlaying = true;
+            document.getElementById('play-btn').disabled = true;
+            document.getElementById('pause-btn').disabled = false;
+
+            const maxPosition = Math.max(...currentStudent.map(d => d.sequence_position));
+
+            const interval = setInterval(() => {
+                if (!isPlaying || animationFrame >= maxPosition) {
+                    clearInterval(interval);
+                    pauseAnimation();
+                    return;
+                }
+
+                animationFrame++;
+                updateChartFrame(animationFrame);
+                updateStats(animationFrame);
+            }, 300);
+        }
+
+        function pauseAnimation() {
+            isPlaying = false;
+            document.getElementById('play-btn').disabled = false;
+            document.getElementById('pause-btn').disabled = true;
+        }
+
+        function resetAnimation() {
+            pauseAnimation();
+            animationFrame = 0;
+            updateStats(0);
+        }
+
+        function updateChartFrame(frame) {
+            const filteredData = currentStudent.filter(d => d.sequence_position <= frame);
+
+            const skillGroups = {};
+            filteredData.forEach(d => {
+                if (!skillGroups[d.skill_id]) skillGroups[d.skill_id] = [];
+                skillGroups[d.skill_id].push(d);
+            });
+
+            const traces = Object.entries(skillGroups).map(([skill, points]) => ({
+                x: points.map(p => p.sequence_position),
+                y: points.map(p => p.mastery_score),
+                mode: 'lines+markers',
+                name: skill,
+                line: { width: 3 },
+                marker: { size: 8 }
+            }));
+
+            Plotly.react('chart', traces);
+        }
+
+        function updateStats(position) {
+            document.getElementById('current-position').textContent = position;
+
+            const dataUpToPosition = currentStudent.filter(d => d.sequence_position <= position);
+            const skills = new Set(dataUpToPosition.map(d => d.skill_id));
+            document.getElementById('skills-covered').textContent = skills.size;
+
+            if (dataUpToPosition.length > 0) {
+                const avgMastery = dataUpToPosition.reduce((sum, d) => sum + d.mastery_score, 0) / dataUpToPosition.length;
+                document.getElementById('avg-mastery').textContent = avgMastery.toFixed(3);
+            }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

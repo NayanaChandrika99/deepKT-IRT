@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Debug Dashboard</title>
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+<body>
+  <h1>Debug: Testing Each Component</h1>
+  <div id="debug-output" style="background: #f0f0f0; padding: 20px; margin: 20px 0; font-family: monospace;"></div>
+
+  <h2>1.2 Mastery Timeline</h2>
+  <div id="mastery-timeline" style="border: 1px solid red; min-height: 400px;"></div>
+
+  <h2>1.3 Explainability Card</h2>
+  <div id="explainability-card" style="border: 1px solid red; min-height: 200px;"></div>
+
+  <h2>1.4 Skill Radar</h2>
+  <div id="skill-radar" style="border: 1px solid red; min-height: 400px;"></div>
+
+  <script type="module">
+    const log = (msg) => {
+      console.log(msg);
+      const div = document.getElementById('debug-output');
+      div.innerHTML += msg + '<br>';
+    };
+
+    log('=== Starting Debug ===');
+
+    try {
+      log('1. Importing MasteryTimeline...');
+      const { default: MasteryTimeline } = await import('./js/components/MasteryTimeline.js');
+      log('✅ MasteryTimeline imported');
+
+      log('2. Creating MasteryTimeline instance...');
+      const timeline = new MasteryTimeline('mastery-timeline');
+      log('✅ Instance created');
+
+      log('3. Rendering MasteryTimeline...');
+      await timeline.render();
+      log('✅ MasteryTimeline rendered');
+
+    } catch (error) {
+      log('❌ Error: ' + error.message);
+      log('Stack: ' + error.stack);
+    }
+
+    try {
+      log('4. Importing ExplainabilityCard...');
+      const { default: ExplainabilityCard } = await import('./js/components/ExplainabilityCard.js');
+      log('✅ ExplainabilityCard imported');
+
+      log('5. Creating ExplainabilityCard instance...');
+      const card = new ExplainabilityCard('explainability-card');
+      log('✅ Instance created');
+
+      log('6. Rendering ExplainabilityCard...');
+      await card.render();
+      log('✅ ExplainabilityCard rendered');
+
+    } catch (error) {
+      log('❌ Error: ' + error.message);
+      log('Stack: ' + error.stack);
+    }
+
+    try {
+      log('7. Importing SkillRadar...');
+      const { default: SkillRadar } = await import('./js/components/SkillRadar.js');
+      log('✅ SkillRadar imported');
+
+      log('8. Creating SkillRadar instance...');
+      const radar = new SkillRadar('skill-radar');
+      log('✅ Instance created');
+
+      log('9. Rendering SkillRadar...');
+      await radar.render();
+      log('✅ SkillRadar rendered');
+
+    } catch (error) {
+      log('❌ Error: ' + error.message);
+      log('Stack: ' + error.stack);
+    }
+
+    log('=== Debug Complete ===');
+  </script>
+</body>
+</html>

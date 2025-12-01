@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Test</title>
+</head>
+<body>
+  <h1>Simple JavaScript Test</h1>
+  <div id="output">If you see this, HTML loaded but JavaScript didn't run</div>
+
+  <script>
+    console.log('===== BASIC TEST STARTED =====');
+    document.getElementById('output').innerHTML = '<p style="color: green;">✅ JavaScript is working!</p>';
+    console.log('✅ Basic JavaScript executed');
+  </script>
+
+  <script type="module">
+    console.log('===== MODULE TEST STARTED =====');
+    document.getElementById('output').innerHTML += '<p style="color: blue;">✅ ES6 Modules working!</p>';
+    console.log('✅ ES6 Module executed');
+
+    // Try to fetch data
+    try {
+      const response = await fetch('data/student_dashboard.json');
+      const data = await response.json();
+      console.log('✅ Data loaded:', data);
+      document.getElementById('output').innerHTML += '<p style="color: purple;">✅ Data fetch working!</p>';
+      document.getElementById('output').innerHTML += '<pre>' + JSON.stringify(data, null, 2).substring(0, 500) + '...</pre>';
+    } catch (error) {
+      console.error('❌ Data fetch failed:', error);
+      document.getElementById('output').innerHTML += '<p style="color: red;">❌ Data fetch failed: ' + error.message + '</p>';
+    }
+  </script>
+</body>
+</html>

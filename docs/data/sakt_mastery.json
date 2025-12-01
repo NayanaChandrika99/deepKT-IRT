@@ -1,0 +1,1207 @@
+{
+  "data": {
+    "student_id": "5ARJGLM5K",
+    "interactions": [
+      {
+        "position": 0,
+        "item_id": "1ZZD3NQ3SE",
+        "response": 1,
+        "mastery": 0.5
+      },
+      {
+        "position": 1,
+        "item_id": "57OA9HCVR",
+        "response": 1,
+        "mastery": 0.9780053496360779
+      },
+      {
+        "position": 2,
+        "item_id": "17JNNSC2LL",
+        "response": 1,
+        "mastery": 0.9523937702178955
+      },
+      {
+        "position": 3,
+        "item_id": "2HH3FUKL3Z",
+        "response": 1,
+        "mastery": 0.9663315415382385
+      },
+      {
+        "position": 4,
+        "item_id": "2JPETKDDTY",
+        "response": 1,
+        "mastery": 0.9258604645729065
+      },
+      {
+        "position": 5,
+        "item_id": "2HT2U1LG4G",
+        "response": 1,
+        "mastery": 0.9414001703262329
+      },
+      {
+        "position": 6,
+        "item_id": "B4K6DOQ88",
+        "response": 1,
+        "mastery": 0.812174916267395
+      },
+      {
+        "position": 7,
+        "item_id": "NCA9DBX6K",
+        "response": 1,
+        "mastery": 0.9527111053466797
+      },
+      {
+        "position": 8,
+        "item_id": "CL6N0HK4Y",
+        "response": 1,
+        "mastery": 0.9554197192192078
+      },
+      {
+        "position": 9,
+        "item_id": "2554INO1R2",
+        "response": 1,
+        "mastery": 0.944736123085022
+      },
+      {
+        "position": 10,
+        "item_id": "1IL47SAK5J",
+        "response": 1,
+        "mastery": 0.9741083383560181
+      },
+      {
+        "position": 11,
+        "item_id": "12DI3H5SF4",
+        "response": 1,
+        "mastery": 0.9563286304473877
+      },
+      {
+        "position": 12,
+        "item_id": "V0LC3EDG8",
+        "response": 1,
+        "mastery": 0.9090496301651001
+      },
+      {
+        "position": 13,
+        "item_id": "20A9B396V6",
+        "response": 1,
+        "mastery": 0.9033026695251465
+      },
+      {
+        "position": 14,
+        "item_id": "LQJXRMC2V",
+        "response": 0,
+        "mastery": 0.9400827288627625
+      },
+      {
+        "position": 15,
+        "item_id": "LQJXRMC2V",
+        "response": 1,
+        "mastery": 0.9491429328918457
+      },
+      {
+        "position": 16,
+        "item_id": "1OK50EBZCS",
+        "response": 1,
+        "mastery": 0.9438879489898682
+      },
+      {
+        "position": 17,
+        "item_id": "2BCY6BU4V",
+        "response": 1,
+        "mastery": 0.7461793422698975
+      },
+      {
+        "position": 18,
+        "item_id": "222PXFDVDV",
+        "response": 0,
+        "mastery": 0.9352310299873352
+      },
+      {
+        "position": 19,
+        "item_id": "222PXFDVDV",
+        "response": 1,
+        "mastery": 0.830335259437561
+      },
+      {
+        "position": 20,
+        "item_id": "K6NF1W36G",
+        "response": 0,
+        "mastery": 0.7761190533638
+      },
+      {
+        "position": 21,
+        "item_id": "K6NF1W36G",
+        "response": 1,
+        "mastery": 0.769021213054657
+      },
+      {
+        "position": 22,
+        "item_id": "1T06XXW773",
+        "response": 1,
+        "mastery": 0.716038167476654
+      },
+      {
+        "position": 23,
+        "item_id": "2AFZSZ9RBK",
+        "response": 1,
+        "mastery": 0.9399874806404114
+      },
+      {
+        "position": 24,
+        "item_id": "1WB2XV01AN",
+        "response": 1,
+        "mastery": 0.8572731614112854
+      },
+      {
+        "position": 25,
+        "item_id": "23V8UY1BTD",
+        "response": 1,
+        "mastery": 0.6969767808914185
+      },
+      {
+        "position": 26,
+        "item_id": "2CH0VFYNQU",
+        "response": 0,
+        "mastery": 0.8066347241401672
+      },
+      {
+        "position": 27,
+        "item_id": "2CH0VFYNQU",
+        "response": 1,
+        "mastery": 0.8257394433021545
+      },
+      {
+        "position": 28,
+        "item_id": "290BUOFZKQ",
+        "response": 1,
+        "mastery": 0.7925559282302856
+      },
+      {
+        "position": 29,
+        "item_id": "1W7RB2NQB4",
+        "response": 0,
+        "mastery": 0.8382232189178467
+      },
+      {
+        "position": 30,
+        "item_id": "1W7RB2NQB4",
+        "response": 1,
+        "mastery": 0.8095584511756897
+      },
+      {
+        "position": 31,
+        "item_id": "NA8WB12G3",
+        "response": 1,
+        "mastery": 0.8085496425628662
+      },
+      {
+        "position": 32,
+        "item_id": "1931VB99GG",
+        "response": 0,
+        "mastery": 0.9531432390213013
+      },
+      {
+        "position": 33,
+        "item_id": "1931VB99GG",
+        "response": 1,
+        "mastery": 0.6807531118392944
+      },
+      {
+        "position": 34,
+        "item_id": "210UWYT3FO",
+        "response": 0,
+        "mastery": 0.6292892098426819
+      },
+      {
+        "position": 35,
+        "item_id": "210UWYT3FO",
+        "response": 1,
+        "mastery": 0.7669657468795776
+      },
+      {
+        "position": 36,
+        "item_id": "2D9R44GC56",
+        "response": 1,
+        "mastery": 0.7540018558502197
+      },
+      {
+        "position": 37,
+        "item_id": "1APT6U4C47",
+        "response": 1,
+        "mastery": 0.8302364945411682
+      },
+      {
+        "position": 38,
+        "item_id": "1LMKGAMQVL",
+        "response": 1,
+        "mastery": 0.795483410358429
+      },
+      {
+        "position": 39,
+        "item_id": "21P4UM348I",
+        "response": 0,
+        "mastery": 0.9457537531852722
+      },
+      {
+        "position": 40,
+        "item_id": "21P4UM348I",
+        "response": 1,
+        "mastery": 0.728976309299469
+      },
+      {
+        "position": 41,
+        "item_id": "1L0Z57XFMU",
+        "response": 1,
+        "mastery": 0.7164393663406372
+      },
+      {
+        "position": 42,
+        "item_id": "RQPMW7SXJ",
+        "response": 1,
+        "mastery": 0.9341205358505249
+      },
+      {
+        "position": 43,
+        "item_id": "2JZI2GHMXQ",
+        "response": 1,
+        "mastery": 0.7345274090766907
+      },
+      {
+        "position": 44,
+        "item_id": "SRH45IVMF",
+        "response": 0,
+        "mastery": 0.706065833568573
+      },
+      {
+        "position": 45,
+        "item_id": "SRH45IVMF",
+        "response": 1,
+        "mastery": 0.7036784291267395
+      },
+      {
+        "position": 46,
+        "item_id": "1I6B43OYKV",
+        "response": 0,
+        "mastery": 0.6943399310112
+      },
+      {
+        "position": 47,
+        "item_id": "1I6B43OYKV",
+        "response": 1,
+        "mastery": 0.6222513914108276
+      },
+      {
+        "position": 48,
+        "item_id": "SF202POZR",
+        "response": 1,
+        "mastery": 0.5964133739471436
+      },
+      {
+        "position": 49,
+        "item_id": "29DV1YQA39",
+        "response": 0,
+        "mastery": 0.7780346274375916
+      },
+      {
+        "position": 50,
+        "item_id": "29DV1YQA39",
+        "response": 1,
+        "mastery": 0.8732768893241882
+      },
+      {
+        "position": 51,
+        "item_id": "11I0A85FQN",
+        "response": 0,
+        "mastery": 0.7883382439613342
+      },
+      {
+        "position": 52,
+        "item_id": "11I0A85FQN",
+        "response": 1,
+        "mastery": 0.8324543237686157
+      },
+      {
+        "position": 53,
+        "item_id": "HR0ZQD5LX",
+        "response": 0,
+        "mastery": 0.8211806416511536
+      },
+      {
+        "position": 54,
+        "item_id": "HR0ZQD5LX",
+        "response": 1,
+        "mastery": 0.7336164116859436
+      },
+      {
+        "position": 55,
+        "item_id": "1GEUXMB9YF",
+        "response": 0,
+        "mastery": 0.7202858924865723
+      },
+      {
+        "position": 56,
+        "item_id": "1GEUXMB9YF",
+        "response": 1,
+        "mastery": 0.7080428600311279
+      },
+      {
+        "position": 57,
+        "item_id": "1B4UWXSANR",
+        "response": 1,
+        "mastery": 0.7017925381660461
+      },
+      {
+        "position": 58,
+        "item_id": "1T267WVXPJ",
+        "response": 0,
+        "mastery": 0.6999682188034058
+      },
+      {
+        "position": 59,
+        "item_id": "1T267WVXPJ",
+        "response": 1,
+        "mastery": 0.8960296511650085
+      },
+      {
+        "position": 60,
+        "item_id": "2PMLG8TT9D",
+        "response": 0,
+        "mastery": 0.9001597166061401
+      },
+      {
+        "position": 61,
+        "item_id": "2PMLG8TT9D",
+        "response": 1,
+        "mastery": 0.8089297413825989
+      },
+      {
+        "position": 62,
+        "item_id": "1AH0Y1JN2O",
+        "response": 0,
+        "mastery": 0.8016255497932434
+      },
+      {
+        "position": 63,
+        "item_id": "1AH0Y1JN2O",
+        "response": 1,
+        "mastery": 0.9210498332977295
+      },
+      {
+        "position": 64,
+        "item_id": "2CTQCPKNDV",
+        "response": 1,
+        "mastery": 0.9194582104682922
+      },
+      {
+        "position": 65,
+        "item_id": "1W0S0EUB1D",
+        "response": 1,
+        "mastery": 0.7117497324943542
+      },
+      {
+        "position": 66,
+        "item_id": "2A0GFRR9RP",
+        "response": 0,
+        "mastery": 0.939497709274292
+      },
+      {
+        "position": 67,
+        "item_id": "2A0GFRR9RP",
+        "response": 1,
+        "mastery": 0.6457010507583618
+      },
+      {
+        "position": 68,
+        "item_id": "RO1HDVFAL",
+        "response": 0,
+        "mastery": 0.6510477066040039
+      },
+      {
+        "position": 69,
+        "item_id": "RO1HDVFAL",
+        "response": 1,
+        "mastery": 0.6921260356903076
+      },
+      {
+        "position": 70,
+        "item_id": "2L4AYUE3VF",
+        "response": 0,
+        "mastery": 0.7027726173400879
+      },
+      {
+        "position": 71,
+        "item_id": "2L4AYUE3VF",
+        "response": 1,
+        "mastery": 0.5909278392791748
+      },
+      {
+        "position": 72,
+        "item_id": "2MJ9LX8OMS",
+        "response": 0,
+        "mastery": 0.5900599956512451
+      },
+      {
+        "position": 73,
+        "item_id": "2MJ9LX8OMS",
+        "response": 1,
+        "mastery": 0.8931210041046143
+      },
+      {
+        "position": 74,
+        "item_id": "1AW2VQH5NI",
+        "response": 1,
+        "mastery": 0.8788653612136841
+      },
+      {
+        "position": 75,
+        "item_id": "1W22CZTE7B",
+        "response": 0,
+        "mastery": 0.928583025932312
+      },
+      {
+        "position": 76,
+        "item_id": "1W22CZTE7B",
+        "response": 1,
+        "mastery": 0.49294257164001465
+      },
+      {
+        "position": 77,
+        "item_id": "11UUCT0TTL",
+        "response": 1,
+        "mastery": 0.4966239333152771
+      },
+      {
+        "position": 78,
+        "item_id": "KVXC6E63L",
+        "response": 0,
+        "mastery": 0.957567036151886
+      },
+      {
+        "position": 79,
+        "item_id": "KVXC6E63L",
+        "response": 1,
+        "mastery": 0.8317972421646118
+      },
+      {
+        "position": 80,
+        "item_id": "V8126XII6",
+        "response": 1,
+        "mastery": 0.8223738670349121
+      },
+      {
+        "position": 81,
+        "item_id": "1VE0GWRFSU",
+        "response": 1,
+        "mastery": 0.949109673500061
+      },
+      {
+        "position": 82,
+        "item_id": "13E69PUCZ7",
+        "response": 1,
+        "mastery": 0.7436344027519226
+      },
+      {
+        "position": 83,
+        "item_id": "1ASNG3LPU7",
+        "response": 1,
+        "mastery": 0.9216437935829163
+      },
+      {
+        "position": 84,
+        "item_id": "2O3J36ETUI",
+        "response": 1,
+        "mastery": 0.8156285285949707
+      },
+      {
+        "position": 85,
+        "item_id": "GWAZWYKFF",
+        "response": 1,
+        "mastery": 0.6673133373260498
+      },
+      {
+        "position": 86,
+        "item_id": "T14DH46H5",
+        "response": 1,
+        "mastery": 0.4693552553653717
+      },
+      {
+        "position": 87,
+        "item_id": "17HAQKRQ8S",
+        "response": 1,
+        "mastery": 0.6782266497612
+      },
+      {
+        "position": 88,
+        "item_id": "14UB1W303O",
+        "response": 1,
+        "mastery": 0.6603488922119141
+      },
+      {
+        "position": 89,
+        "item_id": "11AMADZHEG",
+        "response": 0,
+        "mastery": 0.5598688721656799
+      },
+      {
+        "position": 90,
+        "item_id": "11AMADZHEG",
+        "response": 1,
+        "mastery": 0.7739617824554443
+      },
+      {
+        "position": 91,
+        "item_id": "TXUHFDWRU",
+        "response": 1,
+        "mastery": 0.7588427066802979
+      },
+      {
+        "position": 92,
+        "item_id": "2B0R1I9DNJ",
+        "response": 1,
+        "mastery": 0.8346015214920044
+      },
+      {
+        "position": 93,
+        "item_id": "1AKV0KR3B6",
+        "response": 1,
+        "mastery": 0.8502647876739502
+      },
+      {
+        "position": 94,
+        "item_id": "1DV0ZNIVVI",
+        "response": 1,
+        "mastery": 0.5414158701896667
+      },
+      {
+        "position": 95,
+        "item_id": "230NS2WUTS",
+        "response": 1,
+        "mastery": 0.5082625150680542
+      },
+      {
+        "position": 96,
+        "item_id": "20YRGCBY5T",
+        "response": 1,
+        "mastery": 0.7279344201087952
+      },
+      {
+        "position": 97,
+        "item_id": "261OWL0OK7",
+        "response": 1,
+        "mastery": 0.7354432344436646
+      },
+      {
+        "position": 98,
+        "item_id": "1Z1L88OK2D",
+        "response": 1,
+        "mastery": 0.9056305885314941
+      },
+      {
+        "position": 99,
+        "item_id": "2ESRQWQKPN",
+        "response": 1,
+        "mastery": 0.8129936456680298
+      },
+      {
+        "position": 100,
+        "item_id": "1Q2D6EJ8RA",
+        "response": 1,
+        "mastery": 0.8004332184791565
+      },
+      {
+        "position": 101,
+        "item_id": "2NLGSXNC4N",
+        "response": 1,
+        "mastery": 0.8724210858345032
+      },
+      {
+        "position": 102,
+        "item_id": "PY7DV6YNB",
+        "response": 1,
+        "mastery": 0.6272781491279602
+      },
+      {
+        "position": 103,
+        "item_id": "2GJJGBLPIB",
+        "response": 1,
+        "mastery": 0.7016093134880066
+      },
+      {
+        "position": 104,
+        "item_id": "2GZ0IMV8U1",
+        "response": 1,
+        "mastery": 0.7606600522994995
+      },
+      {
+        "position": 105,
+        "item_id": "273BX728R9",
+        "response": 1,
+        "mastery": 0.6469912528991699
+      },
+      {
+        "position": 106,
+        "item_id": "2L90DYR78U",
+        "response": 1,
+        "mastery": 0.9545744061470032
+      },
+      {
+        "position": 107,
+        "item_id": "1WNTWR5YDF",
+        "response": 1,
+        "mastery": 0.9161507487297058
+      },
+      {
+        "position": 108,
+        "item_id": "1QJWT0E4R8",
+        "response": 1,
+        "mastery": 0.7627776265144348
+      },
+      {
+        "position": 109,
+        "item_id": "LC2L1WCPK",
+        "response": 1,
+        "mastery": 0.8075042963027954
+      },
+      {
+        "position": 110,
+        "item_id": "1CEO195X3B",
+        "response": 1,
+        "mastery": 0.9427168965339661
+      },
+      {
+        "position": 111,
+        "item_id": "4QWYXIO2K",
+        "response": 1,
+        "mastery": 0.9283264875411987
+      },
+      {
+        "position": 112,
+        "item_id": "1N3RC20QXI",
+        "response": 1,
+        "mastery": 0.9337133765220642
+      },
+      {
+        "position": 113,
+        "item_id": "EB9X2VABP",
+        "response": 1,
+        "mastery": 0.7944474816322327
+      },
+      {
+        "position": 114,
+        "item_id": "16ROOX00XT",
+        "response": 1,
+        "mastery": 0.3068539500236511
+      },
+      {
+        "position": 115,
+        "item_id": "LUK51A66X",
+        "response": 0,
+        "mastery": 0.4071444869041443
+      },
+      {
+        "position": 116,
+        "item_id": "LUK51A66X",
+        "response": 0,
+        "mastery": 0.7442594766616821
+      },
+      {
+        "position": 117,
+        "item_id": "LUK51A66X",
+        "response": 0,
+        "mastery": 0.7565240263938904
+      },
+      {
+        "position": 118,
+        "item_id": "LUK51A66X",
+        "response": 1,
+        "mastery": 0.7677876353263855
+      },
+      {
+        "position": 119,
+        "item_id": "NDY2N7F0R",
+        "response": 1,
+        "mastery": 0.7781742811203003
+      },
+      {
+        "position": 120,
+        "item_id": "1T0IFN0BIW",
+        "response": 1,
+        "mastery": 0.6663578152656555
+      },
+      {
+        "position": 121,
+        "item_id": "S6YJ2A4R8",
+        "response": 1,
+        "mastery": 0.8254149556159973
+      },
+      {
+        "position": 122,
+        "item_id": "LLH4AWSGS",
+        "response": 1,
+        "mastery": 0.6544008851051331
+      },
+      {
+        "position": 123,
+        "item_id": "7GLFJWWFI",
+        "response": 1,
+        "mastery": 0.7192449569702148
+      },
+      {
+        "position": 124,
+        "item_id": "2KW509YDGU",
+        "response": 1,
+        "mastery": 0.6779349446296692
+      },
+      {
+        "position": 125,
+        "item_id": "22XJUVDTPT",
+        "response": 1,
+        "mastery": 0.8112205862998962
+      },
+      {
+        "position": 126,
+        "item_id": "287X93CFJ3",
+        "response": 1,
+        "mastery": 0.6512606739997864
+      },
+      {
+        "position": 127,
+        "item_id": "2Q2N0SVX98",
+        "response": 0,
+        "mastery": 0.9186415076255798
+      },
+      {
+        "position": 128,
+        "item_id": "2Q2N0SVX98",
+        "response": 1,
+        "mastery": 0.8789833784103394
+      },
+      {
+        "position": 129,
+        "item_id": "1G8M4BMLLA",
+        "response": 1,
+        "mastery": 0.8854169845581055
+      },
+      {
+        "position": 130,
+        "item_id": "255JZA94BA",
+        "response": 1,
+        "mastery": 0.8626945614814758
+      },
+      {
+        "position": 131,
+        "item_id": "193HZNF02G",
+        "response": 1,
+        "mastery": 0.9125445485115051
+      },
+      {
+        "position": 132,
+        "item_id": "PU36J1N8I",
+        "response": 1,
+        "mastery": 0.8314365148544312
+      },
+      {
+        "position": 133,
+        "item_id": "20TV16Q1KR",
+        "response": 1,
+        "mastery": 0.8619925379753113
+      },
+      {
+        "position": 134,
+        "item_id": "WFGK8IALZ",
+        "response": 1,
+        "mastery": 0.8252665996551514
+      },
+      {
+        "position": 135,
+        "item_id": "27O2C4TNH",
+        "response": 1,
+        "mastery": 0.9325389266014099
+      },
+      {
+        "position": 136,
+        "item_id": "K343EK8C6",
+        "response": 1,
+        "mastery": 0.9448535442352295
+      },
+      {
+        "position": 137,
+        "item_id": "126QXU7Y1F",
+        "response": 1,
+        "mastery": 0.7712846398353577
+      },
+      {
+        "position": 138,
+        "item_id": "2QQBO13LX7",
+        "response": 1,
+        "mastery": 0.8812680244445801
+      },
+      {
+        "position": 139,
+        "item_id": "2E6JG1WRCN",
+        "response": 1,
+        "mastery": 0.8186532258987427
+      },
+      {
+        "position": 140,
+        "item_id": "137HGYMZB0",
+        "response": 1,
+        "mastery": 0.8158005475997925
+      },
+      {
+        "position": 141,
+        "item_id": "HRUHCHS8I",
+        "response": 1,
+        "mastery": 0.7651097774505615
+      },
+      {
+        "position": 142,
+        "item_id": "AKQXS0MTM",
+        "response": 1,
+        "mastery": 0.8297260999679565
+      },
+      {
+        "position": 143,
+        "item_id": "18ACPU2LZ4",
+        "response": 1,
+        "mastery": 0.8875559568405151
+      },
+      {
+        "position": 144,
+        "item_id": "2BP4EFA142",
+        "response": 1,
+        "mastery": 0.7993364930152893
+      },
+      {
+        "position": 145,
+        "item_id": "12VZHVY4FE",
+        "response": 1,
+        "mastery": 0.8295382857322693
+      },
+      {
+        "position": 146,
+        "item_id": "2LF3BELW",
+        "response": 1,
+        "mastery": 0.8583397269248962
+      },
+      {
+        "position": 147,
+        "item_id": "PKVBQTCTH",
+        "response": 1,
+        "mastery": 0.8941735029220581
+      },
+      {
+        "position": 148,
+        "item_id": "2P2P33VUML",
+        "response": 1,
+        "mastery": 0.836884081363678
+      },
+      {
+        "position": 149,
+        "item_id": "2NN44YJWGK",
+        "response": 1,
+        "mastery": 0.7708214521408081
+      },
+      {
+        "position": 150,
+        "item_id": "ZTOKU7FX9",
+        "response": 1,
+        "mastery": 0.9403092861175537
+      },
+      {
+        "position": 151,
+        "item_id": "1XLRRGYRBC",
+        "response": 1,
+        "mastery": 0.9049630165100098
+      },
+      {
+        "position": 152,
+        "item_id": "6R35G4LGG",
+        "response": 1,
+        "mastery": 0.9002282619476318
+      },
+      {
+        "position": 153,
+        "item_id": "1J8AFUZNMC",
+        "response": 1,
+        "mastery": 0.8949211835861206
+      },
+      {
+        "position": 154,
+        "item_id": "1HHRYKDYUN",
+        "response": 1,
+        "mastery": 0.8878257274627686
+      },
+      {
+        "position": 155,
+        "item_id": "28RFW841YQ",
+        "response": 1,
+        "mastery": 0.9280290603637695
+      },
+      {
+        "position": 156,
+        "item_id": "1L90RA2NSR",
+        "response": 1,
+        "mastery": 0.7180915474891663
+      },
+      {
+        "position": 157,
+        "item_id": "14E8TLOAN8",
+        "response": 1,
+        "mastery": 0.8224402666091919
+      },
+      {
+        "position": 158,
+        "item_id": "KSUC9Q85",
+        "response": 1,
+        "mastery": 0.8788836002349854
+      },
+      {
+        "position": 159,
+        "item_id": "GUUIEY044",
+        "response": 1,
+        "mastery": 0.8547578454017639
+      },
+      {
+        "position": 160,
+        "item_id": "IAQTHBH7W",
+        "response": 1,
+        "mastery": 0.8420950174331665
+      },
+      {
+        "position": 161,
+        "item_id": "1YM0K9L57K",
+        "response": 0,
+        "mastery": 0.7903695702552795
+      },
+      {
+        "position": 162,
+        "item_id": "1YM0K9L57K",
+        "response": 0,
+        "mastery": 0.6207679510116577
+      },
+      {
+        "position": 163,
+        "item_id": "1YM0K9L57K",
+        "response": 0,
+        "mastery": 0.5857687592506409
+      },
+      {
+        "position": 164,
+        "item_id": "1YM0K9L57K",
+        "response": 1,
+        "mastery": 0.5614593625068665
+      },
+      {
+        "position": 165,
+        "item_id": "2PQJQGVV4K",
+        "response": 0,
+        "mastery": 0.5427460670471191
+      },
+      {
+        "position": 166,
+        "item_id": "2PQJQGVV4K",
+        "response": 0,
+        "mastery": 0.6779656410217285
+      },
+      {
+        "position": 167,
+        "item_id": "2PQJQGVV4K",
+        "response": 1,
+        "mastery": 0.6688461303710938
+      },
+      {
+        "position": 168,
+        "item_id": "28G65SZFC",
+        "response": 0,
+        "mastery": 0.6597744226455688
+      },
+      {
+        "position": 169,
+        "item_id": "28G65SZFC",
+        "response": 1,
+        "mastery": 0.9162428975105286
+      },
+      {
+        "position": 170,
+        "item_id": "296QGN5TC4",
+        "response": 1,
+        "mastery": 0.9144285321235657
+      },
+      {
+        "position": 171,
+        "item_id": "1S1ARNI1PQ",
+        "response": 0,
+        "mastery": 0.9195712804794312
+      },
+      {
+        "position": 172,
+        "item_id": "1S1ARNI1PQ",
+        "response": 1,
+        "mastery": 0.915378749370575
+      },
+      {
+        "position": 173,
+        "item_id": "2TA99ZT9H",
+        "response": 1,
+        "mastery": 0.9026734828948975
+      },
+      {
+        "position": 174,
+        "item_id": "213V332YYU",
+        "response": 0,
+        "mastery": 0.7981223464012146
+      },
+      {
+        "position": 175,
+        "item_id": "213V332YYU",
+        "response": 1,
+        "mastery": 0.6446288228034973
+      },
+      {
+        "position": 176,
+        "item_id": "IBC79Q1X7",
+        "response": 1,
+        "mastery": 0.6531950235366821
+      },
+      {
+        "position": 177,
+        "item_id": "1AC8I3E9H6",
+        "response": 0,
+        "mastery": 0.491619735956192
+      },
+      {
+        "position": 178,
+        "item_id": "1AC8I3E9H6",
+        "response": 0,
+        "mastery": 0.8128357529640198
+      },
+      {
+        "position": 179,
+        "item_id": "1AC8I3E9H6",
+        "response": 1,
+        "mastery": 0.8162710070610046
+      },
+      {
+        "position": 180,
+        "item_id": "W50Z69950",
+        "response": 1,
+        "mastery": 0.8207744359970093
+      },
+      {
+        "position": 181,
+        "item_id": "15CXSM5F31",
+        "response": 0,
+        "mastery": 0.6888923048973083
+      },
+      {
+        "position": 182,
+        "item_id": "15CXSM5F31",
+        "response": 1,
+        "mastery": 0.8360195159912109
+      },
+      {
+        "position": 183,
+        "item_id": "2KVUR8R1IH",
+        "response": 1,
+        "mastery": 0.8324862122535706
+      },
+      {
+        "position": 184,
+        "item_id": "XXNIL2SKO",
+        "response": 1,
+        "mastery": 0.7458378076553345
+      },
+      {
+        "position": 185,
+        "item_id": "20DE6NTYNV",
+        "response": 0,
+        "mastery": 0.7751744985580444
+      },
+      {
+        "position": 186,
+        "item_id": "20DE6NTYNV",
+        "response": 0,
+        "mastery": 0.8311953544616699
+      },
+      {
+        "position": 187,
+        "item_id": "20DE6NTYNV",
+        "response": 0,
+        "mastery": 0.8375152349472046
+      },
+      {
+        "position": 188,
+        "item_id": "20DE6NTYNV",
+        "response": 1,
+        "mastery": 0.8425543308258057
+      },
+      {
+        "position": 189,
+        "item_id": "2EI34UERPE",
+        "response": 0,
+        "mastery": 0.8457087278366089
+      },
+      {
+        "position": 190,
+        "item_id": "2EI34UERPE",
+        "response": 0,
+        "mastery": 0.9175984263420105
+      },
+      {
+        "position": 191,
+        "item_id": "2EI34UERPE",
+        "response": 1,
+        "mastery": 0.9187109470367432
+      },
+      {
+        "position": 192,
+        "item_id": "2O8AJR59X5",
+        "response": 1,
+        "mastery": 0.9193714261054993
+      },
+      {
+        "position": 193,
+        "item_id": "XHESDS8M9",
+        "response": 1,
+        "mastery": 0.8135825395584106
+      },
+      {
+        "position": 194,
+        "item_id": "1HKQ8UOZJ0",
+        "response": 1,
+        "mastery": 0.7669163942337036
+      },
+      {
+        "position": 195,
+        "item_id": "2GEOO8UDW8",
+        "response": 1,
+        "mastery": 0.8553699254989624
+      },
+      {
+        "position": 196,
+        "item_id": "U91G6Z5E",
+        "response": 1,
+        "mastery": 0.9267295002937317
+      },
+      {
+        "position": 197,
+        "item_id": "KM1S5KSWE",
+        "response": 1,
+        "mastery": 0.781217634677887
+      },
+      {
+        "position": 198,
+        "item_id": "2LSQQOHG0A",
+        "response": 1,
+        "mastery": 0.9479212164878845
+      },
+      {
+        "position": 199,
+        "item_id": "2JEUJ6HX4Z",
+        "response": 1,
+        "mastery": 0.769855260848999
+      }
+    ]
+  }
+}

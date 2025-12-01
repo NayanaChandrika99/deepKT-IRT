@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepKT + WD-IRT Visualizations</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --accent-color: #3498db;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            border-bottom: 2px solid #f1f2f6;
+            padding-bottom: 12px;
+            font-size: 1.25rem;
+            color: #34495e;
+        }
+
+        .viz-container {
+            width: 100%;
+            min-height: 400px;
+            position: relative;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Gaming Table Styles */
+        .gaming-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .gaming-table th,
+        .gaming-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .gaming-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .badge.high {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .badge.medium {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .badge.low {
+            background-color: #f1f8e9;
+            color: #558b2f;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>DeepKT + WD-IRT System</h1>
+            <div class="subtitle">Interactive visualization of the 7 key components</div>
+        </header>
+
+        <div class="grid">
+            <!-- 1. Shared Infra -->
+            <div class="card full-width">
+                <h2>1. Shared Infrastructure (Data Engineering)</h2>
+                <div class="mermaid">
+                    graph TD
+                    Raw[Raw Events] -->|Clean & Validate| Interim[Canonical LearningEvents]
+                    Interim -->|Split by User| SAKT_Prep[SAKT Adapter]
+                    Interim -->|Feature Eng| WDIRT_Prep[WD-IRT Featurizer]
+                    SAKT_Prep -->|Tokenize & Pad| SAKT_Input[(Questions, Concepts, Responses)]
+                    WDIRT_Prep -->|History Encoding| WDIRT_Input[(History Tensors, Item Metadata)]
+
+                    style Raw fill:#f9f9f9,stroke:#333,stroke-width:2px
+                    style Interim fill:#e1f5fe,stroke:#039be5,stroke-width:2px
+                    style SAKT_Input fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+                    style WDIRT_Input fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+                </div>
+            </div>
+
+            <!-- 2. SAKT Mastery -->
+            <div class="card">
+                <h2>2. SAKT Mastery Prediction</h2>
+                <div id="sakt-viz" class="viz-container"></div>
+            </div>
+
+            <!-- 3. WD-IRT Params -->
+            <div class="card">
+                <h2>3. WD-IRT Item Parameters</h2>
+                <div id="wdirt-viz" class="viz-container"></div>
+            </div>
+
+            <!-- 4. Attention Heatmap -->
+            <div class="card">
+                <h2>4. Attention Mechanism</h2>
+                <div id="attention-viz" class="viz-container"></div>
+            </div>
+
+            <!-- 5. Attention -> NL -->
+            <div class="card">
+                <h2>5. Attention to Natural Language</h2>
+                <div class="mermaid">
+                    sequenceDiagram
+                    participant Model as SAKT Model
+                    participant Extractor as Attention Extractor
+                    participant Logic as Explainability Logic
+                    participant LLM as OpenAI/Anthropic
+
+                    Model->>Extractor: Forward Pass (Weights)
+                    Extractor->>Logic: Top-k Influential Interactions
+                    Logic->>Logic: Build Context (Mastery, History)
+                    Logic->>LLM: Send Prompt (Context + Weights)
+                    LLM->>Logic: JSON Response (Insight + Rec)
+                    Logic->>User: Natural Language Explanation
+                </div>
+            </div>
+
+            <!-- 6. Gaming Detection -->
+            <div class="card">
+                <h2>6. Gaming Detection Console</h2>
+                <div id="gaming-viz" class="viz-container" style="overflow-y: auto;"></div>
+            </div>
+
+            <!-- 7. RL Recommendations -->
+            <div class="card full-width">
+                <h2>7. RL Recommendations (Bandit)</h2>
+                <div id="rl-viz" class="viz-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+
+        async function loadData(filename) {
+            // Use embedded data if available
+            if (typeof VIZ_DATA !== 'undefined' && VIZ_DATA[filename]) {
+                return VIZ_DATA[filename];
+            }
+            // Fallback to fetch (won't work locally without server)
+            try {
+                const response = await fetch(`data/${filename}`);
+                if (!response.ok) throw new Error(`Failed to load ${filename}`);
+                const json = await response.json();
+                return json.data;
+            } catch (e) {
+                console.error(e);
+                return null;
+            }
+        }
+
+        async function init() {
+            // 2. SAKT Mastery
+            const masteryData = await loadData('sakt_mastery.json');
+            if (masteryData) {
+                const interactions = masteryData.interactions;
+                const trace = {
+                    x: interactions.map(d => d.position),
+                    y: interactions.map(d => d.mastery),
+                    mode: 'lines+markers',
+                    name: 'Mastery',
+                    line: { shape: 'spline', color: '#3498db', width: 3 },
+                    marker: {
+                        color: interactions.map(d => d.response ? '#2ecc71' : '#e74c3c'),
+                        size: 8
+                    },
+                    text: interactions.map(d => `Item: ${d.item_id}<br>Response: ${d.response ? 'Correct' : 'Incorrect'}`)
+                };
+
+                Plotly.newPlot('sakt-viz', [trace], {
+                    margin: { t: 20, r: 20, l: 40, b: 40 },
+                    xaxis: { title: 'Interaction Sequence' },
+                    yaxis: { title: 'Mastery Probability', range: [0, 1] },
+                    showlegend: false
+                });
+            }
+
+            // 3. WD-IRT Params
+            const paramsData = await loadData('wd_irt_params.json');
+            if (paramsData) {
+                const trace = {
+                    x: paramsData.map(d => d.difficulty),
+                    y: paramsData.map(d => d.guessing),
+                    mode: 'markers',
+                    type: 'scatter',
+                    marker: {
+                        color: paramsData.map(d => d.difficulty),
+                        colorscale: 'Viridis',
+                        opacity: 0.6,
+                        size: 6
+                    },
+                    text: paramsData.map(d => `Item: ${d.item_id}<br>Topic: ${d.topic}`)
+                };
+
+                Plotly.newPlot('wdirt-viz', [trace], {
+                    margin: { t: 20, r: 20, l: 40, b: 40 },
+                    xaxis: { title: 'Difficulty (Beta)' },
+                    yaxis: { title: 'Guessing Probability' },
+                    hovermode: 'closest'
+                });
+            }
+
+            // 4. Attention Heatmap
+            const attnData = await loadData('attention_data.json');
+            if (attnData) {
+                // Visualize top influences as a bar chart since we have sparse data
+                const influences = attnData.influences;
+                const trace = {
+                    x: influences.map(d => `Pos ${d.position}`),
+                    y: influences.map(d => d.weight),
+                    type: 'bar',
+                    marker: {
+                        color: influences.map(d => d.correct ? '#2ecc71' : '#e74c3c')
+                    },
+                    text: influences.map(d => `Item: ${d.item_id}<br>${d.correct ? 'Correct' : 'Incorrect'}`)
+                };
+
+                Plotly.newPlot('attention-viz', [trace], {
+                    margin: { t: 20, r: 20, l: 40, b: 40 },
+                    xaxis: { title: 'Past Interaction Position' },
+                    yaxis: { title: 'Attention Weight' },
+                    title: `Focus for Prediction at Pos ${attnData.position}`
+                });
+            }
+
+            // 6. Gaming Detection
+            const gamingData = await loadData('gaming_alerts.json');
+            if (gamingData) {
+                const container = document.getElementById('gaming-viz');
+                const html = `
+                    <table class="gaming-table">
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Type</th>
+                                <th>Severity</th>
+                                <th>Evidence</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${gamingData.slice(0, 10).map(alert => `
+                                <tr>
+                                    <td>${alert.user_id}</td>
+                                    <td>${alert.alert_type}</td>
+                                    <td><span class="badge ${alert.severity}">${alert.severity}</span></td>
+                                    <td>${JSON.stringify(alert.evidence).slice(0, 50)}...</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                container.innerHTML = html;
+            }
+
+            // 7. RL Recommendations
+            const rlData = await loadData('rl_recommendations.json');
+            if (rlData) {
+                const trace = {
+                    x: rlData.map(d => d.item_id),
+                    y: rlData.map(d => d.expected_reward),
+                    error_y: {
+                        type: 'data',
+                        array: rlData.map(d => d.uncertainty),
+                        visible: true
+                    },
+                    type: 'bar',
+                    marker: {
+                        color: rlData.map(d => d.mode === 'Explore' ? '#9b59b6' : '#3498db')
+                    }
+                };
+
+                Plotly.newPlot('rl-viz', [trace], {
+                    margin: { t: 20, r: 20, l: 40, b: 80 },
+                    xaxis: { title: 'Recommended Items' },
+                    yaxis: { title: 'Expected Reward (with Uncertainty)' },
+                    showlegend: false
+                });
+            }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

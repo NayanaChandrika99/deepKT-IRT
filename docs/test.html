@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Debug Test</title>
+</head>
+<body>
+  <h1>Dashboard Debug Test</h1>
+  <div id="test-output"></div>
+
+  <script type="module">
+    console.log('1. Script loading...');
+
+    try {
+      console.log('2. Attempting to import DataLoader...');
+      const module = await import('./js/utils/DataLoader.js');
+      console.log('3. DataLoader imported:', module);
+
+      const DataLoader = module.default;
+      console.log('4. Loading JSON...');
+      const data = await DataLoader.load('student_dashboard.json');
+      console.log('5. Data loaded:', data);
+
+      document.getElementById('test-output').innerHTML = `
+        <pre>${JSON.stringify(data, null, 2)}</pre>
+      `;
+
+      console.log('✅ Test successful!');
+    } catch (error) {
+      console.error('❌ Test failed:', error);
+      document.getElementById('test-output').innerHTML = `
+        <p style="color: red;">Error: ${error.message}</p>
+        <pre>${error.stack}</pre>
+      `;
+    }
+  </script>
+</body>
+</html>

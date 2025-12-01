@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Lineage Map - Pipeline Flow</title>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            max-width: 1200px;
+            margin: 0 auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            margin: 0 0 0.5rem 0;
+            color: white;
+        }
+
+        .subtitle {
+            color: #a0aec0;
+            margin-bottom: 2rem;
+        }
+
+        #graph-container {
+            min-height: 700px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .legend {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #cbd5e0;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🕸️ Data Lineage Map</h1>
+        <p class="subtitle">Visualizing dependencies from Raw Data to Model Artifacts</p>
+
+        <div id="graph-container"></div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="dot" style="background: #e53e3e"></div>Raw Data
+            </div>
+            <div class="legend-item">
+                <div class="dot" style="background: #3182ce"></div>Processed
+            </div>
+            <div class="legend-item">
+                <div class="dot" style="background: #805ad5"></div>Models
+            </div>
+            <div class="legend-item">
+                <div class="dot" style="background: #38a169"></div>Reports
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock data
+        const MOCK_DATA = {
+            nodes: [
+                { id: "events.csv", group: "raw", size: 15 },
+                { id: "events.parquet", group: "processed", size: 15 },
+                { id: "wd_irt.ckpt", group: "models", size: 25 },
+                { id: "metrics.json", group: "reports", size: 10 }
+            ],
+            links: [
+                { source: "events.csv", target: "events.parquet" },
+                { source: "events.parquet", target: "wd_irt.ckpt" },
+                { source: "wd_irt.ckpt", target: "metrics.json" }
+            ]
+        };
+
+        const COLORS = {
+            raw: '#e53e3e',
+            processed: '#3182ce',
+            models: '#805ad5',
+            reports: '#38a169',
+            other: '#718096'
+        };
+
+        async function init() {
+            try {
+                let data;
+                try {
+                    const response = await fetch('../data/lineage_map.json');
+                    if (response.ok) {
+                        data = await response.json();
+                    } else {
+                        throw new Error('File not found');
+                    }
+                } catch (e) {
+                    console.warn('Using mock data:', e);
+                    data = MOCK_DATA;
+                }
+
+                renderGraph(data);
+
+            } catch (error) {
+                console.error('Failed to load data:', error);
+            }
+        }
+
+        function renderGraph(data) {
+            // Prepare nodes
+            const nodeX = [];
+            const nodeY = [];
+            const nodeColor = [];
+            const nodeSize = [];
+            const nodeText = [];
+
+            // Simple layout algorithm (force-directed simulation would be better but complex in pure Plotly)
+            // Here we just place them in layers based on group
+            const layers = { raw: 0, processed: 1, models: 2, reports: 3, other: 4 };
+            const layerCounts = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
+
+            data.nodes.forEach(node => {
+                const layer = layers[node.group] || 4;
+                layerCounts[layer]++;
+            });
+
+            const layerCurrent = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
+
+            data.nodes.forEach(node => {
+                const layer = layers[node.group] || 4;
+                const index = layerCurrent[layer]++;
+                const totalInLayer = layerCounts[layer];
+
+                // X based on layer
+                nodeX.push(layer * 2);
+
+                // Y spread out in layer
+                nodeY.push((index - (totalInLayer - 1) / 2) * 1.5);
+
+                nodeColor.push(COLORS[node.group] || COLORS.other);
+                nodeSize.push(node.size * 2);
+                nodeText.push(node.id);
+            });
+
+            // Prepare edges
+            const edgeX = [];
+            const edgeY = [];
+
+            data.links.forEach(link => {
+                const sourceNode = data.nodes.find(n => n.id === link.source);
+                const targetNode = data.nodes.find(n => n.id === link.target);
+
+                if (sourceNode && targetNode) {
+                    const sourceIdx = data.nodes.indexOf(sourceNode);
+                    const targetIdx = data.nodes.indexOf(targetNode);
+
+                    edgeX.push(nodeX[sourceIdx], nodeX[targetIdx], null);
+                    edgeY.push(nodeY[sourceIdx], nodeY[targetIdx], null);
+                }
+            });
+
+            const edgeTrace = {
+                x: edgeX,
+                y: edgeY,
+                mode: 'lines',
+                line: { width: 1, color: '#4a5568' },
+                hoverinfo: 'none'
+            };
+
+            const nodeTrace = {
+                x: nodeX,
+                y: nodeY,
+                mode: 'markers+text',
+                marker: {
+                    color: nodeColor,
+                    size: nodeSize,
+                    line: { width: 2, color: '#fff' }
+                },
+                text: nodeText,
+                textposition: 'bottom center',
+                textfont: { color: '#e2e8f0' },
+                hoverinfo: 'text'
+            };
+
+            const layout = {
+                showlegend: false,
+                hovermode: 'closest',
+                margin: { b: 20, l: 5, r: 5, t: 40 },
+                xaxis: { showgrid: false, zeroline: false, showticklabels: false },
+                yaxis: { showgrid: false, zeroline: false, showticklabels: false },
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                height: 700
+            };
+
+            const config = {
+                responsive: true,
+                displayModeBar: false
+            };
+
+            Plotly.newPlot('graph-container', [edgeTrace, nodeTrace], layout, config);
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Sankey - User Flow</title>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        h1 {
+            margin: 0 0 0.5rem 0;
+            color: #2d3748;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 2rem;
+        }
+
+        #chart-container {
+            min-height: 600px;
+            position: relative;
+        }
+
+        #particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .controls {
+            margin-bottom: 1rem;
+        }
+
+        button {
+            background: #4ca1af;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background: #2c3e50;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🌊 Animated User Flow</h1>
+        <p class="subtitle">Visualizing student journey through the platform</p>
+
+        <div class="controls">
+            <button onclick="toggleAnimation()">⏯ Toggle Particles</button>
+        </div>
+
+        <div id="chart-container">
+            <div id="sankey-chart"></div>
+            <canvas id="particle-canvas"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Mock data
+        const MOCK_DATA = {
+            nodes: [
+                { label: "Home", color: "#3182ce" },
+                { label: "Quiz", color: "#805ad5" },
+                { label: "Profile", color: "#38a169" },
+                { label: "Result", color: "#e53e3e" }
+            ],
+            links: [
+                { source: 0, target: 1, value: 50, color: "rgba(49, 130, 206, 0.3)" },
+                { source: 0, target: 2, value: 30, color: "rgba(49, 130, 206, 0.3)" },
+                { source: 1, target: 3, value: 40, color: "rgba(128, 90, 213, 0.3)" },
+                { source: 1, target: 0, value: 10, color: "rgba(128, 90, 213, 0.3)" },
+                { source: 2, target: 0, value: 20, color: "rgba(56, 161, 105, 0.3)" }
+            ]
+        };
+
+        let isAnimating = true;
+        let particles = [];
+        let animationFrameId;
+
+        async function init() {
+            try {
+                let data;
+                try {
+                    const response = await fetch('../data/sankey.json');
+                    if (response.ok) {
+                        data = await response.json();
+                    } else {
+                        throw new Error('File not found');
+                    }
+                } catch (e) {
+                    console.warn('Using mock data:', e);
+                    data = MOCK_DATA;
+                }
+
+                renderSankey(data);
+
+                // Wait for Plotly to render before starting animation
+                setTimeout(() => {
+                    initParticles(data);
+                    animate();
+                }, 1000);
+
+            } catch (error) {
+                console.error('Failed to load data:', error);
+            }
+        }
+
+        function renderSankey(data) {
+            const trace = {
+                type: "sankey",
+                orientation: "h",
+                node: {
+                    pad: 15,
+                    thickness: 20,
+                    line: { color: "black", width: 0.5 },
+                    label: data.nodes.map(n => n.label),
+                    color: data.nodes.map(n => n.color)
+                },
+                link: {
+                    source: data.links.map(l => l.source),
+                    target: data.links.map(l => l.target),
+                    value: data.links.map(l => l.value),
+                    color: data.links.map(l => l.color)
+                }
+            };
+
+            const layout = {
+                font: { size: 12, family: 'Inter, sans-serif' },
+                height: 600,
+                margin: { t: 20, b: 20, l: 20, r: 20 }
+            };
+
+            Plotly.newPlot('sankey-chart', [trace], layout, { responsive: true });
+        }
+
+        function initParticles(data) {
+            const canvas = document.getElementById('particle-canvas');
+            const container = document.getElementById('chart-container');
+            const chart = document.getElementById('sankey-chart');
+
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+
+            // In a real implementation, we would need to extract node positions from Plotly
+            // Since Plotly doesn't expose this easily, we'll simulate particles flowing
+            // between approximate node locations based on the graph structure
+
+            // For prototype, we'll just create random particles
+            for (let i = 0; i < 50; i++) {
+                particles.push(createParticle(canvas));
+            }
+        }
+
+        function createParticle(canvas) {
+            return {
+                x: Math.random() * canvas.width * 0.1, // Start near left
+                y: Math.random() * canvas.height,
+                vx: Math.random() * 2 + 1,
+                vy: (Math.random() - 0.5) * 1,
+                size: Math.random() * 3 + 1,
+                color: '#ffffff',
+                life: 1.0
+            };
+        }
+
+        function animate() {
+            if (!isAnimating) return;
+
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.005;
+
+                if (p.x > canvas.width || p.life <= 0) {
+                    particles[index] = createParticle(canvas);
+                }
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${p.life * 0.6})`;
+                ctx.fill();
+            });
+
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        function toggleAnimation() {
+            isAnimating = !isAnimating;
+            if (isAnimating) animate();
+            else cancelAnimationFrame(animationFrameId);
+        }
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            const canvas = document.getElementById('particle-canvas');
+            const container = document.getElementById('chart-container');
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+        });
+
+        init();
+    </script>
+</body>
+
+</html>

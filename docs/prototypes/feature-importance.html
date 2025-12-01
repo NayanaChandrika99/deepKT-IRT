@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Importance - WD-IRT Model</title>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin: 0 0 0.5rem 0;
+            color: #2d3748;
+            font-size: 1.75rem;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 2rem;
+        }
+
+        #chart-container {
+            min-height: 500px;
+        }
+
+        .feature-details {
+            margin-top: 2rem;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .feature-group {
+            background: #f7fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #4299e1;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .feature-group:hover {
+            background: #edf2f7;
+            transform: translateX(4px);
+        }
+
+        .feature-group h3 {
+            margin: 0 0 0.5rem 0;
+            color: #2d3748;
+            font-size: 1rem;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .feature-tag {
+            background: #4299e1;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        .importance-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4299e1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📊 Feature Importance</h1>
+        <p class="subtitle">Wide & Deep IRT Model - PyTorch Checkpoint Analysis</p>
+
+        <div id="chart-container"></div>
+
+        <div class="feature-details" id="feature-details"></div>
+    </div>
+
+    <script>
+        // Mock data for prototype if file load fails
+        const MOCK_DATA = {
+            data: [
+                {
+                    feature_group: "Wide Features (IRT)",
+                    importance: 0.45,
+                    features: ["difficulty", "discrimination", "user_id", "item_id"]
+                },
+                {
+                    feature_group: "Deep Features (Embeddings)",
+                    importance: 0.35,
+                    features: ["user_embeddings", "item_embeddings", "skill_embeddings"]
+                },
+                {
+                    feature_group: "Deep Features (Network)",
+                    importance: 0.20,
+                    features: ["hidden_layers", "temporal_patterns"]
+                }
+            ]
+        };
+
+        async function init() {
+            try {
+                let data;
+                try {
+                    const response = await fetch('../data/feature_importance.json');
+                    if (response.ok) {
+                        data = await response.json();
+                    } else {
+                        throw new Error('File not found');
+                    }
+                } catch (e) {
+                    console.warn('Using mock data:', e);
+                    data = MOCK_DATA;
+                }
+
+                if (!data.data || data.data.length === 0) {
+                    throw new Error('No data available');
+                }
+
+                renderBarChart(data.data);
+                renderFeatureDetails(data.data);
+
+            } catch (error) {
+                console.error('Failed to load data:', error);
+                document.getElementById('feature-details').innerHTML =
+                    '<div style="color: #e53e3e; padding: 1rem;">⚠️ Failed to load visualization data.</div>';
+            }
+        }
+
+        function renderBarChart(featureData) {
+            const trace = {
+                type: 'bar',
+                x: featureData.map(d => d.importance * 100),
+                y: featureData.map(d => d.feature_group),
+                orientation: 'h',
+                marker: {
+                    color: ['#4299e1', '#48bb78', '#ed8936'],
+                    line: { color: '#2d3748', width: 2 }
+                },
+                text: featureData.map(d => (d.importance * 100).toFixed(1) + '%'),
+                textposition: 'outside',
+                hovertemplate: '<b>%{y}</b><br>Importance: %{x:.1f}%<extra></extra>'
+            };
+
+            const layout = {
+                title: {
+                    text: 'Feature Group Importance',
+                    font: { size: 20, family: 'Inter, sans-serif' }
+                },
+                xaxis: {
+                    title: 'Importance (%)',
+                    range: [0, Math.max(...featureData.map(d => d.importance * 100)) * 1.2]
+                },
+                yaxis: {
+                    title: '',
+                    automargin: true
+                },
+                margin: { l: 200, r: 100, t: 80, b: 60 },
+                height: 400,
+                font: { family: 'Inter, sans-serif' }
+            };
+
+            const config = {
+                responsive: true,
+                displayModeBar: true,
+                displaylogo: false,
+                modeBarButtonsToRemove: ['lasso2d', 'select2d']
+            };
+
+            Plotly.newPlot('chart-container', [trace], layout, config);
+        }
+
+        function renderFeatureDetails(featureData) {
+            const container = document.getElementById('feature-details');
+
+            const html = featureData.map(group => `
+                <div class="feature-group">
+                    <h3>${group.feature_group}</h3>
+                    <div class="importance-value">${(group.importance * 100).toFixed(1)}%</div>
+                    <div class="feature-list">
+                        ${group.features.map(f => `<span class="feature-tag">${f}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
