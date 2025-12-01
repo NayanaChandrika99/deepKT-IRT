@@ -4,37 +4,70 @@
       {
         "id": "raw_csv",
         "label": "Raw CSV",
-        "size": 1024,
-        "last_modified": "2024-11-01"
+        "size": 0.0,
+        "last_modified": "2025-11-25"
       },
       {
         "id": "canonical",
         "label": "Canonical Events",
-        "size": 2048,
-        "last_modified": "2024-11-15"
+        "size": 87.14,
+        "last_modified": "2025-11-25"
       },
       {
-        "id": "sakt_prep",
-        "label": "SAKT Prepared",
-        "size": 1536,
-        "last_modified": "2024-11-20"
+        "id": "sakt_state",
+        "label": "SAKT State",
+        "size": 26.86,
+        "last_modified": "2025-11-27"
+      },
+      {
+        "id": "sakt_attention",
+        "label": "SAKT Attention",
+        "size": 2.67,
+        "last_modified": "2025-11-29"
+      },
+      {
+        "id": "skill_mastery",
+        "label": "Skill Mastery",
+        "size": 4.38,
+        "last_modified": "2025-11-29"
+      },
+      {
+        "id": "item_params",
+        "label": "Item Parameters",
+        "size": 0.05,
+        "last_modified": "2025-11-27"
       }
     ],
     "edges": [
       {
         "source": "raw_csv",
         "target": "canonical",
-        "transform": "data_pipeline.py"
+        "transform": "pipeline"
+      },
+      {
+        "source": "sakt_prep_train",
+        "target": "sakt_state",
+        "transform": "pipeline"
+      },
+      {
+        "source": "sakt_prep_train",
+        "target": "sakt_attention",
+        "transform": "pipeline"
+      },
+      {
+        "source": "sakt_state",
+        "target": "skill_mastery",
+        "transform": "pipeline"
       },
       {
         "source": "canonical",
-        "target": "sakt_prep",
-        "transform": "prepare_sakt.py"
+        "target": "item_params",
+        "transform": "pipeline"
       }
     ]
   },
   "metadata": {
-    "total_files": 3,
-    "mock": true
+    "total_files": 6,
+    "mock": false
   }
 }

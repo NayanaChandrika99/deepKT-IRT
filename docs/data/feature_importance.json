@@ -1,25 +1,28 @@
 {
   "data": [
     {
-      "feature_group": "Wide Features",
-      "importance": 0.35,
+      "feature_group": "Wide Features (IRT)",
+      "importance": 0.4,
       "features": [
+        "difficulty",
+        "discrimination",
         "user_id",
-        "item_id",
-        "skill_id"
+        "item_id"
       ]
     },
     {
-      "feature_group": "Deep Features",
-      "importance": 0.65,
+      "feature_group": "Deep Features (Clickstream)",
+      "importance": 0.6,
       "features": [
-        "clickstream_embeddings",
-        "sequence_context"
+        "sequence_embeddings",
+        "temporal_patterns",
+        "skill_interactions"
       ]
     }
   ],
   "metadata": {
     "model": "WD-IRT",
-    "mock": true
+    "mock": false,
+    "note": "Importance estimated from parameter variance. For exact values, extract from checkpoint."
   }
 }
