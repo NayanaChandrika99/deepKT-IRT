@@ -16,7 +16,7 @@ class RLRecommendations {
     const container = document.getElementById(this.containerId);
     if (!container || !data || !data.data) return this;
 
-    const recommendations = data.data;
+    const recommendations = data.data[0]?.recommendations || data.data;
 
     container.innerHTML = `
       <div class="rl-recommendations">
@@ -34,7 +34,7 @@ class RLRecommendations {
             ${recommendations.slice(0, 10).map(r => `
               <tr>
                 <td>${r.item_id}</td>
-                <td>${(r.expected_reward * 100).toFixed(1)}%</td>
+                <td>${((r.expected || r.expected_reward) * 100).toFixed(1)}%</td>
                 <td>${(r.uncertainty * 100).toFixed(1)}%</td>
                 <td><span class="badge ${r.mode}">${r.mode}</span></td>
               </tr>

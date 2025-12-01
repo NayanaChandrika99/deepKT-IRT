@@ -16,8 +16,9 @@ class RecComparison {
     const container = document.getElementById(this.containerId);
     if (!container || !data || !data.data) return this;
 
-    const rlRecs = data.data.rl_recommendations || [];
-    const ruleRecs = data.data.rule_based_recommendations || [];
+    const compData = data.data[0] || data.data || {};
+    const rlRecs = compData.rl_recommendations || [];
+    const ruleRecs = compData.rule_based_recommendations || [];
 
     container.innerHTML = `
       <div class="rec-comparison">
@@ -25,14 +26,14 @@ class RecComparison {
         <div class="comparison-grid">
           <div class="column">
             <h5>RL-Based</h5>
-            <ul>${rlRecs.map(r => `<li>${r.item_id}</li>`).join('')}</ul>
+            <ul>${rlRecs.map(r => `<li>${typeof r === 'string' ? r : r.item_id}</li>`).join('')}</ul>
           </div>
           <div class="column">
             <h5>Rule-Based</h5>
-            <ul>${ruleRecs.map(r => `<li>${r.item_id}</li>`).join('')}</ul>
+            <ul>${ruleRecs.map(r => `<li>${typeof r === 'string' ? r : r.item_id}</li>`).join('')}</ul>
           </div>
         </div>
-        <p class="overlap">Overlap: ${data.data.overlap_pct || 0}%</p>
+        <p class="overlap">Overlap: ${compData.overlap_percentage || compData.overlap_pct || 0}%</p>
       </div>
     `;
 

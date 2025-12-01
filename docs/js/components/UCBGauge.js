@@ -16,8 +16,8 @@ class UCBGauge {
     const container = document.getElementById(this.containerId);
     if (!container || !data || !data.data) return this;
 
-    const topRec = data.data[0];
-    const confidence = (topRec.expected_reward - topRec.uncertainty) * 100;
+    const topRec = data.data[0]?.recommendations?.[0] || data.data[0] || {};
+    const confidence = ((topRec.expected || topRec.expected_reward || 0) - (topRec.uncertainty || 0)) * 100;
 
     const trace = {
       type: 'indicator',
