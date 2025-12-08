@@ -209,19 +209,6 @@ python scripts/demo_trace.py compare-recs --student-id <user> --topic <skill>
 
 Balances exploration/exploitation to learn which items work best for student profiles. Outputs include success probability, uncertainty, and reasoning.
 
-## Features
-
-- ✅ SAKT Engine (AUC 0.74 on EDM Cup 2023)
-- ✅ Wide & Deep IRT
-- ✅ Static GitHub Pages Dashboard (`docs/` with Plotly.js visuals)
-- ✅ Attention-based explainability
-- ✅ Gaming behavior detection
-- ✅ LinUCB contextual bandit
-
-## Development
-
-Project follows ExecPlan methodology. Plans live in `execplans/`. See `PLANS.md` for details.
-
 ## License
 
 MIT
