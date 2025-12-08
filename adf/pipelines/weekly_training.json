@@ -1,0 +1,180 @@
+{
+    "name": "weekly_model_training",
+    "properties": {
+        "description": "Weekly model training pipeline for SAKT and WD-IRT",
+        "activities": [
+            {
+                "name": "Train_SAKT_Model",
+                "type": "DatabricksNotebook",
+                "description": "Train SAKT knowledge tracing model on GPU cluster",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "06:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebookPath": "/Shared/deepkt-irt/notebooks/04_train_sakt",
+                    "baseParameters": {
+                        "max_epochs": {
+                            "value": "@pipeline().parameters.saktMaxEpochs",
+                            "type": "Expression"
+                        }
+                    },
+                    "libraries": [
+                        {
+                            "pypi": {
+                                "package": "pykt"
+                            }
+                        },
+                        {
+                            "pypi": {
+                                "package": "mlflow"
+                            }
+                        }
+                    ]
+                },
+                "linkedServiceName": {
+                    "referenceName": "DatabricksLinkedService",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "Train_WD_IRT_Model",
+                "type": "DatabricksNotebook",
+                "description": "Train Wide & Deep IRT model on GPU cluster",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "06:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebookPath": "/Shared/deepkt-irt/notebooks/05_train_wd_irt",
+                    "baseParameters": {
+                        "max_epochs": {
+                            "value": "@pipeline().parameters.wdirtMaxEpochs",
+                            "type": "Expression"
+                        }
+                    },
+                    "libraries": [
+                        {
+                            "pypi": {
+                                "package": "pytorch-lightning"
+                            }
+                        },
+                        {
+                            "pypi": {
+                                "package": "mlflow"
+                            }
+                        }
+                    ]
+                },
+                "linkedServiceName": {
+                    "referenceName": "DatabricksLinkedService",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "Update_Vector_Index",
+                "type": "DatabricksNotebook",
+                "description": "Refresh Vector Search index with new content",
+                "dependsOn": [
+                    {
+                        "activity": "Train_SAKT_Model",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    },
+                    {
+                        "activity": "Train_WD_IRT_Model",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "02:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebookPath": "/Shared/deepkt-irt/notebooks/07_build_vector_index"
+                },
+                "linkedServiceName": {
+                    "referenceName": "DatabricksLinkedService",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "Generate_Sample_Explanations",
+                "type": "DatabricksNotebook",
+                "description": "Pre-generate explanations for common scenarios",
+                "dependsOn": [
+                    {
+                        "activity": "Update_Vector_Index",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "01:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebookPath": "/Shared/deepkt-irt/notebooks/08_rag_explainer"
+                },
+                "linkedServiceName": {
+                    "referenceName": "DatabricksLinkedService",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "Notify_Training_Complete",
+                "type": "WebActivity",
+                "description": "Send notification that training is complete",
+                "dependsOn": [
+                    {
+                        "activity": "Generate_Sample_Explanations",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "00:05:00"
+                },
+                "typeProperties": {
+                    "url": "@pipeline().parameters.notificationWebhookUrl",
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": {
+                        "pipeline": "weekly_model_training",
+                        "status": "completed",
+                        "timestamp": "@utcNow()"
+                    }
+                }
+            }
+        ],
+        "parameters": {
+            "saktMaxEpochs": {
+                "type": "int",
+                "defaultValue": 50
+            },
+            "wdirtMaxEpochs": {
+                "type": "int",
+                "defaultValue": 30
+            },
+            "notificationWebhookUrl": {
+                "type": "string",
+                "defaultValue": ""
+            }
+        },
+        "annotations": [
+            "deepkt-irt",
+            "weekly",
+            "training",
+            "ml"
+        ]
+    }
+}

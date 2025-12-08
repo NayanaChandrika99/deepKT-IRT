@@ -52,3 +52,13 @@ lightning_logs/
 .uv/
 
 reports/bandit_state.npz
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfvars
+!terraform.tfvars.example
+terraform.rc
+.terraformrc

@@ -1,0 +1,154 @@
+{
+    "name": "daily_data_ingestion",
+    "properties": {
+        "description": "Daily ingestion pipeline for deepKT+IRT data sources",
+        "activities": [
+            {
+                "name": "Ingest_CSV_Files",
+                "type": "Copy",
+                "description": "Copy CSV files from source to Bronze layer",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "01:00:00",
+                    "retry": 2,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "DelimitedTextSource",
+                        "storeSettings": {
+                            "type": "AzureBlobStorageReadSettings",
+                            "recursive": true
+                        }
+                    },
+                    "sink": {
+                        "type": "DelimitedTextSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "SourceCSVDataset",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "BronzeLayerDataset",
+                        "type": "DatasetReference"
+                    }
+                ]
+            },
+            {
+                "name": "Run_Bronze_Ingestion_Notebook",
+                "type": "DatabricksNotebook",
+                "description": "Run Bronze layer ingestion notebook",
+                "dependsOn": [
+                    {
+                        "activity": "Ingest_CSV_Files",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "02:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebookPath": "/Shared/deepkt-irt/notebooks/01_ingest_bronze"
+                },
+                "linkedServiceName": {
+                    "referenceName": "DatabricksLinkedService",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "Run_Silver_Transform_Notebook",
+                "type": "DatabricksNotebook",
+                "description": "Transform Bronze to Silver layer",
+                "dependsOn": [
+                    {
+                        "activity": "Run_Bronze_Ingestion_Notebook",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "02:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebookPath": "/Shared/deepkt-irt/notebooks/02_transform_silver"
+                },
+                "linkedServiceName": {
+                    "referenceName": "DatabricksLinkedService",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "Run_Feature_Engineering_Notebook",
+                "type": "DatabricksNotebook",
+                "description": "Engineer features for ML models",
+                "dependsOn": [
+                    {
+                        "activity": "Run_Silver_Transform_Notebook",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "02:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebookPath": "/Shared/deepkt-irt/notebooks/03_feature_engineering"
+                },
+                "linkedServiceName": {
+                    "referenceName": "DatabricksLinkedService",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "Update_Bandit_Recommendations",
+                "type": "DatabricksNotebook",
+                "description": "Update bandit with new data and generate recommendations",
+                "dependsOn": [
+                    {
+                        "activity": "Run_Feature_Engineering_Notebook",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "01:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebookPath": "/Shared/deepkt-irt/notebooks/06_bandit_recommendations"
+                },
+                "linkedServiceName": {
+                    "referenceName": "DatabricksLinkedService",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+        "parameters": {
+            "runDate": {
+                "type": "string",
+                "defaultValue": "@formatDateTime(utcNow(), 'yyyy-MM-dd')"
+            }
+        },
+        "annotations": [
+            "deepkt-irt",
+            "daily",
+            "ingestion"
+        ]
+    }
+}

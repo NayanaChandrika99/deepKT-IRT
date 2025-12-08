@@ -1,0 +1,30 @@
+# ABOUTME: Example Terraform variable values.
+# ABOUTME: Copy to terraform.tfvars and fill in your values.
+
+# Core settings
+environment  = "dev"
+location     = "eastus2"
+project_name = "deepkt-irt"
+
+# Unity Catalog (if available)
+# unity_catalog_metastore_id = "your-metastore-id"
+
+# Legacy SQL Server (for data warehouse migration)
+# sql_server_host     = "your-sql-server.database.windows.net"
+# sql_server_db       = "legacy_learning_db"
+# sql_server_user     = "admin"
+# sql_server_password = "your-password"
+
+# Web App API
+# webapp_api_url = "https://api.yourapp.com/v1"
+
+# Salesforce (for CRM data ingestion)
+# salesforce_client_id     = "your-client-id"
+# salesforce_client_secret = "your-client-secret"
+
+# MongoDB (for session logs)
+# mongodb_connection_string = "mongodb+srv://user:pass@cluster.mongodb.net/db"
+
+# GPU configuration
+gpu_node_type                     = "Standard_NC6s_v3"
+gpu_cluster_autoterminate_minutes = 20

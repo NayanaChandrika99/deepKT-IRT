@@ -1,0 +1,187 @@
+# Databricks Job Configuration for deepKT+IRT
+# Deploy using: databricks jobs create --json @databricks/jobs/daily_ingestion.yml
+
+resources:
+  jobs:
+    daily_ingestion:
+      name: "[deepKT-IRT] Daily Data Ingestion"
+      description: "Daily pipeline: Bronze → Silver → Gold layers"
+      
+      # Schedule: Every day at 2 AM UTC
+      schedule:
+        quartz_cron_expression: "0 0 2 * * ?"
+        timezone_id: "UTC"
+        pause_status: "UNPAUSED"
+      
+      # Email notifications
+      email_notifications:
+        on_failure:
+          - "data-team@example.com"
+        on_success: []
+      
+      # Task definitions
+      tasks:
+        - task_key: "ingest_bronze"
+          description: "Ingest raw data to Bronze layer"
+          notebook_task:
+            notebook_path: "/Shared/deepkt-irt/notebooks/01_ingest_bronze"
+            source: "WORKSPACE"
+          new_cluster:
+            spark_version: "13.3.x-scala2.12"
+            node_type_id: "Standard_DS3_v2"
+            num_workers: 2
+            spark_conf:
+              "spark.databricks.delta.preview.enabled": "true"
+            custom_tags:
+              project: "deepkt-irt"
+              stage: "bronze"
+          timeout_seconds: 7200
+          max_retries: 2
+          
+        - task_key: "transform_silver"
+          description: "Transform to canonical Silver schema"
+          depends_on:
+            - task_key: "ingest_bronze"
+          notebook_task:
+            notebook_path: "/Shared/deepkt-irt/notebooks/02_transform_silver"
+            source: "WORKSPACE"
+          new_cluster:
+            spark_version: "13.3.x-scala2.12"
+            node_type_id: "Standard_DS3_v2"
+            num_workers: 2
+            spark_conf:
+              "spark.databricks.delta.preview.enabled": "true"
+            custom_tags:
+              project: "deepkt-irt"
+              stage: "silver"
+          timeout_seconds: 7200
+          max_retries: 1
+          
+        - task_key: "feature_engineering"
+          description: "Engineer features for ML models"
+          depends_on:
+            - task_key: "transform_silver"
+          notebook_task:
+            notebook_path: "/Shared/deepkt-irt/notebooks/03_feature_engineering"
+            source: "WORKSPACE"
+          new_cluster:
+            spark_version: "13.3.x-scala2.12"
+            node_type_id: "Standard_DS4_v2"
+            num_workers: 4
+            spark_conf:
+              "spark.databricks.delta.preview.enabled": "true"
+            custom_tags:
+              project: "deepkt-irt"
+              stage: "gold"
+          timeout_seconds: 7200
+          max_retries: 1
+          
+        - task_key: "update_recommendations"
+          description: "Update LinUCB bandit recommendations"
+          depends_on:
+            - task_key: "feature_engineering"
+          notebook_task:
+            notebook_path: "/Shared/deepkt-irt/notebooks/06_bandit_recommendations"
+            source: "WORKSPACE"
+          new_cluster:
+            spark_version: "13.3.x-scala2.12"
+            node_type_id: "Standard_DS3_v2"
+            num_workers: 1
+            custom_tags:
+              project: "deepkt-irt"
+              stage: "recommendations"
+          timeout_seconds: 3600
+          max_retries: 1
+
+---
+# Weekly Model Training Job
+
+    weekly_training:
+      name: "[deepKT-IRT] Weekly Model Training"
+      description: "Weekly training of SAKT and WD-IRT models on GPU"
+      
+      # Schedule: Every Sunday at 4 AM UTC
+      schedule:
+        quartz_cron_expression: "0 0 4 ? * SUN"
+        timezone_id: "UTC"
+        pause_status: "UNPAUSED"
+      
+      email_notifications:
+        on_failure:
+          - "ml-team@example.com"
+        on_success:
+          - "ml-team@example.com"
+      
+      tasks:
+        - task_key: "train_sakt"
+          description: "Train SAKT knowledge tracing model"
+          notebook_task:
+            notebook_path: "/Shared/deepkt-irt/notebooks/04_train_sakt"
+            source: "WORKSPACE"
+            base_parameters:
+              max_epochs: "50"
+          new_cluster:
+            spark_version: "13.3.x-gpu-ml-scala2.12"
+            node_type_id: "Standard_NC6s_v3"  # V100 GPU
+            num_workers: 0  # Single node
+            driver_node_type_id: "Standard_NC6s_v3"
+            spark_conf:
+              "spark.databricks.delta.preview.enabled": "true"
+            custom_tags:
+              project: "deepkt-irt"
+              model: "sakt"
+          timeout_seconds: 21600  # 6 hours
+          max_retries: 1
+          
+        - task_key: "train_wdirt"
+          description: "Train Wide & Deep IRT model"
+          notebook_task:
+            notebook_path: "/Shared/deepkt-irt/notebooks/05_train_wd_irt"
+            source: "WORKSPACE"
+            base_parameters:
+              max_epochs: "30"
+          new_cluster:
+            spark_version: "13.3.x-gpu-ml-scala2.12"
+            node_type_id: "Standard_NC6s_v3"
+            num_workers: 0
+            driver_node_type_id: "Standard_NC6s_v3"
+            custom_tags:
+              project: "deepkt-irt"
+              model: "wdirt"
+          timeout_seconds: 21600
+          max_retries: 1
+          
+        - task_key: "update_vector_index"
+          description: "Refresh Vector Search index"
+          depends_on:
+            - task_key: "train_sakt"
+            - task_key: "train_wdirt"
+          notebook_task:
+            notebook_path: "/Shared/deepkt-irt/notebooks/07_build_vector_index"
+            source: "WORKSPACE"
+          new_cluster:
+            spark_version: "13.3.x-scala2.12"
+            node_type_id: "Standard_DS4_v2"
+            num_workers: 2
+            custom_tags:
+              project: "deepkt-irt"
+              stage: "vector-search"
+          timeout_seconds: 7200
+          max_retries: 1
+          
+        - task_key: "generate_explanations"
+          description: "Pre-generate RAG explanations"
+          depends_on:
+            - task_key: "update_vector_index"
+          notebook_task:
+            notebook_path: "/Shared/deepkt-irt/notebooks/08_rag_explainer"
+            source: "WORKSPACE"
+          new_cluster:
+            spark_version: "13.3.x-scala2.12"
+            node_type_id: "Standard_DS3_v2"
+            num_workers: 1
+            custom_tags:
+              project: "deepkt-irt"
+              stage: "rag"
+          timeout_seconds: 3600
+          max_retries: 1
