@@ -1,6 +1,3 @@
-# ABOUTME: Introduces the twin-engine learning analytics project and how to run it.
-# ABOUTME: Documents setup, directory layout, and commands for both SAKT and WD-IRT workflows.
-
 # deepKT + Wide&Deep IRT
 
 Twin-engine learning analytics combining knowledge tracing and item response theory:
